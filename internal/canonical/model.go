@@ -173,6 +173,13 @@ type Habilidade struct {
 
 	Recarga []float64 `json:"recarga,omitempty"`
 	Custo   []float64 `json:"custo,omitempty"`
+
+	// Alcance sai vazio quando a fonte publica valor de sentinela.
+	//
+	// A banda legitima do 16.16 termina em 7500, nos ultimates globais, e ha uma
+	// lacuna limpa ate 10000, onde comeca a sentinela: 37 habilidades em 10000,
+	// 132 em 25000, e casos ate 200000. Publicar "alcance 25000" para o Q do
+	// Galio seria pior que nao publicar alcance nenhum. Ver alcanceMaximoPlausivel.
 	Alcance []float64 `json:"alcance,omitempty"`
 
 	Efeitos []Efeito `json:"efeitos,omitempty"`
@@ -201,6 +208,13 @@ type Efeito struct {
 
 	// NaoResolvido diz por que a formula ficou sem numero.
 	NaoResolvido string `json:"nao_resolvido,omitempty"`
+
+	// NivelDeReferencia so aparece quando o efeito MUDA com o nivel do campeao.
+	//
+	// Sao 407 parcelas assim no 16.16. Sem esse campo, quem le um numero toma
+	// por constante o que na verdade e o valor no nivel 18 — no nivel 1 varios
+	// deles valem menos de um quarto disso.
+	NivelDeReferencia int `json:"nivel_de_referencia,omitempty"`
 
 	// DerivadoDe rotula um calculo cujo nome a fonte nao publica, transcrevendo
 	// a relacao que ela declara: "TotalDPS x 0.25" nao inventa nome nenhum.
@@ -266,8 +280,13 @@ type CoberturaDeCampeoes struct {
 	CampeoesTotal    int `json:"campeoes_total"`
 	CampeoesComStats int `json:"campeoes_com_stats"`
 
-	Habilidades CoberturaDeEntidade `json:"habilidades"`
-	Passivas    CoberturaDeEntidade `json:"passivas"`
+	Habilidades    CoberturaDeEntidade `json:"habilidades"`
+	Passivas       CoberturaDeEntidade `json:"passivas"`
+	SubHabilidades CoberturaDeEntidade `json:"sub_habilidades"`
+
+	// AlcancesDescartados conta as habilidades cujo alcance a fonte publica como
+	// sentinela. Nao e defeito de leitura: e informacao que a fonte nao da.
+	AlcancesDescartados int `json:"alcances_descartados"`
 
 	// LacunasDeStat lista, uma a uma, as estatisticas que a fonte nao publica.
 	// Sao publicadas como ausentes, nunca como zero.

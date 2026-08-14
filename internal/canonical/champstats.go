@@ -58,6 +58,7 @@ func (b *Builder) buildChampStats(ds *Dataset) error {
 		if err := b.aplicarHabilidades(c, spells, nomes, cov, checker); err != nil {
 			return err
 		}
+		b.aplicarSubHabilidades(c, dump, nomes, cov)
 	}
 
 	sort.Strings(cov.LacunasDeStat)
@@ -97,12 +98,12 @@ func (b *Builder) aplicarHabilidades(
 
 		alvo.Recarga = recortar(sp.CooldownTime(), ranks)
 		alvo.Custo = recortar(sp.Mana(), ranks)
-		alvo.Alcance = recortar(sp.CastRange, ranks)
+		alvo.Alcance = alcancePublicavel(recortar(sp.CastRange, ranks), cov)
 
 		if sp.Slot != gamedata.SlotPassive {
 			who := c.Alias + " " + sp.Slot.String()
-			checker.Compare("cooldown", who, sp.CooldownTime(), alcanceDoPlugin(c, sp.Slot, "recarga"), ranks)
-			checker.Compare("mana", who, sp.Mana(), alcanceDoPlugin(c, sp.Slot, "custo"), ranks)
+			checker.Compare("cooldown", who, sp.CooldownTime(), seriePlugin(c, sp.Slot, "recarga"), ranks)
+			checker.Compare("mana", who, sp.Mana(), seriePlugin(c, sp.Slot, "custo"), ranks)
 		}
 
 		resolvidos, total := b.resolverEfeitos(alvo, &sp, nomes, ranks)
@@ -144,6 +145,11 @@ func (b *Builder) resolverEfeitos(
 				efeito.NaoResolvido = err.Error()
 				ok = false
 				break
+			}
+			// O nivel so e declarado quando ele MUDA o resultado. Declara-lo em
+			// todo efeito acrescentaria ruido a maioria, que nao depende dele.
+			if gamedata.DependeDoNivel(chave, ctx) {
+				efeito.NivelDeReferencia = nivelDeReferencia
 			}
 			efeito.PorRank = append(efeito.PorRank, converter(e.Normalize()))
 		}
@@ -246,6 +252,10 @@ func contar(cov *CoberturaDeCampeoes, passiva bool, resolvidos, total int) {
 	if passiva {
 		alvo = &cov.Passivas
 	}
+	contarEm(alvo, resolvidos, total)
+}
+
+func contarEm(alvo *CoberturaDeEntidade, resolvidos, total int) {
 	alvo.Total++
 	switch {
 	case total == 0:
@@ -259,9 +269,9 @@ func contar(cov *CoberturaDeCampeoes, passiva bool, resolvidos, total int) {
 	}
 }
 
-// alcanceDoPlugin devolve a serie do plugin correspondente, para o cruzamento
-// de alinhamento de rank.
-func alcanceDoPlugin(c *Champion, slot gamedata.Slot, qual string) []float64 {
+// seriePlugin devolve a serie do plugin correspondente, para o cruzamento de
+// alinhamento de rank.
+func seriePlugin(c *Champion, slot gamedata.Slot, qual string) []float64 {
 	if int(slot) >= len(c.Habilidades) {
 		return nil
 	}
@@ -280,5 +290,61 @@ func lerSeriesDoPlugin(hab []Habilidade, spells []model.ChampionSpell) {
 		}
 		hab[i].recargaDoPlugin = spells[i].CooldownCoefficients
 		hab[i].custoDoPlugin = spells[i].CostCoefficients
+	}
+}
+
+// alcanceMaximoPlausivel separa alcance de uso do valor de sentinela.
+//
+// O limiar cai na lacuna observada no 16.16: a banda legitima termina em 7500,
+// nos ultimates globais como o R do Pantheon, e a proxima ocorrencia e 10000.
+// Nada existe entre os dois. Acima disso sao 37 habilidades em 10000, 132 em
+// 25000, e casos ate 200000 — limites internos de missil, e nao alcance que o
+// jogador enxerga. Conferi tambem se castRangeValues traria o valor real: zero
+// casos. A alternativa nao existe, entao a escolha e entre publicar um numero
+// errado e nao publicar nenhum.
+const alcanceMaximoPlausivel = 10000
+
+// alcancePublicavel descarta o alcance quando a fonte publica sentinela.
+func alcancePublicavel(valores []float64, cov *CoberturaDeCampeoes) []float64 {
+	for _, v := range valores {
+		if v >= alcanceMaximoPlausivel {
+			cov.AlcancesDescartados++
+			return nil
+		}
+	}
+	return valores
+}
+
+// aplicarSubHabilidades resolve as habilidades que um livro de feiticos
+// acrescenta.
+//
+// Elas nao estao no array de slots do CharacterRecord, entao Spells() nao as
+// alcanca. Sem isto, Hwei sairia com doze habilidades de texto e nenhum numero —
+// e, pior, invisiveis na cobertura, porque o contador nunca soube que existiam.
+func (b *Builder) aplicarSubHabilidades(
+	c *Champion, dump *gamedata.Dump, nomes gamedata.StatNames, cov *CoberturaDeCampeoes,
+) {
+	for i := range c.SubHabilidades {
+		h := &c.SubHabilidades[i]
+
+		// O plugin chama a sub-habilidade de "qq"; o dump chama o objeto de
+		// "HweiQQ". A ligacao e o alias mais o slot.
+		sp, ok := dump.SpellByObjectName(c.Alias + strings.ToUpper(h.Slot))
+		if !ok {
+			cov.SubHabilidades.Total++
+			cov.SubHabilidades.SemFormula++
+			continue
+		}
+
+		h.NomeInterno = sp.Name
+		ranks := sp.Ranks()
+		h.Recarga = recortar(sp.CooldownTime(), ranks)
+		h.Custo = recortar(sp.Mana(), ranks)
+		h.Alcance = alcancePublicavel(recortar(sp.CastRange, ranks), cov)
+
+		resolvidos, total := b.resolverEfeitos(h, sp, nomes, ranks)
+		h.SeriesNomeadas = seriesNaoConsumidas(sp, ranks)
+
+		contarEm(&cov.SubHabilidades, resolvidos, total)
 	}
 }

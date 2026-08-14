@@ -48,15 +48,20 @@ type requiredStat struct {
 	get  func(*Record) float64
 }
 
-// requiredStats sao as presentes nos 173 campeoes do 16.16. Se alguma sumir num
-// patch, e mudanca de formato, nao caracteristica de um campeao.
+// requiredStats sao as estatisticas BASE, presentes nos 173 campeoes do 16.16.
+// Se alguma sumir num patch, e mudanca de formato, nao caracteristica de um
+// campeao.
+//
+// Os campos de CRESCIMENTO por nivel ficam de fora de proposito. Medido no
+// 16.16: eles NUNCA aparecem presentes valendo zero — a fonte simplesmente os
+// omite, e a omissao e como ela diz "nao cresce". Senna nao ganha dano por
+// nivel e Thresh nao ganha armadura por nivel, os dois por ganharem isso de
+// almas. Reportar essas omissoes como lacuna publicaria uma duvida que nao
+// existe.
 var requiredStats = []requiredStat{
 	{"vida base", func(r *Record) float64 { return r.BaseHP.BaseValue }},
-	{"vida por nivel", func(r *Record) float64 { return r.HPPerLevel.BaseValue }},
 	{"dano base", func(r *Record) float64 { return r.BaseDamage.BaseValue }},
-	{"dano por nivel", func(r *Record) float64 { return r.DamagePerLevel.BaseValue }},
 	{"armadura base", func(r *Record) float64 { return r.BaseArmor.BaseValue }},
-	{"armadura por nivel", func(r *Record) float64 { return r.ArmorPerLevel.BaseValue }},
 	{"resistencia magica", func(r *Record) float64 { return r.BaseMR.BaseValue }},
 	{"velocidade de ataque", func(r *Record) float64 { return r.BaseAttackSpeed.BaseValue }},
 	{"alcance de ataque", func(r *Record) float64 { return r.AttackRange.BaseValue }},

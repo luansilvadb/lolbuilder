@@ -164,6 +164,39 @@ func Evaluate(name string, ctx Context) (Expr, error) {
 	return evalNamed(name, ctx, 0)
 }
 
+// DependeDoNivel informa se a formula muda conforme o nivel do campeao.
+//
+// A deteccao e por medicao, e nao por varredura da arvore: avalia nos dois
+// extremos e compara. Varrer a arvore exigiria enumerar os tipos de parcela que
+// dependem do nivel, e essa lista sairia do ar no dia em que a Riot criasse
+// mais um — a medicao continua valendo.
+//
+// Sao 407 parcelas assim no 16.16: 228 por faixa de nivel, 167 por interpolacao
+// e 12 por tabela.
+func DependeDoNivel(name string, ctx Context) bool {
+	baixo := ctx
+	baixo.Level = 1
+	a, errA := Evaluate(name, baixo)
+
+	alto := ctx
+	alto.Level = 18
+	b, errB := Evaluate(name, alto)
+
+	if errA != nil || errB != nil {
+		return false
+	}
+	if a.Flat != b.Flat || len(a.Terms) != len(b.Terms) {
+		return true
+	}
+	a, b = a.Normalize(), b.Normalize()
+	for i := range a.Terms {
+		if a.Terms[i] != b.Terms[i] {
+			return true
+		}
+	}
+	return false
+}
+
 // evalNamed e a Evaluate com profundidade, para que um salto de uma formula
 // para outra some ao contador em vez de zera-lo. Um ciclo entre formulas
 // nomeadas so e cortado se a profundidade sobreviver ao salto.

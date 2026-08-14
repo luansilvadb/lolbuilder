@@ -182,6 +182,40 @@ distintos de `mStat` contra 8 no modo Jade. Doze estão curados com evidência e
 — 20 ocorrências de cerca de 1590. Enum fora da tabela deixa a parcela sem
 resolver e entra na cobertura; nunca vira palpite publicado.
 
+## Revisões durante a revisão do M3
+
+**O nível de referência era mudo.** 407 parcelas dependem do nível do campeão,
+e o dataset publicava só o valor no 18 sem dizer isso. Quem lê "115" toma por
+constante o que no nível 1 vale bem menos. Agora o efeito declara
+`nivel_de_referencia` — mas **só quando ele muda o resultado**, senão seria ruído
+na maioria, que não depende do nível. A detecção é por medição: avalia no 1 e no
+18 e compara. Varrer a árvore exigiria enumerar os tipos de parcela que dependem
+do nível, e essa lista sairia do ar no dia em que a Riot criasse mais um. São 288
+efeitos que declaram.
+
+**As 12 sub-habilidades do Hwei tinham texto e nenhum número — e eram invisíveis
+na cobertura.** Elas não estão no array de slots do `CharacterRecord`, então
+`Spells()` não as alcançava. São `SpellObject` próprios, resolvíveis pelo
+`ObjectName` (`qq` → `HweiQQ`). Agora saem com recarga, custo e fórmula, e têm
+eixo próprio na cobertura: 9 de 12 resolvidas.
+
+**O alcance sentinela não é publicado.** 178 habilidades traziam valores como
+25000 no `castRange` — limite interno de míssil, não alcance que o jogador
+enxerga. O limiar de 10000 se justifica por lacuna observada: a banda legítima
+termina em 7500, nos ultimates globais, e nada existe entre 7500 e 10000.
+Verifiquei também se `castRangeValues` traria o valor real: **zero casos**. A
+alternativa não existe, então a escolha era entre publicar um número errado e
+não publicar nenhum.
+
+**Senna e Thresh não eram lacuna — eram zero, e eu tinha errado.** Medido: os
+campos `*PerLevel` **nunca** aparecem presentes valendo zero; a fonte apenas os
+omite, e a omissão é como ela diz "não cresce". Senna não ganha dano por nível e
+Thresh não ganha armadura por nível, os dois por ganharem isso de almas.
+Reportar essas omissões como lacuna publicava uma dúvida que não existe. Os
+campos de crescimento saíram da lista de obrigatórios; os campos **base**
+continuam nela, e `baseStaticHPRegen` segue como lacuna declarada em 8 campeões,
+porque ali a omissão não é interpretável.
+
 ## Aberto
 
 - Valor de `coverage_minimums` — medido no M3.

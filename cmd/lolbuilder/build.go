@@ -132,6 +132,13 @@ func relatarCampeoes(ds *canonical.Dataset) {
 		c.CampeoesComStats, c.CampeoesTotal, ratio(c.CampeoesComStats, c.CampeoesTotal))
 	linhaDeEntidade("habilidades", c.Habilidades)
 	linhaDeEntidade("passivas", c.Passivas)
+	if c.SubHabilidades.Total > 0 {
+		linhaDeEntidade("sub-habil.", c.SubHabilidades)
+	}
+	if c.AlcancesDescartados > 0 {
+		fmt.Printf("    %d alcance(s) descartado(s) por serem valor de sentinela na fonte\n",
+			c.AlcancesDescartados)
+	}
 
 	for _, a := range ds.Coverage.Alinhamento {
 		fmt.Printf("    alinhamento de rank em %-9s deslocamento %d, %.1f%% de concordancia com o plugin (%d habilidades)\n",

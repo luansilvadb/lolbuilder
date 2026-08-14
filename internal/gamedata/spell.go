@@ -240,6 +240,32 @@ func (d *Dump) Spells() ([]Spell, error) {
 	return out, nil
 }
 
+// SpellByObjectName acha uma habilidade pelo nome do objeto, ignorando caixa.
+//
+// Serve para as habilidades que NAO estao no array de slots: o livro de feiticos
+// do Hwei publica doze sub-habilidades como SpellObject proprio, cada uma com
+// dano e recarga, e o CharacterRecord nao aponta para nenhuma delas.
+func (d *Dump) SpellByObjectName(nome string) (*Spell, bool) {
+	for ref, raw := range d.objects {
+		var probe struct {
+			ObjectName string `json:"ObjectName"`
+			Type       string `json:"__type"`
+		}
+		if err := json.Unmarshal(raw, &probe); err != nil {
+			continue
+		}
+		if probe.Type != "SpellObject" || !strings.EqualFold(probe.ObjectName, nome) {
+			continue
+		}
+		sp, err := d.spellAt(ref)
+		if err != nil {
+			return nil, false
+		}
+		return sp, true
+	}
+	return nil, false
+}
+
 // spellAt resolve uma referencia de habilidade, seja ela caminho ou hash.
 func (d *Dump) spellAt(ref string) (*Spell, error) {
 	raw, ok := d.Object(ref)
