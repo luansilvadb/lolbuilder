@@ -34,7 +34,7 @@ func runBuild(configPath, patch string) error {
 	}
 	fmt.Printf("montando modelo canonico do patch %s\n", patch)
 
-	ds, err := canonical.NewBuilder(cfg, store.PatchDir(patch)).Build(patch)
+	ds, err := canonical.NewBuilder(cfg, store.PatchDir(patch), "curation").Build(patch)
 	if err != nil {
 		return err
 	}
@@ -48,6 +48,7 @@ func runBuild(configPath, patch string) error {
 	fmt.Printf("  summoner       %3d\n", len(ds.SummonerSpells))
 
 	relatarItens(ds)
+	relatarCampeoes(ds)
 
 	if cfg.Provisional {
 		fmt.Println("\naviso: config.json esta marcado como provisional — os minimos de\n" +
@@ -116,6 +117,53 @@ func relatarItens(ds *canonical.Dataset) {
 			"  mas sinalizam forma que a fonte usa e o parser ainda nao le:\n", n)
 		imprimirLinhas(ds.Coverage.VocabularioForaDaLoja)
 	}
+}
+
+// relatarCampeoes imprime a cobertura de extracao do dump de dados do jogo.
+//
+// As taxas sao sobre o TOTAL de entidades, e nao sobre o subconjunto que tem
+// formula. E por isso que elas nao chegam a 100% mesmo sem nada ter falhado: as
+// entidades que a fonte nao descreve por numero permanecem no denominador, para
+// que um aumento delas apareca aqui em vez de sumir.
+func relatarCampeoes(ds *canonical.Dataset) {
+	c := ds.Coverage.Campeoes
+	fmt.Printf("\n  cobertura do dump de dados do jogo:\n")
+	fmt.Printf("    estatisticas   %3d/%-3d campeoes completos (%.1f%%)\n",
+		c.CampeoesComStats, c.CampeoesTotal, ratio(c.CampeoesComStats, c.CampeoesTotal))
+	linhaDeEntidade("habilidades", c.Habilidades)
+	linhaDeEntidade("passivas", c.Passivas)
+
+	for _, a := range ds.Coverage.Alinhamento {
+		fmt.Printf("    alinhamento de rank em %-9s deslocamento %d, %.1f%% de concordancia com o plugin (%d habilidades)\n",
+			a.Series, a.Best, a.Agreement(), a.Compared)
+		if n := len(a.Divergent); n > 0 {
+			fmt.Printf("      %d divergente(s): %v\n", n+a.Omitidas, a.Divergent)
+		}
+	}
+
+	if n := len(c.LacunasDeStat); n > 0 {
+		fmt.Printf("    %d lacuna(s) em estatistica opcional (publicadas como ausentes, nunca como zero):\n", n)
+		for i, g := range c.LacunasDeStat {
+			if i >= 10 {
+				fmt.Printf("      ... e mais %d\n", n-10)
+				break
+			}
+			fmt.Printf("      %s\n", g)
+		}
+	}
+}
+
+func linhaDeEntidade(nome string, e canonical.CoberturaDeEntidade) {
+	fmt.Printf("    %-14s %3d/%-3d resolvidas (%.1f%%), %d parciais, %d nao resolvidas, %d sem formula (%.1f%%)\n",
+		nome, e.Resolvidas, e.Total, ratio(e.Resolvidas, e.Total),
+		e.Parciais, e.NaoResolvidas, e.SemFormula, ratio(e.SemFormula, e.Total))
+}
+
+func ratio(parte, total int) float64 {
+	if total == 0 {
+		return 0
+	}
+	return 100 * float64(parte) / float64(total)
 }
 
 func imprimirLinhas(linhas []canon.LinhaNaoLida) {

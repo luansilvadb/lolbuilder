@@ -1,6 +1,7 @@
 package canonical
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/luansilvadb/lolbuilder/internal/canon"
@@ -28,7 +29,7 @@ func fixture(t *testing.T) *Dataset {
 			ChampionIDMin: 1, ChampionIDMax: 999,
 		},
 	}
-	ds, err := NewBuilder(cfg, "testdata/16.99").Build("16.99")
+	ds, err := NewBuilder(cfg, "testdata/16.99", "testdata/curation").Build("16.99")
 	if err != nil {
 		t.Fatalf("build da fixture falhou: %v", err)
 	}
@@ -195,7 +196,7 @@ func TestHweiPublicaOLivroDeFeiticos(t *testing.T) {
 		if c.ID != 910 {
 			continue
 		}
-		if len(c.Habilidades) != 1 {
+		if len(c.Habilidades) != 4 {
 			t.Errorf("habilidades de slot = %d", len(c.Habilidades))
 		}
 		if len(c.SubHabilidades) != 2 {
@@ -270,7 +271,7 @@ func TestCampeoes(t *testing.T) {
 	if c.Passiva.Nome != "Piromania" || c.Passiva.Descricao != "Atordoa o alvo" {
 		t.Errorf("passiva errada: %+v", c.Passiva)
 	}
-	if len(c.Habilidades) != 1 {
+	if len(c.Habilidades) != 4 {
 		t.Fatalf("habilidades = %d", len(c.Habilidades))
 	}
 	q := c.Habilidades[0]
@@ -291,5 +292,112 @@ func TestFeiticosRecortadosPeloModo(t *testing.T) {
 	s := ds.SummonerSpells[0]
 	if s.ID != 4 || s.Nome != "Flash" || s.Recarga != 300 || s.NivelMinimo != 7 {
 		t.Errorf("feitico errado: %+v", s)
+	}
+}
+
+// TestEstatisticasVemDoDump: o plugin publica esses campos presentes e ZERADOS.
+// Publicar o zero dele afirmaria que o campeao nao tem vida.
+func TestEstatisticasVemDoDump(t *testing.T) {
+	c := fixture(t).Champions[0]
+	if c.Stats == nil {
+		t.Fatal("o campeao saiu sem estatisticas")
+	}
+	if c.Stats.HP.Base != 600 || c.Stats.HP.PerLevel != 98 {
+		t.Errorf("vida = %+v", c.Stats.HP)
+	}
+	if got := c.Stats.HP.At(18); got != 600+98*17 {
+		t.Errorf("vida no nivel 18 = %v", got)
+	}
+	// Alcance 625 no dump: a distancia decide melee, e nao o attackType do
+	// plugin.
+	if c.CorpoACorpo {
+		t.Error("alcance 625 foi classificado como corpo a corpo")
+	}
+}
+
+// TestFormulaResolvidaPorRank confere o caminho inteiro: dump -> avaliador ->
+// modelo publicado.
+func TestFormulaResolvidaPorRank(t *testing.T) {
+	q := fixture(t).Champions[0].Habilidades[0]
+
+	if len(q.Recarga) != 5 || q.Recarga[0] != 8 {
+		t.Errorf("recarga = %v", q.Recarga)
+	}
+	if len(q.Custo) != 5 || q.Custo[0] != 55 || q.Custo[4] != 95 {
+		t.Errorf("custo = %v", q.Custo)
+	}
+	if len(q.Efeitos) != 1 || q.Efeitos[0].Nome != "TotalDamage" {
+		t.Fatalf("efeitos = %+v", q.Efeitos)
+	}
+	e := q.Efeitos[0]
+	if len(e.PorRank) != 5 {
+		t.Fatalf("a formula resolveu em %d ranks, esperado 5", len(e.PorRank))
+	}
+	if e.PorRank[0].Fixo != 30 || e.PorRank[4].Fixo != 150 {
+		t.Errorf("parcela fixa por rank errada: %v e %v", e.PorRank[0].Fixo, e.PorRank[4].Fixo)
+	}
+	if len(e.PorRank[0].Escalas) != 1 || e.PorRank[0].Escalas[0].Stat != "ability_power" {
+		t.Errorf("escala errada: %+v", e.PorRank[0].Escalas)
+	}
+}
+
+// TestFormulaNaoResolvidaNaoPublicaZero e a regra central do projeto: dano zero
+// mente, ausencia so nao informa, e so a segunda e recuperavel pelo leitor.
+func TestFormulaNaoResolvidaNaoPublicaZero(t *testing.T) {
+	r := fixture(t).Champions[0].Habilidades[3]
+	if len(r.Efeitos) != 1 {
+		t.Fatalf("efeitos = %+v", r.Efeitos)
+	}
+	if len(r.Efeitos[0].PorRank) != 0 {
+		t.Fatalf("formula sem valor honesto publicou numero: %+v", r.Efeitos[0].PorRank)
+	}
+	if r.Efeitos[0].NaoResolvido == "" {
+		t.Error("a formula ficou sem numero e sem motivo declarado")
+	}
+}
+
+// TestSeriesNaoConsumidasSaem: BaseDamage e consumida por TotalDamage e nao pode
+// aparecer de novo; SlowDuration nao e consumida por formula nenhuma e sem ela a
+// habilidade sairia sem esse numero.
+func TestSeriesNaoConsumidasSaem(t *testing.T) {
+	q := fixture(t).Champions[0].Habilidades[0]
+	nomes := map[string]bool{}
+	for _, s := range q.SeriesNomeadas {
+		nomes[s.Nome] = true
+	}
+	if !nomes["SlowDuration"] {
+		t.Errorf("serie nao consumida sumiu: %+v", q.SeriesNomeadas)
+	}
+	if nomes["BaseDamage"] {
+		t.Errorf("serie ja consumida foi publicada de novo: %+v", q.SeriesNomeadas)
+	}
+}
+
+// TestLacunaDeStatEReportadaPorNome: Hwei na fixture nao tem regeneracao base.
+func TestLacunaDeStatEReportada(t *testing.T) {
+	cov := fixture(t).Coverage.Campeoes
+	if cov.CampeoesTotal != 2 || cov.CampeoesComStats != 2 {
+		t.Errorf("cobertura de estatisticas = %+v", cov)
+	}
+	if len(cov.LacunasDeStat) != 1 || !strings.Contains(cov.LacunasDeStat[0], "Hwei") {
+		t.Fatalf("a lacuna nao foi reportada por nome: %v", cov.LacunasDeStat)
+	}
+}
+
+// TestAlinhamentoDeRank cruza as series do dump com as do plugin. Sem esse
+// cruzamento, um erro de indexacao publicaria TODO valor por rank deslocado, em
+// silencio e sem sintoma no dado.
+func TestAlinhamentoDeRank(t *testing.T) {
+	rel := fixture(t).Coverage.Alinhamento
+	if len(rel) != 2 {
+		t.Fatalf("relatorios de alinhamento = %d, esperado cooldown e mana", len(rel))
+	}
+	for _, r := range rel {
+		if !r.OK() {
+			t.Errorf("serie %s: %v", r.Series, r.Err())
+		}
+		if r.Agreement() != 100 {
+			t.Errorf("serie %s concordou %.1f%%, esperado 100", r.Series, r.Agreement())
+		}
 	}
 }

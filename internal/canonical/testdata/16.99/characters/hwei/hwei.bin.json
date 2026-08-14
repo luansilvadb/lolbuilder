@@ -1,0 +1,235 @@
+{
+ "Characters/Hwei/CharacterRecords/Root": {
+  "__type": "CharacterRecord",
+  "mCharacterName": "Hwei",
+  "baseHPModifiable": {
+   "baseValue": 580,
+   "__type": "ModifiableFloat"
+  },
+  "hpPerLevelModifiable": {
+   "baseValue": 98,
+   "__type": "ModifiableFloat"
+  },
+  "hpRegenPerLevelModifiable": {
+   "baseValue": 0.1,
+   "__type": "ModifiableFloat"
+  },
+  "baseDamageModifiable": {
+   "baseValue": 50,
+   "__type": "ModifiableFloat"
+  },
+  "damagePerLevelModifiable": {
+   "baseValue": 3,
+   "__type": "ModifiableFloat"
+  },
+  "baseArmorModifiable": {
+   "baseValue": 20,
+   "__type": "ModifiableFloat"
+  },
+  "armorPerLevelModifiable": {
+   "baseValue": 4,
+   "__type": "ModifiableFloat"
+  },
+  "attackSpeedModifiable": {
+   "baseValue": 0.625,
+   "__type": "ModifiableFloat"
+  },
+  "attackSpeedRatioModifiable": {
+   "baseValue": 0.625,
+   "__type": "ModifiableFloat"
+  },
+  "attackSpeedPerLevelModifiable": {
+   "baseValue": 2,
+   "__type": "ModifiableFloat"
+  },
+  "baseMR": {
+   "baseValue": 30,
+   "__type": "ModifiableFloat"
+  },
+  "mrPerLevel": {
+   "baseValue": 1.3,
+   "__type": "ModifiableFloat"
+  },
+  "baseMoveSpeedModifiable": {
+   "baseValue": 335,
+   "__type": "ModifiableFloat"
+  },
+  "attackRangeModifiable": {
+   "baseValue": 525,
+   "__type": "ModifiableFloat"
+  },
+  "critDamageMultiplier": 2.0,
+  "spells": [
+   "Characters/Hwei/Spells/Q",
+   "Characters/Hwei/Spells/W",
+   "Characters/Hwei/Spells/E",
+   "Characters/Hwei/Spells/R"
+  ],
+  "spellNames": [
+   "Q",
+   "W",
+   "E",
+   "R"
+  ],
+  "mCharacterPassiveSpell": "Characters/Hwei/Spells/P",
+  "passiveName": "Passiva"
+ },
+ "Characters/Hwei/Spells/Q": {
+  "__type": "SpellObject",
+  "ObjectName": "HweiQ",
+  "mSpell": {
+   "Cooldown": {
+    "values": [
+     0,
+     8,
+     8,
+     8,
+     8,
+     8,
+     8
+    ]
+   },
+   "cooldownTime": [
+    0,
+    8,
+    8,
+    8,
+    8,
+    8,
+    8
+   ],
+   "manaValues": {
+    "values": [
+     55,
+     65,
+     75,
+     85,
+     95,
+     95
+    ]
+   },
+   "mana": [
+    55,
+    65,
+    75,
+    85,
+    95,
+    95
+   ],
+   "castRange": [
+    600,
+    600,
+    600,
+    600,
+    600,
+    600
+   ],
+   "DataValues": [
+    {
+     "name": "BaseDamage",
+     "values": [
+      0,
+      30,
+      60,
+      90,
+      120,
+      150,
+      150
+     ]
+    },
+    {
+     "name": "SlowDuration",
+     "values": [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+     ]
+    }
+   ],
+   "mSpellCalculations": {
+    "TotalDamage": {
+     "__type": "GameCalculation",
+     "mFormulaParts": [
+      {
+       "__type": "NamedDataValueCalculationPart",
+       "mDataValue": "BaseDamage"
+      },
+      {
+       "__type": "StatByCoefficientCalculationPart",
+       "mCoefficient": 0.8
+      }
+     ]
+    }
+   }
+  }
+ },
+ "Characters/Hwei/Spells/W": {
+  "__type": "SpellObject",
+  "ObjectName": "HweiW",
+  "mSpell": {}
+ },
+ "Characters/Hwei/Spells/E": {
+  "__type": "SpellObject",
+  "ObjectName": "HweiE",
+  "mSpell": {}
+ },
+ "Characters/Hwei/Spells/R": {
+  "__type": "SpellObject",
+  "ObjectName": "HweiR",
+  "mSpell": {
+   "Cooldown": {
+    "values": [
+     0,
+     120,
+     110,
+     100,
+     100,
+     100,
+     100
+    ]
+   },
+   "cooldownTime": [
+    0,
+    120,
+    110,
+    100,
+    100,
+    100,
+    100
+   ],
+   "manaValues": {
+    "values": [
+     100,
+     100,
+     100,
+     100,
+     100,
+     100
+    ]
+   },
+   "mana": [
+    100,
+    100,
+    100,
+    100,
+    100,
+    100
+   ],
+   "mSpellCalculations": {
+    "NaoResolve": {
+     "__type": "EffectValueCalculationPart",
+     "mEffectIndex": 1
+    }
+   }
+  }
+ },
+ "Characters/Hwei/Spells/P": {
+  "__type": "SpellObject",
+  "ObjectName": "HweiPassive",
+  "mSpell": {}
+ }
+}

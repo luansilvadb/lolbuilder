@@ -156,6 +156,32 @@ conferência, uma reordenação num dos locales publicaria a descrição do W so
 nome do Q, em silêncio e em todos os campeões de uma vez. A guarda do `sync`
 confere a contagem, não a ordem.
 
+## Achados do M3
+
+**A série redefinida é a que o jogo usa — agora medido, não assumido.** Contra o
+arquivo do plugin, que é fonte independente: `Cooldown` concorda em **680 de 680**
+recargas e `manaValues` em **568 de 568** custos, ambos 100%. As herdadas
+(`cooldownTime`, `mana`) ficam em 98,5% e 98,8%, divergindo em 10 e 7
+habilidades. Mesma resposta do modo Jade, por evidência própria.
+
+**Três campeões publicam mais de um `CharacterRecord`.** Braum e Milio têm
+`Root`, `URF` e `SLIME`; Cassiopeia tem `Root` e `SLIME`. O registro do
+Summoner's Rift é o `Root`. Selecionar por `__type`, como o original fazia,
+pegaria qualquer um deles — e num patch qualquer o dataset passaria a publicar
+estatística de URF como se fosse do Rift, sem sintoma nenhum.
+
+**`ClampSubPartsCalculationPart` soma as parcelas e prende o resultado entre piso
+e teto.** Só resolve quando a soma não escala com estatística: prender uma
+expressão simbólica exigiria saber o valor da estatística, que é justamente o que
+o dataset não fixa, e publicar sem o limite daria um número que o jogo nunca
+produz.
+
+**A curadoria de enums é deliberadamente incompleta.** O moderno usa 18 valores
+distintos de `mStat` contra 8 no modo Jade. Doze estão curados com evidência em
+`curation/statenum.json`; seis ficaram de fora por falta de evidência suficiente
+— 20 ocorrências de cerca de 1590. Enum fora da tabela deixa a parcela sem
+resolver e entra na cobertura; nunca vira palpite publicado.
+
 ## Aberto
 
 - Valor de `coverage_minimums` — medido no M3.

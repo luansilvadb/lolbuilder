@@ -1,0 +1,66 @@
+{
+  "_comment": "Significado dos enums mStat e mStatFormula do dump de dados do jogo. Sao valores CURADOS: a Riot nao publica esse mapeamento em lugar nenhum, e cada entrada foi determinada cruzando o nome dos coeficientes que acompanham a parcela com o calculo em que ela aparece. A evidencia de cada uma esta registrada junto, para que a proxima pessoa possa refazer o julgamento em vez de confiar nele.",
+  "curated_from_patch": "16.16",
+
+  "_comment_omissao": "O dump omite o campo quando o valor e zero, e zero e um valor real (poder de habilidade). Por isso o decodificador le esses enums em ponteiro: ausente e explicitamente tratado como 0, nunca por acidente do zero-value do Go.",
+
+  "_comment_incompleta": "A tabela e DELIBERADAMENTE incompleta. Seis enums observados no 16.16 ficaram de fora por falta de evidencia suficiente: 5 (1 ocorrencia, sem nome de coeficiente), 10 (1, Jhin AmmoRechargeRateTooltip), 14 (3, custo de vida do Zac), 15 (9, Ekko), 16 (2, Olaf ShieldCalc) e 31 (1, Urgot RangeCheck). Sao 20 de cerca de 1590 ocorrencias. Enum fora da tabela deixa a parcela sem resolver e entra na cobertura — nunca vira palpite publicado.",
+
+  "stat": {
+    "0": {
+      "name": "ability_power",
+      "evidence": "787 ocorrencias, de longe a mais comum, e o valor que a fonte OMITE. Os coeficientes que o acompanham chamam-se APRatio (166 vezes), ShieldAPRatio, DamageAPRatio, HealAPRatio, SlowAPRatio."
+    },
+    "1": {
+      "name": "armor",
+      "evidence": "Coeficientes ArmorRatio, DamageArmorRatio, AllyArmorPercent, BraumArmorPercent. Aparece pareado com mStat 6 na mesma formula de reducao de dano, e o par armadura/resistencia magica e a unica leitura que explica a simetria."
+    },
+    "2": {
+      "name": "attack_damage",
+      "evidence": "497 ocorrencias. Coeficientes ADRatio (55), BonusADRatio (27), TotalADRatio, BaseADRatio, tADRatio, BADRatio."
+    },
+    "4": {
+      "name": "attack_speed",
+      "evidence": "Coeficientes AttackSpeedCoefficient, ASCoeff e UnitsPerPercentAttackSpeedPerSecond — tres nomes independentes apontando para a mesma grandeza. Aparece tambem no ModesASCap de Kalista, um teto de velocidade de ataque."
+    },
+    "6": {
+      "name": "magic_resist",
+      "evidence": "Coeficientes MRRatio e DamageMRRatio. Aparece pareado com mStat 1 (armadura) na mesma formula, com o mesmo coeficiente, em reducao de dano."
+    },
+    "7": {
+      "name": "move_speed",
+      "evidence": "Coeficientes DashSpeedRatio, DashSpeedMod e MSBonusMagicDamage. Tres campeoes independentes, todos apontando para velocidade de movimento."
+    },
+    "8": {
+      "name": "critical_chance",
+      "evidence": "Coeficientes CritRatio, CritMod, CriticalStrikeScaling, CriticalStrikeModifier. Aparece SEMPRE ao lado de mStat 9 no mesmo calculo — Akshan R DamagePerBulletWithCrit, Aphelios R CritDamageModCalc, Caitlyn R RTotalDamage — e um dano critico esperado precisa das duas grandezas: a chance e o multiplicador. mStat 8 e a que carrega os nomes com 'Ratio' e 'Scaling'."
+    },
+    "9": {
+      "name": "critical_damage",
+      "evidence": "O par de mStat 8, nos mesmos calculos e sempre com coeficiente 1.0. No modo Jade, onde mStat 8 nao ocorre, este mesmo enum aparece com coeficientes chamados CritBaseMult e CritMultiplier — multiplicador, e nao chance."
+    },
+    "12": {
+      "name": "max_health",
+      "evidence": "117 ocorrencias. Coeficientes BonusHealthRatio, ShieldHealthRatio, OuterConeMaxHPDamage, HealingHPRatio, EVampHPRatio."
+    },
+    "13": {
+      "name": "current_health",
+      "evidence": "Distinto de mStat 12, que ja e a vida maxima. No modo Jade este enum aparece no Dr. Mundo Q, cuja descricao diz 'dano magico igual a uma porcentagem da vida ATUAL do alvo'."
+    },
+    "18": {
+      "name": "omnivamp",
+      "evidence": "Coeficiente Omnivamp_LifeStealScaling, e a unica ocorrencia em formula nomeada e o Calc_Omnivamp da Ambessa R. Duas evidencias independentes, ambas explicitas no nome."
+    },
+    "29": {
+      "name": "lethality",
+      "evidence": "Todas as quatro ocorrencias em formula nomeada sao do Pyke, e uma delas se chama RLethalityDamage. As outras tres (RDamage, StunDuration, MoveSpeed) sao coerentes com a mecanica do campeao, que converte vida adicional em letalidade."
+    }
+  },
+
+  "_comment_formula": "Qual parcela da estatistica o coeficiente multiplica. Ausente significa total.",
+  "formula": {
+    "0": "total",
+    "1": "base",
+    "2": "bonus"
+  }
+}

@@ -6,7 +6,10 @@
 // responde.
 package canonical
 
-import "github.com/luansilvadb/lolbuilder/internal/canon"
+import (
+	"github.com/luansilvadb/lolbuilder/internal/canon"
+	"github.com/luansilvadb/lolbuilder/internal/gamedata"
+)
 
 // Dataset e o modelo canonico de um patch.
 type Dataset struct {
@@ -138,6 +141,9 @@ type Champion struct {
 	CorpoACorpo bool   `json:"corpo_a_corpo"`
 	TipoDeDano  string `json:"tipo_de_dano,omitempty"`
 
+	// Stats vem do dump de dados do jogo, nunca do plugin.
+	Stats *gamedata.Stats `json:"stats,omitempty"`
+
 	Passiva     Habilidade   `json:"passiva"`
 	Habilidades []Habilidade `json:"habilidades"`
 
@@ -150,11 +156,79 @@ type Champion struct {
 	SubHabilidades []Habilidade `json:"sub_habilidades,omitempty"`
 }
 
-// Habilidade e uma habilidade de slot ou a passiva, so em texto.
+// Habilidade e uma habilidade de slot ou a passiva.
+//
+// Nome e Descricao vem do plugin, em portugues. Todo o resto vem do dump de
+// dados do jogo: o plugin publica esses campos presentes e ZERADOS, e publicar
+// o zero dele afirmaria que a habilidade nao causa dano em vez de dizer que o
+// dano e desconhecido.
 type Habilidade struct {
 	Slot      string `json:"slot"`
 	Nome      string `json:"nome"`
 	Descricao string `json:"descricao,omitempty"`
+
+	// NomeInterno e como o dump chama o objeto da habilidade. Serve para casar
+	// uma lacuna reportada com a entidade que a produziu.
+	NomeInterno string `json:"nome_interno,omitempty"`
+
+	Recarga []float64 `json:"recarga,omitempty"`
+	Custo   []float64 `json:"custo,omitempty"`
+	Alcance []float64 `json:"alcance,omitempty"`
+
+	Efeitos []Efeito `json:"efeitos,omitempty"`
+
+	// SeriesNomeadas sao numeros que a fonte publica e que nenhuma formula da
+	// habilidade consome — duracao de lentidao, raio, recarga interna.
+	//
+	// Sem elas, boa parte das habilidades de utilidade sairia sem numero
+	// nenhum. As series JA consumidas ficam de fora, para nao apresentar o
+	// mesmo dano duas vezes como se fossem parcelas somaveis.
+	SeriesNomeadas []SerieNomeada `json:"series_nomeadas,omitempty"`
+
+	// Series do plugin, guardadas so para o cruzamento de alinhamento de rank.
+	recargaDoPlugin []float64
+	custoDoPlugin   []float64
+}
+
+// Efeito e uma formula nomeada da habilidade, resolvida por rank.
+type Efeito struct {
+	Nome string `json:"nome"`
+
+	// PorRank fica vazio quando a formula nao resolve. Efeito sem numero nunca
+	// e publicado com zero: zero afirma que nao causa dano, ausencia so nao
+	// informa, e so a segunda e recuperavel pelo leitor.
+	PorRank []Expressao `json:"por_rank,omitempty"`
+
+	// NaoResolvido diz por que a formula ficou sem numero.
+	NaoResolvido string `json:"nao_resolvido,omitempty"`
+
+	// DerivadoDe rotula um calculo cujo nome a fonte nao publica, transcrevendo
+	// a relacao que ela declara: "TotalDPS x 0.25" nao inventa nome nenhum.
+	DerivadoDe    string  `json:"derivado_de,omitempty"`
+	Multiplicador float64 `json:"multiplicador,omitempty"`
+}
+
+// Expressao e o efeito em funcao das estatisticas do campeao.
+//
+// Nao e um numero: o dataset publica quanto a habilidade causa DADAS as
+// estatisticas, e quem monta a build faz a conta. Simular combate esta fora do
+// escopo.
+type Expressao struct {
+	Fixo    float64  `json:"fixo"`
+	Escalas []Escala `json:"escalas,omitempty"`
+}
+
+// Escala e uma parcela que cresce com uma estatistica.
+type Escala struct {
+	Stat        string  `json:"stat"`
+	Parcela     string  `json:"parcela"` // total, base ou bonus
+	Coeficiente float64 `json:"coeficiente"`
+}
+
+// SerieNomeada e uma serie de valores por rank que a fonte publica sob um nome.
+type SerieNomeada struct {
+	Nome    string    `json:"nome"`
+	PorRank []float64 `json:"por_rank"`
 }
 
 // SummonerSpell e um feitico de invocador valido no modo.
@@ -182,6 +256,35 @@ type Coverage struct {
 	// de manutencao. Foi assim que forca adaptativa e <ornnBonus> passaram
 	// despercebidos com a cobertura marcando 100%.
 	VocabularioForaDaLoja []canon.LinhaNaoLida `json:"vocabulario_fora_da_loja,omitempty"`
+
+	Campeoes    CoberturaDeCampeoes    `json:"campeoes"`
+	Alinhamento []gamedata.AlignReport `json:"alinhamento,omitempty"`
+}
+
+// CoberturaDeCampeoes resume a extracao do dump de dados do jogo.
+type CoberturaDeCampeoes struct {
+	CampeoesTotal    int `json:"campeoes_total"`
+	CampeoesComStats int `json:"campeoes_com_stats"`
+
+	Habilidades CoberturaDeEntidade `json:"habilidades"`
+	Passivas    CoberturaDeEntidade `json:"passivas"`
+
+	// LacunasDeStat lista, uma a uma, as estatisticas que a fonte nao publica.
+	// Sao publicadas como ausentes, nunca como zero.
+	LacunasDeStat []string `json:"lacunas_de_stat,omitempty"`
+}
+
+// CoberturaDeEntidade separa resolvida por inteiro, parcial e sem formula.
+//
+// Sao tres categorias e nao duas porque a fracao SEM FORMULA precisa de contador
+// proprio: a taxa de resolucao sozinha nao a detecta, e uma taxa calibrada para
+// caber nas lacunas de hoje cabe tambem no dobro delas.
+type CoberturaDeEntidade struct {
+	Total         int `json:"total"`
+	Resolvidas    int `json:"resolvidas"`
+	Parciais      int `json:"parciais"`
+	NaoResolvidas int `json:"nao_resolvidas"`
+	SemFormula    int `json:"sem_formula"`
 }
 
 // Purchasable devolve so os itens compraveis, preservando a ordem.

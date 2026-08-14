@@ -58,10 +58,152 @@
     600
    ],
    "costCoefficients": [
-    10
+    55,
+    65,
+    75,
+    85,
+    95
    ],
    "cooldownCoefficients": [
-    5
+    8,
+    8,
+    8,
+    8,
+    8
+   ],
+   "coefficients": {
+    "coefficient1": 0,
+    "coefficient2": 0
+   },
+   "effectAmounts": {
+    "Effect1Amount": [
+     0
+    ]
+   },
+   "ammo": {
+    "ammoRechargeTime": [
+     0
+    ],
+    "maxAmmo": [
+     0
+    ]
+   },
+   "maxLevel": 0
+  },
+  {
+   "spellKey": "w",
+   "name": "Tema: Serenidade",
+   "abilityIconPath": "",
+   "abilityVideoPath": "",
+   "abilityVideoImagePath": "",
+   "cost": "",
+   "cooldown": "",
+   "description": "d",
+   "dynamicDescription": "Serenidade",
+   "range": [
+    600
+   ],
+   "costCoefficients": [
+    55,
+    65,
+    75,
+    85,
+    95
+   ],
+   "cooldownCoefficients": [
+    8,
+    8,
+    8,
+    8,
+    8
+   ],
+   "coefficients": {
+    "coefficient1": 0,
+    "coefficient2": 0
+   },
+   "effectAmounts": {
+    "Effect1Amount": [
+     0
+    ]
+   },
+   "ammo": {
+    "ammoRechargeTime": [
+     0
+    ],
+    "maxAmmo": [
+     0
+    ]
+   },
+   "maxLevel": 0
+  },
+  {
+   "spellKey": "e",
+   "name": "Tema: Tormento",
+   "abilityIconPath": "",
+   "abilityVideoPath": "",
+   "abilityVideoImagePath": "",
+   "cost": "",
+   "cooldown": "",
+   "description": "d",
+   "dynamicDescription": "Tormento",
+   "range": [
+    600
+   ],
+   "costCoefficients": [
+    55,
+    65,
+    75,
+    85,
+    95
+   ],
+   "cooldownCoefficients": [
+    8,
+    8,
+    8,
+    8,
+    8
+   ],
+   "coefficients": {
+    "coefficient1": 0,
+    "coefficient2": 0
+   },
+   "effectAmounts": {
+    "Effect1Amount": [
+     0
+    ]
+   },
+   "ammo": {
+    "ammoRechargeTime": [
+     0
+    ],
+    "maxAmmo": [
+     0
+    ]
+   },
+   "maxLevel": 0
+  },
+  {
+   "spellKey": "r",
+   "name": "Desespero Espiral",
+   "abilityIconPath": "",
+   "abilityVideoPath": "",
+   "abilityVideoImagePath": "",
+   "cost": "",
+   "cooldown": "",
+   "description": "d",
+   "dynamicDescription": "Espiral",
+   "range": [
+    600
+   ],
+   "costCoefficients": [
+    100,
+    100,
+    100
+   ],
+   "cooldownCoefficients": [
+    120,
+    110,
+    100
    ],
    "coefficients": {
     "coefficient1": 0,

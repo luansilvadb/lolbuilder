@@ -18,13 +18,14 @@ import (
 // Le apenas do disco. O build nunca vai a rede: o snapshot e a fonte, e um
 // build que baixasse alguma coisa deixaria de ser reproduzivel.
 type Builder struct {
-	cfg      *config.Config
-	patchDir string
+	cfg         *config.Config
+	patchDir    string
+	curationDir string
 }
 
-// NewBuilder aponta para o diretorio de um snapshot.
-func NewBuilder(cfg *config.Config, patchDir string) *Builder {
-	return &Builder{cfg: cfg, patchDir: patchDir}
+// NewBuilder aponta para o diretorio de um snapshot e para o da curadoria.
+func NewBuilder(cfg *config.Config, patchDir, curationDir string) *Builder {
+	return &Builder{cfg: cfg, patchDir: patchDir, curationDir: curationDir}
 }
 
 // ler carrega um arquivo bruto do snapshot.
@@ -65,6 +66,11 @@ func (b *Builder) Build(patch string) (*Dataset, error) {
 		return nil, err
 	}
 	if err := b.buildSpells(ds); err != nil {
+		return nil, err
+	}
+	// Por ultimo: o dump de dados do jogo depende dos campeoes ja montados, e e
+	// dele que vem estatistica base e formula de habilidade.
+	if err := b.buildChampStats(ds); err != nil {
 		return nil, err
 	}
 	return ds, nil
@@ -327,6 +333,7 @@ func (b *Builder) buildChampions(ds *Dataset) error {
 			Habilidades:    hab,
 			SubHabilidades: sub,
 		})
+		lerSeriesDoPlugin(ds.Champions[len(ds.Champions)-1].Habilidades, det.Spells)
 	}
 	return nil
 }

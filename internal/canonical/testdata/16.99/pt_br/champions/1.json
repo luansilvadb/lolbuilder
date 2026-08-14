@@ -55,16 +55,158 @@
    "description": "d",
    "dynamicDescription": "Causa <magicDamage>60</magicDamage> de Dano Magico",
    "range": [
-    625
+    600
    ],
    "costCoefficients": [
-    60
+    55,
+    65,
+    75,
+    85,
+    95
    ],
    "cooldownCoefficients": [
-    4
+    8,
+    8,
+    8,
+    8,
+    8
    ],
    "coefficients": {
-    "coefficient1": 0.8,
+    "coefficient1": 0,
+    "coefficient2": 0
+   },
+   "effectAmounts": {
+    "Effect1Amount": [
+     0
+    ]
+   },
+   "ammo": {
+    "ammoRechargeTime": [
+     0
+    ],
+    "maxAmmo": [
+     0
+    ]
+   },
+   "maxLevel": 0
+  },
+  {
+   "spellKey": "w",
+   "name": "Incinerar",
+   "abilityIconPath": "",
+   "abilityVideoPath": "",
+   "abilityVideoImagePath": "",
+   "cost": "",
+   "cooldown": "",
+   "description": "d",
+   "dynamicDescription": "Cone",
+   "range": [
+    600
+   ],
+   "costCoefficients": [
+    55,
+    65,
+    75,
+    85,
+    95
+   ],
+   "cooldownCoefficients": [
+    8,
+    8,
+    8,
+    8,
+    8
+   ],
+   "coefficients": {
+    "coefficient1": 0,
+    "coefficient2": 0
+   },
+   "effectAmounts": {
+    "Effect1Amount": [
+     0
+    ]
+   },
+   "ammo": {
+    "ammoRechargeTime": [
+     0
+    ],
+    "maxAmmo": [
+     0
+    ]
+   },
+   "maxLevel": 0
+  },
+  {
+   "spellKey": "e",
+   "name": "Escudo Derretido",
+   "abilityIconPath": "",
+   "abilityVideoPath": "",
+   "abilityVideoImagePath": "",
+   "cost": "",
+   "cooldown": "",
+   "description": "d",
+   "dynamicDescription": "Escudo",
+   "range": [
+    600
+   ],
+   "costCoefficients": [
+    55,
+    65,
+    75,
+    85,
+    95
+   ],
+   "cooldownCoefficients": [
+    8,
+    8,
+    8,
+    8,
+    8
+   ],
+   "coefficients": {
+    "coefficient1": 0,
+    "coefficient2": 0
+   },
+   "effectAmounts": {
+    "Effect1Amount": [
+     0
+    ]
+   },
+   "ammo": {
+    "ammoRechargeTime": [
+     0
+    ],
+    "maxAmmo": [
+     0
+    ]
+   },
+   "maxLevel": 0
+  },
+  {
+   "spellKey": "r",
+   "name": "Invocar: Tibbers",
+   "abilityIconPath": "",
+   "abilityVideoPath": "",
+   "abilityVideoImagePath": "",
+   "cost": "",
+   "cooldown": "",
+   "description": "d",
+   "dynamicDescription": "Tibbers",
+   "range": [
+    600
+   ],
+   "costCoefficients": [
+    100,
+    100,
+    100
+   ],
+   "cooldownCoefficients": [
+    120,
+    110,
+    100
+   ],
+   "coefficients": {
+    "coefficient1": 0,
     "coefficient2": 0
    },
    "effectAmounts": {
