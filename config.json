@@ -1,0 +1,55 @@
+{
+  "_comment": "Parametros do modo. Ao contrario do Classic, os catalogos do LoL moderno sao globais e nao tem prefixo de arquivo — o recorte do modo vem de faixa de ID, do campo gameModes dos feiticos e da lista de loja publicada no dump do mapa.",
+
+  "base_url": "https://raw.communitydragon.org",
+  "patchline": "latest",
+  "plugin_path": "plugins/rcp-be-lol-game-data",
+  "game_data_path": "game/data/characters",
+  "map_data_path": "game/data/maps/shipping",
+
+  "locale_canonical": "default",
+  "locale_display": "pt_br",
+
+  "_comment_mode": "Summoner's Rift moderno. item_id_max exclui a faixa 700000+, que e do modo Jade (League of Legends Classic) e vive no mesmo items.json. champion_id_max exclui a faixa 60000+, pelo mesmo motivo. game_mode CLASSIC e o valor que aparece em summoner-spells.json e no dump do mapa.",
+  "mode": {
+    "name": "classic",
+    "game_mode": "CLASSIC",
+    "map_id": 11,
+    "item_id_min": 1000,
+    "item_id_max": 699999,
+    "champion_id_min": 1,
+    "champion_id_max": 999
+  },
+
+  "_comment_minimums": "Contagens minimas por entidade. Abaixo disso o sync aborta sem escrever. Cada entidade e medida na fonte que alimenta o artefato correspondente. Medido no 16.16: item_catalog=705, item_shop=193, runes=103, perk_styles=5, champions=173, summoner_spells=9. Folga de ~20% em cada, exceto champions (~13%, porque o elenco so cresce) e perk_styles (exato: cinco estilos e estrutura do jogo, nao contagem de conteudo; qualquer mudanca ai exige revisao do otimizador).",
+  "minimums": {
+    "item_catalog": 500,
+    "item_shop": 150,
+    "runes": 80,
+    "perk_styles": 5,
+    "champions": 150,
+    "summoner_spells": 7
+  },
+
+  "_comment_provisional": "Enquanto provisional for verdadeiro, coverage_minimums e token_budget_max podem estar zerados e o EXPORT SE RECUSA A PUBLICAR. Existe porque um minimo de cobertura so mede degradacao futura se nascer de um valor medido que alguem olhou e aprovou — herdar o numero do Classicorone seria calibrar com dado de outro jogo, e definir por expectativa arriscaria congelar um defeito. Some quando o M3 medir a cobertura real e o M5 medir o tamanho do conjunto.",
+  "provisional": true,
+
+  "_comment_coverage": "Taxa minima de extracao do dump de dados do jogo, em pontos percentuais, calculada sobre o TOTAL de entidades — nao sobre o subconjunto com formula. Abaixo disso o build aborta. Os campos *_without_formula_max sao TETOS para a fracao sem formula alguma. Ainda nao medido: ver provisional acima.",
+  "coverage_minimums": {
+    "champion_stats": 0,
+    "abilities": 0,
+    "passives": 0,
+    "abilities_without_formula_max": 0,
+    "passives_without_formula_max": 0,
+    "rank_alignment": 0
+  },
+
+  "_comment_ingame": "Tolerancia do comando ingame, em unidades da estatistica. O jogo reporta em float32 e o dataset calcula em float64, entao diferenca na terceira casa e ruido de representacao, nao divergencia.",
+  "ingame_tolerance": 0.02,
+
+  "_comment_token_budget": "Teto do conjunto exportado, em tokens estimados. Nao e ajustado para caber no resultado corrente — um teto que persegue o tamanho deixa de medir alguma coisa. Ainda nao medido: ver provisional acima. Projecao do spike 0, a confirmar no M5: 130k a 160k.",
+  "token_budget_max": 0,
+
+  "snapshots_dir": "snapshots",
+  "http_timeout_seconds": 60
+}

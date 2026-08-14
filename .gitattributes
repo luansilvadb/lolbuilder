@@ -1,0 +1,7 @@
+# Nenhuma conversao de fim de linha, em arquivo nenhum.
+#
+# O snapshot guarda os bytes que o CommunityDragon serviu, sem transformacao,
+# e o capture.json registra o tamanho e o ETag de cada um. Deixar o git trocar
+# LF por CRLF no checkout mudaria esses bytes e quebraria a unica propriedade
+# que o snapshot existe para ter.
+* -text

@@ -1,0 +1,9 @@
+# binarios Go
+/lolbuilder
+/lolbuilder.exe
+
+# area temporaria de captura (aborto no meio nunca deve ser versionado)
+snapshots/.tmp-*
+
+# saida do build (regeravel a partir do snapshot)
+/build/
