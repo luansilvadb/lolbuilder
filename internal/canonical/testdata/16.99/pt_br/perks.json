@@ -34,5 +34,17 @@
   "iconPath": "t.png",
   "endOfGameStatDescs": [],
   "recommendationDescriptorAttributes": {}
+ },
+ {
+  "id": 5001,
+  "name": "Vida Escalavel",
+  "majorChangePatchVersion": "",
+  "tooltip": "",
+  "shortDesc": "",
+  "longDesc": "",
+  "recommendationDescriptor": "",
+  "iconPath": "h.png",
+  "endOfGameStatDescs": [],
+  "recommendationDescriptorAttributes": {}
  }
 ]

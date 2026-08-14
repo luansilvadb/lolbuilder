@@ -20,8 +20,10 @@ func TestAllCobreOVocabulario(t *testing.T) {
 			t.Errorf("%s e resolvido por um rotulo mas nao esta em All", s)
 		}
 	}
-	if len(All) != 23 {
-		t.Errorf("All tem %d stats; o 16.16 mediu 23 rotulos distintos", len(All))
+	// 23 rotulos medidos nos itens compraveis do 16.16, mais forca adaptativa,
+	// que so aparece em itens que nao estao na loja hoje.
+	if len(All) != 24 {
+		t.Errorf("All tem %d stats, esperado 24", len(All))
 	}
 }
 
@@ -54,6 +56,20 @@ func TestLookupStatNormalizaCaixaEEspaco(t *testing.T) {
 	got, ok := LookupStat("  ABILITY HasTe  ", false)
 	if !ok || got != AbilityHaste {
 		t.Fatalf("LookupStat nao normalizou: %q (%v)", got, ok)
+	}
+}
+
+// TestForcaAdaptativaEstaNoVocabulario: 12 itens do catalogo do modo publicam
+// esse rotulo, e nenhum deles e compravel hoje. Ele entra assim mesmo, porque
+// medir vocabulario so sobre o publicado esconde a forma nova ate o patch em
+// que ela chega a loja.
+func TestForcaAdaptativaEstaNoVocabulario(t *testing.T) {
+	got, ok := LookupStat("Adaptive Force", false)
+	if !ok || got != AdaptiveForce {
+		t.Fatalf("LookupStat(\"Adaptive Force\") = %q (%v)", got, ok)
+	}
+	if AdaptiveForce.Percentual() {
+		t.Error("forca adaptativa foi marcada como percentual")
 	}
 }
 

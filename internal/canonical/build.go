@@ -130,11 +130,14 @@ func (b *Builder) buildItems(ds *Dataset) error {
 			item.Stats = leitura.Stats
 		}
 
-		// A cobertura mede o que o dataset PUBLICA. Item fora da loja nao entra
-		// no arquivo, entao uma linha ilegivel nele nao degrada nada que o
-		// consumidor va ler.
+		// A taxa mede o que o dataset PUBLICA: item fora da loja nao entra no
+		// arquivo, e uma linha ilegivel nele nao degrada nada que o consumidor
+		// va ler. Mas a linha ilegivel e registrada assim mesmo, num segundo
+		// numero, porque ela e o aviso antecipado de forma nova na fonte.
 		if compravel {
 			ds.Coverage.Itens.Acumular(it.Name, leitura)
+		} else {
+			ds.Coverage.VocabularioForaDaLoja = append(ds.Coverage.VocabularioForaDaLoja, leitura.NaoLidas...)
 		}
 
 		ds.Items = append(ds.Items, item)
@@ -169,34 +172,7 @@ func (b *Builder) buildRunes(ds *Dataset) error {
 		porID[r.ID] = r
 	}
 
-	// A posicao da runa na pagina vem dos estilos, e nao do catalogo: perks.json
-	// nao diz a que estilo cada runa pertence nem em que linha ela aparece.
-	type posicao struct {
-		estilo int32
-		tipo   string
-		linha  int
-	}
-	posicoes := map[int32]posicao{}
-	for _, st := range estilos.Styles {
-		for i, sl := range st.Slots {
-			for _, id := range sl.Perks {
-				// Fragmento de stat aparece nos cinco estilos. A primeira
-				// atribuicao vence e o estilo fica zerado, porque dizer que o
-				// fragmento pertence a Precision so por ela vir primeiro seria
-				// inventar informacao.
-				if p, ja := posicoes[id]; ja {
-					if p.tipo == SlotStatMod {
-						continue
-					}
-				}
-				est := st.ID
-				if sl.Type == SlotStatMod {
-					est = 0
-				}
-				posicoes[id] = posicao{estilo: est, tipo: sl.Type, linha: i}
-			}
-		}
-	}
+	posicoes := situarRunas(estilos)
 
 	ds.Runes = make([]Rune, 0, len(canonicas))
 	for _, r := range canonicas {
@@ -215,7 +191,7 @@ func (b *Builder) buildRunes(ds *Dataset) error {
 			PatchDaUltimaMudanca: r.MajorChangePatchVersion,
 			Estilo:               p.estilo,
 			TipoSlot:             p.tipo,
-			LinhaSlot:            p.linha,
+			LinhasSlot:           p.linhas,
 		})
 	}
 	sort.Slice(ds.Runes, func(i, j int) bool { return ds.Runes[i].ID < ds.Runes[j].ID })
@@ -248,6 +224,51 @@ func (b *Builder) buildRunes(ds *Dataset) error {
 	return nil
 }
 
+// posicaoDeRuna e onde uma runa aparece na pagina.
+type posicaoDeRuna struct {
+	estilo int32
+	tipo   string
+	linhas []int
+}
+
+// situarRunas descobre onde cada runa aparece, varrendo os estilos.
+//
+// A posicao nao esta no catalogo: perks.json nao diz a que estilo cada runa
+// pertence nem em que linha ela aparece. So perkstyles.json diz.
+//
+// Fragmento de stat aparece nos cinco estilos e pode ocupar mais de uma linha.
+// Por isso as linhas sao um conjunto, e o estilo fica zerado: os 7 fragmentos
+// do 16.16 valem em qualquer caminho.
+func situarRunas(estilos model.PerkStyles) map[int32]posicaoDeRuna {
+	vistas := map[int32]map[int]bool{}
+	out := map[int32]posicaoDeRuna{}
+
+	for _, st := range estilos.Styles {
+		for i, sl := range st.Slots {
+			for _, id := range sl.Perks {
+				p, ja := out[id]
+				if !ja {
+					p = posicaoDeRuna{tipo: sl.Type}
+					vistas[id] = map[int]bool{}
+					if sl.Type != SlotStatMod {
+						p.estilo = st.ID
+					}
+				}
+				if !vistas[id][i] {
+					vistas[id][i] = true
+					p.linhas = append(p.linhas, i)
+				}
+				out[id] = p
+			}
+		}
+	}
+	for id, p := range out {
+		sort.Ints(p.linhas)
+		out[id] = p
+	}
+	return out
+}
+
 // buildChampions monta os campeoes do modo, so com o que o plugin publica.
 func (b *Builder) buildChampions(ds *Dataset) error {
 	resumos, err := decodificar[[]model.ChampionSummary](b, "champion-summary.json")
@@ -269,21 +290,24 @@ func (b *Builder) buildChampions(ds *Dataset) error {
 			return err
 		}
 
-		hab := make([]Habilidade, 0, len(detPT.Spells))
-		for i, sp := range detPT.Spells {
-			nomeCanon := ""
-			if i < len(det.Spells) {
-				nomeCanon = det.Spells[i].SpellKey
+		hab, err := parearHabilidades(nome, det.Spells, detPT.Spells)
+		if err != nil {
+			return err
+		}
+
+		// O livro de feiticos e um segundo conjunto de habilidades, com dano e
+		// recarga proprios. So Hwei tem no 16.16: tres grupos de quatro.
+		var sub []Habilidade
+		for g, grupo := range det.SpellbookOverride {
+			var grupoPT []model.ChampionSpell
+			if g < len(detPT.SpellbookOverride) {
+				grupoPT = detPT.SpellbookOverride[g]
 			}
-			slot := sp.SpellKey
-			if slot == "" {
-				slot = nomeCanon
+			habs, err := parearHabilidades(nome, grupo, grupoPT)
+			if err != nil {
+				return err
 			}
-			hab = append(hab, Habilidade{
-				Slot:      slot,
-				Nome:      sp.Name,
-				Descricao: Limpar(sp.DynamicDescription),
-			})
+			sub = append(sub, habs...)
 		}
 
 		ds.Champions = append(ds.Champions, Champion{
@@ -300,10 +324,40 @@ func (b *Builder) buildChampions(ds *Dataset) error {
 				Nome:      detPT.Passive.Name,
 				Descricao: Limpar(detPT.Passive.Description),
 			},
-			Habilidades: hab,
+			Habilidades:    hab,
+			SubHabilidades: sub,
 		})
 	}
 	return nil
+}
+
+// parearHabilidades casa a habilidade do locale canonico com a do traduzido.
+//
+// O pareamento e posicional, porque e assim que a fonte serve os dois arquivos,
+// mas o spellKey e CONFERIDO. Sem essa conferencia, uma reordenacao num dos
+// locales publicaria a descricao do W sob o nome do Q, em silencio e em todos os
+// campeoes de uma vez. A guarda do sync confere a contagem, nao a ordem.
+func parearHabilidades(arquivo string, canonicas, traduzidas []model.ChampionSpell) ([]Habilidade, error) {
+	if len(canonicas) != len(traduzidas) {
+		return nil, fmt.Errorf("%s tem %d habilidade(s) no locale canonico e %d no traduzido",
+			arquivo, len(canonicas), len(traduzidas))
+	}
+	out := make([]Habilidade, 0, len(canonicas))
+	for i := range canonicas {
+		if canonicas[i].SpellKey != traduzidas[i].SpellKey {
+			return nil, fmt.Errorf(
+				"%s: a habilidade %d e %q no locale canonico e %q no traduzido — "+
+					"os dois locales estao em ordens diferentes, e parear por posicao "+
+					"publicaria a descricao de uma habilidade sob o nome de outra",
+				arquivo, i, canonicas[i].SpellKey, traduzidas[i].SpellKey)
+		}
+		out = append(out, Habilidade{
+			Slot:      traduzidas[i].SpellKey,
+			Nome:      traduzidas[i].Name,
+			Descricao: Limpar(traduzidas[i].DynamicDescription),
+		})
+	}
+	return out, nil
 }
 
 // buildSpells monta os feiticos validos no modo.

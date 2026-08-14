@@ -66,11 +66,21 @@ type Rune struct {
 	// esse campo por runa, o que dispensa comparar o texto entre patches.
 	PatchDaUltimaMudanca string `json:"patch_da_ultima_mudanca"`
 
-	// Estilo e Slot situam a runa na pagina. Fragmento de stat tem Slot
-	// kStatMod e aparece nos cinco estilos.
-	Estilo    int32  `json:"estilo,omitempty"`
-	TipoSlot  string `json:"tipo_slot,omitempty"`
-	LinhaSlot int    `json:"linha_slot"`
+	// Estilo e o caminho a que a runa pertence. Zero em fragmento de stat, que
+	// aparece nos cinco — atribuir um fragmento a Precision so porque ela vem
+	// primeiro na lista seria inventar informacao.
+	Estilo   int32  `json:"estilo,omitempty"`
+	TipoSlot string `json:"tipo_slot,omitempty"`
+
+	// LinhasSlot sao TODAS as linhas em que a runa aparece, e nao a primeira.
+	//
+	// Keystone e runa menor ocupam uma linha so. Fragmento de stat pode ocupar
+	// duas: no 16.16, Forca Adaptativa esta na linha 4 e na 5, e Vida Escalavel
+	// na 5 e na 6. Guardar so a primeira faria um otimizador nunca colocar
+	// Forca Adaptativa no slot flexivel — perdendo opcao real e publicando
+	// pagina subotima com cara de exata, que e o pior erro possivel num sistema
+	// que promete exatidao.
+	LinhasSlot []int `json:"linhas_slot,omitempty"`
 }
 
 // Fragmento informa se a runa e um fragmento de stat.
@@ -130,6 +140,14 @@ type Champion struct {
 
 	Passiva     Habilidade   `json:"passiva"`
 	Habilidades []Habilidade `json:"habilidades"`
+
+	// SubHabilidades sao as habilidades que um livro de feiticos acrescenta.
+	//
+	// No 16.16 so Hwei tem: tres grupos de quatro, com slots qq, qw, qe, qr e
+	// assim por diante. Sao 12 habilidades de verdade, com dano e recarga
+	// proprios — publicar Hwei so com as quatro do slot principal descreveria
+	// um campeao que nao existe.
+	SubHabilidades []Habilidade `json:"sub_habilidades,omitempty"`
 }
 
 // Habilidade e uma habilidade de slot ou a passiva, so em texto.
@@ -151,7 +169,19 @@ type SummonerSpell struct {
 
 // Coverage resume o que o build conseguiu ler.
 type Coverage struct {
+	// Itens mede o subconjunto PUBLICADO — os compraveis. E a taxa que responde
+	// "quanto do que o consumidor vai ler foi lido por inteiro".
 	Itens canon.CoberturaDeItens `json:"itens"`
+
+	// VocabularioForaDaLoja sao as linhas que o parser nao soube ler em itens
+	// do catalogo do modo que NAO estao na loja.
+	//
+	// Nao degrada a taxa publicada, e por isso e uma lista e nao um percentual.
+	// Existe porque medir vocabulario so sobre o publicado esconde a forma nova
+	// ate o patch em que ela chega a loja — e ai a correcao vira urgencia em vez
+	// de manutencao. Foi assim que forca adaptativa e <ornnBonus> passaram
+	// despercebidos com a cobertura marcando 100%.
+	VocabularioForaDaLoja []canon.LinhaNaoLida `json:"vocabulario_fora_da_loja,omitempty"`
 }
 
 // Purchasable devolve so os itens compraveis, preservando a ordem.

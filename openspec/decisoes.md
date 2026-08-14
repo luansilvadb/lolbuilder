@@ -109,6 +109,13 @@ algum deles for comprável hoje, a correção é uma exceção curada com motivo
 Precision + Sorcery, "The Brazen Perfect", "The Eternal Champion". O otimizador
 não pode tratá-los como runas que concedem stat.
 
+**O fragmento de stat ocupa mais de uma linha.** `Adaptive Force` está nas
+linhas 4 e 5, `Health Scaling` nas 5 e 6. Os outros cinco fragmentos ocupam uma
+só, e keystones e menores são sempre únicos. O modelo guarda o conjunto de
+linhas, não a primeira: um otimizador que lesse só a primeira nunca colocaria
+Força Adaptativa no slot flexível, e publicaria página subótima com cara de
+exata — que é o pior erro possível num sistema que promete exatidão.
+
 **Só 69 das 103 entradas de `perks.json` são runas jogáveis.** A conta fecha:
 17 keystones + 45 menores (5 estilos × 3 linhas × 3 opções) + 7 fragmentos = 69.
 As outras 34 são runas removidas do jogo (`Predator`, `Kleptomancy`,
@@ -122,6 +129,32 @@ entrada para as 34 seria curar entidade que o jogo não oferece.
 literalmente. Resolvê-los contra o dump de dados do jogo é trabalho do M3 — e é
 justamente o que dá valor ao `04-champions.md`, já que sem isso o texto descreve
 a habilidade sem dizer quanto ela causa.
+
+## Revisões durante a revisão do M2
+
+**Medir vocabulário só sobre o publicado esconde forma nova.** A cobertura de
+item mede os compráveis, que é o que o consumidor lê — e com isso marcava 100%
+enquanto duas formas passavam despercebidas no resto do catálogo: o rótulo
+`Adaptive Force`, em 12 itens, e a marcação `<ornnBonus>`, que os itens
+aprimorados pelo Ornn usam no lugar de `<attention>`. Nenhuma está em item
+comprável hoje, então o alarme só tocaria no patch em que uma delas chegasse à
+loja, e aí a correção seria urgência em vez de manutenção.
+
+Duas respostas. As duas formas passam a ser reconhecidas — força adaptativa
+entra no vocabulário, o que a decisão 17 já exigia de qualquer jeito. E o build
+passa a imprimir um **segundo número**: linhas não lidas em itens do catálogo
+que não estão na loja. Ele não entra na taxa, porque não afeta o publicado; ele
+existe para avisar antes.
+
+**Hwei tinha 12 habilidades descartadas.** O `spellbookOverride` traz três grupos
+de quatro sub-habilidades, com dano e recarga próprios. O campo estava mapeado
+em `raw.go` justamente por ser dado de habilidade de verdade, e não estava sendo
+publicado — o dataset diria que Hwei tem quatro habilidades.
+
+**As habilidades são pareadas por posição, mas o `spellKey` é conferido.** Sem a
+conferência, uma reordenação num dos locales publicaria a descrição do W sob o
+nome do Q, em silêncio e em todos os campeões de uma vez. A guarda do `sync`
+confere a contagem, não a ordem.
 
 ## Aberto
 

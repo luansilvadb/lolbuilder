@@ -18,9 +18,15 @@ import (
 // E, diferente do modo Jade, o bloco ja inclui o deslocamento das botas — a
 // limitacao mais citada do dataset original nao se reproduz aqui.
 
+// Ha duas tags que envolvem valor, e nao uma. <ornnBonus> e a marcacao dos
+// itens aprimorados pelo Ornn — mesmo stat, mesma gramatica, cor diferente no
+// cliente. Nenhum item do Ornn e comprável hoje, entao essa forma nao aparece
+// no subconjunto publicado; ela e reconhecida assim mesmo porque o custo e uma
+// alternancia na expressao e o beneficio e nao descobrir isso no patch em que
+// passar a importar.
 var (
 	blocoRe = regexp.MustCompile(`(?s)<stats>(.*?)</stats>`)
-	linhaRe = regexp.MustCompile(`(?s)^<attention>\s*([0-9]+(?:\.[0-9]+)?)\s*(%?)\s*</attention>\s*(.+)$`)
+	linhaRe = regexp.MustCompile(`(?s)^<(attention|ornnBonus)>\s*([0-9]+(?:\.[0-9]+)?)\s*(%?)\s*</(?:attention|ornnBonus)>\s*(.+)$`)
 	tagRe   = regexp.MustCompile(`<[^>]*>`)
 )
 
@@ -83,12 +89,12 @@ func LerStatsDeItem(nomeItem, descricao string) LeituraDeItem {
 		if partes == nil {
 			out.NaoLidas = append(out.NaoLidas, LinhaNaoLida{
 				Item: nomeItem, Linha: linha,
-				Motivo: "fora da forma <attention>VALOR</attention> ROTULO",
+				Motivo: "fora da forma <attention|ornnBonus>VALOR</...> ROTULO",
 			})
 			continue
 		}
 
-		valor, err := strconv.ParseFloat(partes[1], 64)
+		valor, err := strconv.ParseFloat(partes[2], 64)
 		if err != nil {
 			out.NaoLidas = append(out.NaoLidas, LinhaNaoLida{
 				Item: nomeItem, Linha: linha, Motivo: "valor nao numerico",
@@ -96,8 +102,8 @@ func LerStatsDeItem(nomeItem, descricao string) LeituraDeItem {
 			continue
 		}
 
-		percentual := partes[2] == "%"
-		texto := limparRotulo(partes[3])
+		percentual := partes[3] == "%"
+		texto := limparRotulo(partes[4])
 
 		stat, ok := LookupStat(texto, percentual)
 		if !ok {

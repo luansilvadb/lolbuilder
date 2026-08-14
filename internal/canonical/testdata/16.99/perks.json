@@ -1,5 +1,50 @@
 [
- {"id":8005,"name":"Press the Attack","majorChangePatchVersion":"14.10","tooltip":"t","shortDesc":"<b>Atinge</b> tres vezes","longDesc":"Descricao longa","recommendationDescriptor":"","iconPath":"p.png","endOfGameStatDescs":[],"recommendationDescriptorAttributes":{}},
- {"id":5008,"name":"Adaptive Force","majorChangePatchVersion":"","tooltip":"t","shortDesc":"+9 de Forca Adaptativa","longDesc":"","recommendationDescriptor":"","iconPath":"s.png","endOfGameStatDescs":[],"recommendationDescriptorAttributes":{}},
- {"id":8004,"name":"The Brazen Perfect","majorChangePatchVersion":"","tooltip":"","shortDesc":"","longDesc":"","recommendationDescriptor":"","iconPath":"t.png","endOfGameStatDescs":[],"recommendationDescriptorAttributes":{}}
+ {
+  "id": 8005,
+  "name": "Press the Attack",
+  "majorChangePatchVersion": "14.10",
+  "tooltip": "t",
+  "shortDesc": "<b>Atinge</b> tres vezes",
+  "longDesc": "Descricao longa",
+  "recommendationDescriptor": "",
+  "iconPath": "p.png",
+  "endOfGameStatDescs": [],
+  "recommendationDescriptorAttributes": {}
+ },
+ {
+  "id": 5008,
+  "name": "Adaptive Force",
+  "majorChangePatchVersion": "",
+  "tooltip": "t",
+  "shortDesc": "+9 de Forca Adaptativa",
+  "longDesc": "",
+  "recommendationDescriptor": "",
+  "iconPath": "s.png",
+  "endOfGameStatDescs": [],
+  "recommendationDescriptorAttributes": {}
+ },
+ {
+  "id": 8004,
+  "name": "The Brazen Perfect",
+  "majorChangePatchVersion": "",
+  "tooltip": "",
+  "shortDesc": "",
+  "longDesc": "",
+  "recommendationDescriptor": "",
+  "iconPath": "t.png",
+  "endOfGameStatDescs": [],
+  "recommendationDescriptorAttributes": {}
+ },
+ {
+  "id": 5001,
+  "name": "Health Scaling",
+  "majorChangePatchVersion": "",
+  "tooltip": "",
+  "shortDesc": "",
+  "longDesc": "",
+  "recommendationDescriptor": "",
+  "iconPath": "h.png",
+  "endOfGameStatDescs": [],
+  "recommendationDescriptorAttributes": {}
+ }
 ]

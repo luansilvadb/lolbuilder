@@ -1,5 +1,44 @@
 [
- {"id":-1,"name":"None","description":"","alias":"","contentId":"","squarePortraitPath":"","roles":[]},
- {"id":1,"name":"Annie","description":"d","alias":"Annie","contentId":"c","squarePortraitPath":"s.png","roles":["mage"]},
- {"id":60001,"name":"Annie (Jade)","description":"d","alias":"Jade_Annie","contentId":"c","squarePortraitPath":"s.png","roles":["mage"]}
+ {
+  "id": -1,
+  "name": "None",
+  "description": "",
+  "alias": "",
+  "contentId": "",
+  "squarePortraitPath": "",
+  "roles": []
+ },
+ {
+  "id": 1,
+  "name": "Annie",
+  "description": "d",
+  "alias": "Annie",
+  "contentId": "c",
+  "squarePortraitPath": "s.png",
+  "roles": [
+   "mage"
+  ]
+ },
+ {
+  "id": 60001,
+  "name": "Annie (Jade)",
+  "description": "d",
+  "alias": "Jade_Annie",
+  "contentId": "c",
+  "squarePortraitPath": "s.png",
+  "roles": [
+   "mage"
+  ]
+ },
+ {
+  "id": 910,
+  "name": "Hwei",
+  "description": "d",
+  "alias": "Hwei",
+  "contentId": "c",
+  "squarePortraitPath": "s.png",
+  "roles": [
+   "mage"
+  ]
+ }
 ]

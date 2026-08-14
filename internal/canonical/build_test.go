@@ -5,6 +5,7 @@ import (
 
 	"github.com/luansilvadb/lolbuilder/internal/canon"
 	"github.com/luansilvadb/lolbuilder/internal/config"
+	"github.com/luansilvadb/lolbuilder/internal/model"
 )
 
 // O snapshot de fixture em testdata/16.99 e minusculo de proposito, mas cobre
@@ -142,8 +143,11 @@ func TestRunasSituadasNaPagina(t *testing.T) {
 	}
 
 	key := porID[8005]
-	if !key.Keystone() || key.Estilo != 8000 || key.LinhaSlot != 0 {
+	if !key.Keystone() || key.Estilo != 8000 {
 		t.Errorf("keystone situada errado: %+v", key)
+	}
+	if len(key.LinhasSlot) != 1 || key.LinhasSlot[0] != 0 {
+		t.Errorf("linhas da keystone = %v, esperado [0]", key.LinhasSlot)
 	}
 	if key.Nome != "Pressione o Ataque" || key.NomeCanonico != "Press the Attack" {
 		t.Errorf("nomes de runa errados: %q / %q", key.Nome, key.NomeCanonico)
@@ -162,6 +166,60 @@ func TestRunasSituadasNaPagina(t *testing.T) {
 	}
 	if frag.Estilo != 0 {
 		t.Errorf("fragmento foi atribuido ao estilo %d; ele vale em todos", frag.Estilo)
+	}
+}
+
+// TestFragmentoGuardaTodasAsLinhas e o teste do defeito encontrado na revisao do
+// M2: Forca Adaptativa ocupa as linhas 1 e 2 na fixture (4 e 5 no jogo real), e
+// guardar so a primeira faria um otimizador nunca coloca-la no slot flexivel.
+func TestFragmentoGuardaTodasAsLinhas(t *testing.T) {
+	ds := fixture(t)
+	for _, r := range ds.Runes {
+		if r.ID != 5008 {
+			continue
+		}
+		if len(r.LinhasSlot) != 2 || r.LinhasSlot[0] != 1 || r.LinhasSlot[1] != 2 {
+			t.Fatalf("linhas do fragmento = %v, esperado [1 2]", r.LinhasSlot)
+		}
+		return
+	}
+	t.Fatal("o fragmento 5008 sumiu do catalogo")
+}
+
+// TestHweiPublicaOLivroDeFeiticos: o livro e um segundo conjunto de habilidades
+// com dano e recarga proprios. Publicar so as quatro do slot principal
+// descreveria um campeao que nao existe.
+func TestHweiPublicaOLivroDeFeiticos(t *testing.T) {
+	ds := fixture(t)
+	for _, c := range ds.Champions {
+		if c.ID != 910 {
+			continue
+		}
+		if len(c.Habilidades) != 1 {
+			t.Errorf("habilidades de slot = %d", len(c.Habilidades))
+		}
+		if len(c.SubHabilidades) != 2 {
+			t.Fatalf("sub-habilidades = %d, esperado 2: %+v", len(c.SubHabilidades), c.SubHabilidades)
+		}
+		if c.SubHabilidades[0].Slot != "qq" || c.SubHabilidades[0].Nome != "Fogo Devastador" {
+			t.Errorf("sub-habilidade errada: %+v", c.SubHabilidades[0])
+		}
+		return
+	}
+	t.Fatal("Hwei sumiu do dataset")
+}
+
+// TestOrdemDivergenteEntreLocalesAborta: parear por posicao sem conferir o
+// spellKey publicaria a descricao do W sob o nome do Q, em silencio.
+func TestOrdemDivergenteEntreLocalesAborta(t *testing.T) {
+	canonicas := []model.ChampionSpell{{SpellKey: "q", Name: "Q"}, {SpellKey: "w", Name: "W"}}
+	trocadas := []model.ChampionSpell{{SpellKey: "w", Name: "W"}, {SpellKey: "q", Name: "Q"}}
+
+	if _, err := parearHabilidades("champions/1.json", canonicas, trocadas); err == nil {
+		t.Fatal("ordens divergentes foram pareadas em silencio")
+	}
+	if _, err := parearHabilidades("champions/1.json", canonicas, canonicas[:1]); err == nil {
+		t.Fatal("contagens divergentes foram pareadas em silencio")
 	}
 }
 
@@ -189,7 +247,7 @@ func TestEstilo(t *testing.T) {
 	if st.Nome != "Precisao" || st.NomeCanonico != "Precision" {
 		t.Errorf("nomes de estilo errados: %q / %q", st.Nome, st.NomeCanonico)
 	}
-	if len(st.Linhas) != 2 || st.Linhas[0].Tipo != SlotKeyStone {
+	if len(st.Linhas) != 3 || st.Linhas[0].Tipo != SlotKeyStone || st.Linhas[2].Tipo != SlotStatMod {
 		t.Errorf("linhas erradas: %+v", st.Linhas)
 	}
 	if st.BonusPorSubEstilo[8100] != 8004 {
@@ -199,7 +257,7 @@ func TestEstilo(t *testing.T) {
 
 func TestCampeoes(t *testing.T) {
 	ds := fixture(t)
-	if len(ds.Champions) != 1 {
+	if len(ds.Champions) != 2 {
 		t.Fatalf("campeoes = %d; a sentinela de id -1 e o campeao do modo Jade deviam sair", len(ds.Champions))
 	}
 	c := ds.Champions[0]

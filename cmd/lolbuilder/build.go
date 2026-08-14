@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/luansilvadb/lolbuilder/internal/canon"
 	"github.com/luansilvadb/lolbuilder/internal/canonical"
 	"github.com/luansilvadb/lolbuilder/internal/config"
 	"github.com/luansilvadb/lolbuilder/internal/snapshot"
@@ -100,12 +101,29 @@ func relatarItens(ds *canonical.Dataset) {
 	}
 	if n := len(c.NaoLidas); n > 0 {
 		fmt.Printf("    %d linha(s) nao reconhecida(s):\n", n)
-		for i, u := range c.NaoLidas {
-			if i >= 10 {
-				fmt.Printf("      ... e mais %d\n", n-10)
-				break
-			}
-			fmt.Printf("      %-28s %q\n        %s\n", u.Item, u.Linha, u.Motivo)
+		imprimirLinhas(c.NaoLidas)
+	}
+
+	// Segundo numero: o catalogo do modo inteiro, e nao so o publicado.
+	//
+	// Ele nao entra na taxa — item fora da loja nao chega ao consumidor. Sai
+	// aqui porque e o aviso ANTECIPADO de forma nova na fonte: forca adaptativa
+	// e <ornnBonus> viveram no catalogo com a taxa marcando 100%, e so seriam
+	// descobertos no patch em que um item desses entrasse na loja.
+	if n := len(ds.Coverage.VocabularioForaDaLoja); n > 0 {
+		fmt.Printf("\n  aviso de vocabulario: %d linha(s) nao reconhecida(s) em itens do\n"+
+			"  catalogo do modo que NAO estao na loja. Nao afetam o que e publicado,\n"+
+			"  mas sinalizam forma que a fonte usa e o parser ainda nao le:\n", n)
+		imprimirLinhas(ds.Coverage.VocabularioForaDaLoja)
+	}
+}
+
+func imprimirLinhas(linhas []canon.LinhaNaoLida) {
+	for i, u := range linhas {
+		if i >= 10 {
+			fmt.Printf("      ... e mais %d\n", len(linhas)-10)
+			break
 		}
+		fmt.Printf("      %-28s %q\n        %s\n", u.Item, u.Linha, u.Motivo)
 	}
 }

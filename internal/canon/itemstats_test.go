@@ -52,6 +52,21 @@ func TestUnidadeSeparaGrandezas(t *testing.T) {
 	})
 }
 
+// TestOrnnBonusEFormaValida: os itens aprimorados pelo Ornn usam outra tag para
+// envolver o mesmo valor. Nenhum deles e compravel hoje, e por isso a forma nao
+// aparece no subconjunto publicado — reconhece-la agora e mais barato que
+// descobri-la no patch em que passar a importar.
+func TestOrnnBonusEFormaValida(t *testing.T) {
+	desc := `<stats><attention> 60</attention> Attack Damage<br>` +
+		`<ornnBonus> 20</ornnBonus> Ability Haste</stats>`
+
+	l := LerStatsDeItem("Item do Ornn", desc)
+	if !l.Completa() {
+		t.Fatalf("forma <ornnBonus> nao foi lida: %+v", l.NaoLidas)
+	}
+	comparar(t, l.Stats, Vector{AttackDamage: 60, AbilityHaste: 20})
+}
+
 func TestValorDecimal(t *testing.T) {
 	// Doran's Blade publica 2.5% de omnivamp.
 	l := LerStatsDeItem("Doran's Blade", `<stats><attention> 2.5%</attention> Omnivamp</stats>`)

@@ -29,8 +29,19 @@ type Stat string
 // 45 de deslocamento com 4% de deslocamento — erro grande, silencioso, e
 // exatamente o que este pacote existe para impedir.
 const (
-	AbilityHaste        Stat = "ability_haste"
-	AbilityPower        Stat = "ability_power"
+	AbilityHaste Stat = "ability_haste"
+	AbilityPower Stat = "ability_power"
+
+	// AdaptiveForce vira dano de ataque OU poder de habilidade conforme o bonus
+	// que o campeao tem mais no momento, empatando em dano de ataque.
+	//
+	// E stat de primeira classe, e nao out_of_scope, porque ela e
+	// deterministica DADA uma declaracao de como resolve-la — o que a distingue
+	// de efeito de fato condicional. Quem resolve e o otimizador, sob a
+	// premissa que ele publica junto do resultado; aqui ela e so guardada como
+	// a fonte a publica.
+	AdaptiveForce Stat = "adaptive_force"
+
 	Armor               Stat = "armor"
 	ArmorPenetrationPct Stat = "armor_penetration_pct"
 	AttackDamage        Stat = "attack_damage"
@@ -56,7 +67,7 @@ const (
 
 // All lista os stats canonicos em ordem estavel, para saidas reproduziveis.
 var All = []Stat{
-	AbilityHaste, AbilityPower, Armor, ArmorPenetrationPct, AttackDamage,
+	AbilityHaste, AbilityPower, AdaptiveForce, Armor, ArmorPenetrationPct, AttackDamage,
 	AttackSpeedPct, BaseHealthRegenPct, BaseManaRegenPct, CriticalChancePct,
 	CriticalDamagePct, GoldPer10, HealShieldPowerPct, Health, Lethality,
 	LifeStealPct, MagicPenetration, MagicPenetrationPct, MagicResist, Mana,
@@ -80,12 +91,20 @@ type rotulo struct {
 
 // rotulos mapeia cada rotulo observado na fonte para o stat canonico.
 //
-// Os 23 do patch 16.16, medidos sobre as 475 linhas de stat dos 210 itens
-// compraveis. O mapa e a definicao do que o projeto sabe ler: rotulo ausente
-// aqui vira lacuna declarada, nunca zero.
+// Os 23 medidos sobre as 475 linhas de stat dos 210 itens compraveis do 16.16,
+// mais forca adaptativa, que 12 itens do catalogo do modo publicam sem que
+// nenhum deles seja compravel hoje.
+//
+// Ela entra porque a lacuna e conhecida: medir vocabulario so sobre o que se
+// publica esconde a forma nova ate o patch em que ela chega a loja, e ai a
+// correcao vira urgencia em vez de manutencao. Ver CoberturaDeItens.
+//
+// O mapa e a definicao do que o projeto sabe ler: rotulo ausente aqui vira
+// lacuna declarada, nunca zero.
 var rotulos = map[rotulo]Stat{
 	{"ability haste", false}:         AbilityHaste,
 	{"ability power", false}:         AbilityPower,
+	{"adaptive force", false}:        AdaptiveForce,
 	{"armor", false}:                 Armor,
 	{"armor penetration", true}:      ArmorPenetrationPct,
 	{"attack damage", false}:         AttackDamage,
