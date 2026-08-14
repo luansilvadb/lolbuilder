@@ -7,4 +7,3 @@ snapshots/.tmp-*
 
 # saida do build (regeravel a partir do snapshot)
 /build/
-/build/

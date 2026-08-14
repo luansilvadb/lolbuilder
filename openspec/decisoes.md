@@ -58,11 +58,11 @@ companheiros de selva, itens de suporte, botas de nível 3. Ficar só com a maio
 (193 itens) deixaria de fora **todas as botas avançadas e todos os itens
 iniciais**. A união dá 266.
 
-**"Comprável" ainda não está decidido, e é problema do M2.** A união inclui
-buffs de torre, placeholders e itens removidos. `inStore` não serve de
-discriminador: ele é falso em itens compráveis de verdade (Bússola Rúnica, Pedra
-de Visão Agitadora) e verdadeiro em itens de outros modos. O `filter` reporta o
-que a fonte diz; a semântica é do modelo canônico, onde mora o `Purchasable()`.
+**"Comprável" ficou para o M2.** A união inclui buffs de torre, placeholders e
+itens removidos, e nenhum campo isolado da fonte separa isso. O `filter` reporta
+o que a fonte diz; a semântica é do modelo canônico, onde mora o
+`Purchasable()`. Resolvido pela decisão 18, abaixo — que usa `inStore`, mas
+**em conjunção** com a referência do modo, e não sozinho.
 
 **Órfão é ausência do catálogo completo, não da faixa do modo.** A loja do
 Summoner's Rift referencia `771500` ("Penetrating Bullets"), que existe em
