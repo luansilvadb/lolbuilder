@@ -15,12 +15,14 @@ package sync
 import (
 	"fmt"
 	"io"
+	"math"
 	"sort"
 	"strings"
 
 	"github.com/luansilvadb/lolbuilder/internal/cdragon"
 	"github.com/luansilvadb/lolbuilder/internal/config"
 	"github.com/luansilvadb/lolbuilder/internal/filter"
+	"github.com/luansilvadb/lolbuilder/internal/locale"
 	"github.com/luansilvadb/lolbuilder/internal/mapdata"
 	"github.com/luansilvadb/lolbuilder/internal/model"
 	"github.com/luansilvadb/lolbuilder/internal/snapshot"
@@ -138,6 +140,7 @@ func (s *Syncer) Run() (*Result, error) {
 		byName[f] = got.data
 		all = append(all, *got)
 	}
+	byDisplay := map[string][]byte{}
 	for _, f := range catalogFiles {
 		name := s.displayPath(f)
 		got, err := s.fetchOne(name, s.cfg.DisplayURL(f), prev, prevPatch)
@@ -146,6 +149,7 @@ func (s *Syncer) Run() (*Result, error) {
 				"ajuste locale_display em config.json se a Riot deixou de servi-lo",
 				s.cfg.LocaleDisplay, err)
 		}
+		byDisplay[f] = got.data
 		all = append(all, *got)
 	}
 
@@ -168,6 +172,14 @@ func (s *Syncer) Run() (*Result, error) {
 	}
 	spells, err := model.DecodeStrict[[]model.SummonerSpell]("summoner-spells.json", byName["summoner-spells.json"])
 	if err != nil {
+		return nil, err
+	}
+
+	// 6b. O locale de exibicao passa pela mesma decodificacao estrita e e
+	// conferido contra o canonico. Sem isso, um pt_br truncado entraria no
+	// snapshot em silencio e so apareceria no fim da linha, como nome em branco
+	// no arquivo publicado.
+	if err := s.checkDisplayCatalogs(byDisplay, items, runes, styles, spells, summaries); err != nil {
 		return nil, err
 	}
 
@@ -213,7 +225,8 @@ func (s *Syncer) Run() (*Result, error) {
 		if err != nil {
 			return nil, err
 		}
-		if _, err := model.DecodeStrict[model.Champion](name, got.data); err != nil {
+		champ, err := model.DecodeStrict[model.Champion](name, got.data)
+		if err != nil {
 			return nil, err
 		}
 		all = append(all, *got)
@@ -221,6 +234,13 @@ func (s *Syncer) Run() (*Result, error) {
 		display := s.displayPath(name)
 		gotDisplay, err := s.fetchOne(display, s.cfg.DisplayURL(name), prev, prevPatch)
 		if err != nil {
+			return nil, err
+		}
+		champDisplay, err := model.DecodeStrict[model.Champion](display, gotDisplay.data)
+		if err != nil {
+			return nil, err
+		}
+		if err := checkChampionDisplay(display, champ, champDisplay); err != nil {
 			return nil, err
 		}
 		all = append(all, *gotDisplay)
@@ -278,6 +298,126 @@ func (s *Syncer) Run() (*Result, error) {
 	s.logf("snapshot gravado em %s", s.store.PatchDir(patch))
 
 	return &Result{Patch: patch, Patchline: s.cfg.Patchline, Counts: counts}, nil
+}
+
+// checkDisplayCatalogs decodifica os catalogos do locale de exibicao com o
+// mesmo rigor do canonico e confere que os dois descrevem as mesmas entidades.
+//
+// A decodificacao estrita aqui nao e redundante com a do canonico: os dois
+// arquivos sao servidos por caminhos diferentes e podem divergir de forma —
+// foi assim que o dataset original descobriu que uma fonte tinha mudado.
+func (s *Syncer) checkDisplayCatalogs(
+	byDisplay map[string][]byte,
+	items []model.Item,
+	runes []model.Rune,
+	styles model.PerkStyles,
+	spells []model.SummonerSpell,
+	summaries []model.ChampionSummary,
+) error {
+	itemsD, err := model.DecodeStrict[[]model.Item](s.displayPath("items.json"), byDisplay["items.json"])
+	if err != nil {
+		return err
+	}
+	runesD, err := model.DecodeStrict[[]model.Rune](s.displayPath("perks.json"), byDisplay["perks.json"])
+	if err != nil {
+		return err
+	}
+	stylesD, err := model.DecodeStrict[model.PerkStyles](s.displayPath("perkstyles.json"), byDisplay["perkstyles.json"])
+	if err != nil {
+		return err
+	}
+	spellsD, err := model.DecodeStrict[[]model.SummonerSpell](s.displayPath("summoner-spells.json"), byDisplay["summoner-spells.json"])
+	if err != nil {
+		return err
+	}
+	summariesD, err := model.DecodeStrict[[]model.ChampionSummary](s.displayPath("champion-summary.json"), byDisplay["champion-summary.json"])
+	if err != nil {
+		return err
+	}
+
+	checks := []struct {
+		kind  string
+		file  string
+		canon locale.Names
+		disp  locale.Names
+	}{
+		{"itens", s.displayPath("items.json"), itemNames(items), itemNames(itemsD)},
+		{"runas", s.displayPath("perks.json"), runeNames(runes), runeNames(runesD)},
+		{"estilos de runa", s.displayPath("perkstyles.json"), styleNames(styles), styleNames(stylesD)},
+		{"feiticos", s.displayPath("summoner-spells.json"), spellNames(spells), spellNames(spellsD)},
+		{"campeoes", s.displayPath("champion-summary.json"), summaryNames(summaries), summaryNames(summariesD)},
+	}
+	for _, c := range checks {
+		if err := locale.Check(c.kind, c.file, c.canon, c.disp); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// checkChampionDisplay confere que o detalhe traduzido descreve o mesmo
+// campeao que o canonico.
+//
+// A contagem de habilidades entra na conferencia porque e o sintoma de um
+// arquivo truncado que a igualdade de id nao pega: o campeao continua sendo o
+// mesmo, e metade do texto some.
+func checkChampionDisplay(file string, canon, disp model.Champion) error {
+	if disp.ID != canon.ID {
+		return fmt.Errorf("%s descreve o campeao %d, esperado %d", file, disp.ID, canon.ID)
+	}
+	if strings.TrimSpace(disp.Name) == "" {
+		return fmt.Errorf("%s nao tem nome — traducao ausente publica campo em branco", file)
+	}
+	if len(disp.Spells) != len(canon.Spells) {
+		return fmt.Errorf("%s tem %d habilidade(s), contra %d no locale canonico — arquivo truncado",
+			file, len(disp.Spells), len(canon.Spells))
+	}
+	return nil
+}
+
+func itemNames(items []model.Item) locale.Names {
+	out := make(locale.Names, len(items))
+	for _, it := range items {
+		out[int64(it.ID)] = it.Name
+	}
+	return out
+}
+
+func runeNames(runes []model.Rune) locale.Names {
+	out := make(locale.Names, len(runes))
+	for _, r := range runes {
+		out[int64(r.ID)] = r.Name
+	}
+	return out
+}
+
+func styleNames(s model.PerkStyles) locale.Names {
+	out := make(locale.Names, len(s.Styles))
+	for _, st := range s.Styles {
+		out[int64(st.ID)] = st.Name
+	}
+	return out
+}
+
+// spellNames descarta a sentinela sem id, que a fonte repete tres vezes com o
+// maximo de um uint32 e sem modo algum.
+func spellNames(spells []model.SummonerSpell) locale.Names {
+	out := make(locale.Names, len(spells))
+	for _, sp := range spells {
+		if sp.ID > math.MaxInt32 {
+			continue
+		}
+		out[sp.ID] = sp.Name
+	}
+	return out
+}
+
+func summaryNames(cs []model.ChampionSummary) locale.Names {
+	out := make(locale.Names, len(cs))
+	for _, c := range cs {
+		out[int64(c.ID)] = c.Name
+	}
+	return out
 }
 
 // checkPatchline confere que um patchline versionado serve o patch que promete.

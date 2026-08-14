@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/luansilvadb/lolbuilder/internal/config"
+	"github.com/luansilvadb/lolbuilder/internal/model"
 )
 
 func syncer(min config.Minimums, patchline string) *Syncer {
@@ -132,6 +133,61 @@ func TestCheckPatchline(t *testing.T) {
 		if !c.querErro && err != nil {
 			t.Errorf("patchline %q servindo %q falhou: %v", c.patchline, c.patch, err)
 		}
+	}
+}
+
+// TestCheckChampionDisplay: a contagem de habilidades entra na conferencia
+// porque e o sintoma de arquivo truncado que a igualdade de id nao pega — o
+// campeao continua sendo o mesmo, e metade do texto some.
+func TestCheckChampionDisplay(t *testing.T) {
+	canon := model.Champion{ID: 1, Name: "Annie", Spells: make([]model.ChampionSpell, 4)}
+
+	ok := model.Champion{ID: 1, Name: "Annie", Spells: make([]model.ChampionSpell, 4)}
+	if err := checkChampionDisplay("pt_br/champions/1.json", canon, ok); err != nil {
+		t.Fatalf("detalhe traduzido valido foi rejeitado: %v", err)
+	}
+
+	casos := map[string]model.Champion{
+		"id divergente":       {ID: 2, Name: "Annie", Spells: make([]model.ChampionSpell, 4)},
+		"nome vazio":          {ID: 1, Name: "  ", Spells: make([]model.ChampionSpell, 4)},
+		"habilidades a menos": {ID: 1, Name: "Annie", Spells: make([]model.ChampionSpell, 2)},
+	}
+	for nome, disp := range casos {
+		t.Run(nome, func(t *testing.T) {
+			if err := checkChampionDisplay("pt_br/champions/1.json", canon, disp); err == nil {
+				t.Fatal("detalhe traduzido defeituoso passou")
+			}
+		})
+	}
+}
+
+// TestSpellNamesDescartaSentinela: a fonte repete tres vezes uma entrada com o
+// maximo de um uint32 como id. Ela nao existe do outro lado da conferencia e
+// nao pode derrubar a captura.
+func TestSpellNamesDescartaSentinela(t *testing.T) {
+	got := spellNames([]model.SummonerSpell{
+		{ID: 4, Name: "Flash"},
+		{ID: 4294967295, Name: "Primal Smite"},
+		{ID: 4294967295, Name: "Primal Smite"},
+	})
+	if len(got) != 1 || got[4] != "Flash" {
+		t.Fatalf("spellNames = %v, esperado so o feitico com id real", got)
+	}
+}
+
+func TestExtratoresDeNome(t *testing.T) {
+	if got := itemNames([]model.Item{{ID: 1001, Name: "Boots"}}); got[1001] != "Boots" {
+		t.Errorf("itemNames = %v", got)
+	}
+	if got := runeNames([]model.Rune{{ID: 8005, Name: "Press the Attack"}}); got[8005] != "Press the Attack" {
+		t.Errorf("runeNames = %v", got)
+	}
+	styles := model.PerkStyles{Styles: []model.PerkStyle{{ID: 8000, Name: "Precision"}}}
+	if got := styleNames(styles); got[8000] != "Precision" {
+		t.Errorf("styleNames = %v", got)
+	}
+	if got := summaryNames([]model.ChampionSummary{{ID: 1, Name: "Annie"}}); got[1] != "Annie" {
+		t.Errorf("summaryNames = %v", got)
 	}
 }
 
