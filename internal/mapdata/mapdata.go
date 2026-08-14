@@ -49,7 +49,7 @@ func ModePath(mapID int32, gameMode string) string {
 // e ficar so com a maior deixaria de fora, entre outros, todas as botas
 // avancadas e os itens iniciais.
 //
-// O que sai daqui e o que a FONTE referencia, nao o que e comprável: parte
+// O que sai daqui e o que a FONTE referencia, nao o que e compravel: parte
 // dessas entradas sao buffs de torre e marcadores internos. Separar as duas
 // coisas depende de semantica de item e e trabalho do modelo canonico, nao
 // deste pacote.

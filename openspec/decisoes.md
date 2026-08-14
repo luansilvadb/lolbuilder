@@ -73,6 +73,56 @@ fora da faixa vira nota no log; ausência do catálogo inteiro continua abortand
 **`SummonerSpell.ID` é `int64`.** A fonte usa 4294967295 como sentinela de "sem
 id", em três entradas chamadas "Primal Smite" com `gameModes` vazio.
 
+## Decisão 18, tomada no M2
+
+**Comprável = referenciado pelas listas de loja do modo **E** `inStore=true`.**
+São 210 itens no 16.16, de um catálogo de 705.
+
+Os dois filtros fazem trabalho real, e nenhum sozinho serve. **333** itens têm
+`inStore` verdadeiro e o modo não referencia — são de ARAM e Arena
+(`Guardian's Amulet`, `Quest: Support`). **55** o modo referencia e a fonte não
+põe na loja — buffs de torre, `Structure Bounty`, `Gangplank Placeholder`.
+
+Isso reproduz o precedente do original, que dizia explicitamente que `InStore`
+**não** era a fonte de verdade porque havia itens com `InStore` verdadeiro fora
+da loja do modo. Aqui são exatamente esses 333.
+
+Candidatos descartados, com o motivo:
+
+- **`priceTotal > 0`** exclui os trinkets (`Stealth Ward`, `Farsight Alteration`,
+  `Oracle Lens`), que são gratuitos e são decisão de jogo real.
+- **`active`** não significa "existe no jogo". `Infinity Edge`, `Long Sword` e
+  `B. F. Sword` têm `active=false`. O campo marca item com efeito **ativo**,
+  usável — potions, elixires, `Stirring Wardstone`.
+
+O critério exclui 26 itens que o modo referencia com preço maior que zero. A
+maioria é transformação automática, que não se compra (`Seraph's Embrace`,
+`Muramana`, `Runic Compass`, `Bounty of Worlds`) ou item que saiu do Rift
+(`Prowler's Claw`, `Night Harvester`, `Chemtech Putrifier`, `Opportunity`). Se
+algum deles for comprável hoje, a correção é uma exceção curada com motivo em
+`curation/items.json`, não afrouxar a regra.
+
+## Achados do M2, para o M4
+
+**`subStyleBonus` não aponta para runas.** Os ids que ele referencia são
+**títulos cosméticos de página** — "The Incontestable Spellslinger" para
+Precision + Sorcery, "The Brazen Perfect", "The Eternal Champion". O otimizador
+não pode tratá-los como runas que concedem stat.
+
+**Só 69 das 103 entradas de `perks.json` são runas jogáveis.** A conta fecha:
+17 keystones + 45 menores (5 estilos × 3 linhas × 3 opções) + 7 fragmentos = 69.
+As outras 34 são runas removidas do jogo (`Predator`, `Kleptomancy`,
+`Zombie Ward`, `Eyeball Collection`, `Ingenious Hunter`, `Celestial Body`,
+`Iron Skin`, `Mirror Shell`, `Chrysalis`), um registro chamado `Template`, e os
+títulos de página acima. A curadoria da decisão 5 se aplica às 69 — exigir
+entrada para as 34 seria curar entidade que o jogo não oferece.
+
+**As descrições de habilidade trazem marcadores não resolvidos.** O
+`dynamicDescription` do plugin publica `@TotalDamage@`, `@Cost@`, `@Cooldown@`
+literalmente. Resolvê-los contra o dump de dados do jogo é trabalho do M3 — e é
+justamente o que dá valor ao `04-champions.md`, já que sem isso o texto descreve
+a habilidade sem dizer quanto ela causa.
+
 ## Aberto
 
 - Valor de `coverage_minimums` — medido no M3.
@@ -83,4 +133,4 @@ id", em três entradas chamadas "Primal Smite" com `gameModes` vazio.
   que a resposta é a mesma aqui. Decide-se no M3, confirma-se no M6.
 - Semântica de `ClampSubPartsCalculationPart`, a única parcela de cálculo dos
   173 campeões que o avaliador do original não trata. 6 ocorrências.
-- Critério de "comprável no Summoner's Rift" — M2.
+- Nada pendente do M2.

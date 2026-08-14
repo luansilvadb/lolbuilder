@@ -1,0 +1,86 @@
+{
+ "id": 1,
+ "contentId": "c",
+ "name": "Annie",
+ "alias": "Annie",
+ "title": "a Crianca Sombria",
+ "shortBio": "b",
+ "isVisibleInClient": true,
+ "tacticalInfo": {
+  "style": 10,
+  "difficulty": 1,
+  "damageType": "kMagic",
+  "attackType": "ranged"
+ },
+ "playstyleInfo": {
+  "damage": 3,
+  "durability": 1,
+  "crowdControl": 3,
+  "mobility": 1,
+  "utility": 2
+ },
+ "championTagInfo": {
+  "championTagPrimary": "Burst",
+  "championTagSecondary": ""
+ },
+ "squarePortraitPath": "s.png",
+ "stingerSfxPath": "",
+ "chooseVoPath": "",
+ "banVoPath": "",
+ "roles": [
+  "mage"
+ ],
+ "recommendedItemDefaults": [],
+ "skins": [
+  {
+   "qualquer": "coisa"
+  }
+ ],
+ "passive": {
+  "name": "Piromania",
+  "abilityIconPath": "",
+  "abilityVideoPath": "",
+  "abilityVideoImagePath": "",
+  "description": "Atordoa o alvo"
+ },
+ "spells": [
+  {
+   "spellKey": "q",
+   "name": "Desintegrar",
+   "abilityIconPath": "",
+   "abilityVideoPath": "",
+   "abilityVideoImagePath": "",
+   "cost": "",
+   "cooldown": "",
+   "description": "d",
+   "dynamicDescription": "Causa <magicDamage>60</magicDamage> de Dano Magico",
+   "range": [
+    625
+   ],
+   "costCoefficients": [
+    60
+   ],
+   "cooldownCoefficients": [
+    4
+   ],
+   "coefficients": {
+    "coefficient1": 0.8,
+    "coefficient2": 0
+   },
+   "effectAmounts": {
+    "Effect1Amount": [
+     0
+    ]
+   },
+   "ammo": {
+    "ammoRechargeTime": [
+     0
+    ],
+    "maxAmmo": [
+     0
+    ]
+   },
+   "maxLevel": 0
+  }
+ ]
+}

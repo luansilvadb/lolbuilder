@@ -21,7 +21,7 @@ type Item struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 
-	// Active nao quer dizer "comprável". InStore tambem nao: e verdadeiro em
+	// Active nao quer dizer "compravel". InStore tambem nao: e verdadeiro em
 	// 696 dos 868 itens do 16.16, incluindo os de ARAM e Arena.
 	Active            bool     `json:"active"`
 	InStore           bool     `json:"inStore"`

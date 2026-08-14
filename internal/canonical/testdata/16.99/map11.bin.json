@@ -1,0 +1,9 @@
+{
+  "Maps/Shipping/Map11/Modes/CLASSIC": {
+    "__type": "GameModeMapData",
+    "mModeName": "CLASSIC",
+    "itemLists": ["{principal}", "{botas}"]
+  },
+  "{principal}": {"__type": "GameModeItemList", "mItems": ["Items/1001", "Items/1515", "Items/3865", "Items/771001"]},
+  "{botas}": {"__type": "GameModeItemList", "mItems": ["Items/3006"]}
+}

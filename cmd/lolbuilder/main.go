@@ -19,6 +19,7 @@ func run() error {
 	var (
 		configPath = flag.String("config", "config.json", "arquivo de configuracao")
 		patchline  = flag.String("patchline", "", "patchline do CDragon a capturar; vazio usa o do config (latest)")
+		patch      = flag.String("patch", "", "patch a montar; vazio usa o snapshot mais recente")
 	)
 	flag.Usage = usage
 	flag.Parse()
@@ -32,6 +33,8 @@ func run() error {
 	switch cmd := args[0]; cmd {
 	case "sync":
 		return runSync(*configPath, *patchline)
+	case "build":
+		return runBuild(*configPath, *patch)
 	default:
 		usage()
 		return fmt.Errorf("comando desconhecido: %q", cmd)
@@ -47,6 +50,8 @@ uso:
 comandos:
   sync    Baixa as fontes do CommunityDragon e grava um snapshot imutavel do
           patch. Aborta sem escrever se qualquer contagem vier abaixo do minimo.
+  build   Monta o modelo canonico a partir de um snapshot e imprime a cobertura
+          de leitura. Offline. Grava build/<patch>/canonical.json.
 
 flags:
 `)
@@ -55,5 +60,7 @@ flags:
 exemplos:
   lolbuilder sync                      # captura o patch corrente
   lolbuilder -patchline 15.20 sync     # captura retroativa de um patch antigo
+  lolbuilder build                     # monta o snapshot mais recente
+  lolbuilder -patch 16.16 build        # monta um snapshot especifico
 `)
 }

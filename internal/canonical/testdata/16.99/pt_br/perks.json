@@ -1,0 +1,38 @@
+[
+ {
+  "id": 8005,
+  "name": "Pressione o Ataque",
+  "majorChangePatchVersion": "14.10",
+  "tooltip": "t",
+  "shortDesc": "<b>Atinge</b> tres vezes",
+  "longDesc": "Descricao longa",
+  "recommendationDescriptor": "",
+  "iconPath": "p.png",
+  "endOfGameStatDescs": [],
+  "recommendationDescriptorAttributes": {}
+ },
+ {
+  "id": 5008,
+  "name": "Forca Adaptativa",
+  "majorChangePatchVersion": "",
+  "tooltip": "t",
+  "shortDesc": "+9 de Forca Adaptativa",
+  "longDesc": "",
+  "recommendationDescriptor": "",
+  "iconPath": "s.png",
+  "endOfGameStatDescs": [],
+  "recommendationDescriptorAttributes": {}
+ },
+ {
+  "id": 8004,
+  "name": "O Perfeito Descarado",
+  "majorChangePatchVersion": "",
+  "tooltip": "",
+  "shortDesc": "",
+  "longDesc": "",
+  "recommendationDescriptor": "",
+  "iconPath": "t.png",
+  "endOfGameStatDescs": [],
+  "recommendationDescriptorAttributes": {}
+ }
+]

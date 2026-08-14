@@ -1,0 +1,8 @@
+{"schemaVersion":2,"styles":[
+ {"id":8000,"name":"Precisao","tooltip":"","iconPath":"i.png","assetMap":{"x":"y"},"isAdvanced":false,
+  "allowedSubStyles":[8100],
+  "subStyleBonus":[{"styleId":8100,"perkId":8004}],
+  "slots":[{"type":"kKeyStone","slotLabel":"","perks":[8005]},{"type":"kStatMod","slotLabel":"","perks":[5008]}],
+  "defaultPageName":"p","defaultSubStyle":8100,"defaultPerks":[8005],"defaultPerksWhenSplashed":[],
+  "defaultStatModsPerSubStyle":[{"id":"8100","perks":[5008]}]}
+]}

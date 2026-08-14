@@ -1,0 +1,34 @@
+[
+ {
+  "id": 4,
+  "name": "Flash",
+  "description": "Teleporta uma curta distancia",
+  "summonerLevel": 7,
+  "cooldown": 300,
+  "gameModes": [
+   "CLASSIC",
+   "ARAM"
+  ],
+  "iconPath": "f.png"
+ },
+ {
+  "id": 32,
+  "name": "Marca",
+  "description": "So ARAM",
+  "summonerLevel": 1,
+  "cooldown": 80,
+  "gameModes": [
+   "ARAM"
+  ],
+  "iconPath": "m.png"
+ },
+ {
+  "id": 4294967295,
+  "name": "Primal Smite",
+  "description": "",
+  "summonerLevel": 0,
+  "cooldown": 0,
+  "gameModes": [],
+  "iconPath": "p.png"
+ }
+]
