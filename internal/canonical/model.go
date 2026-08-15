@@ -53,10 +53,14 @@ type Item struct {
 	// marcadores de estrutura e placeholders.
 	Compravel bool `json:"compravel"`
 
-	// Botas marca o item como calcado. O jogo nao deixa carregar dois, e o
-	// otimizador de build precisa da restricao — sem ela ele proporia uma build
-	// impossivel com cara de otima.
+	// Botas marca o item como calcado, contando os aprimoramentos. O jogo nao
+	// deixa carregar dois, e o otimizador de build precisa da restricao — sem
+	// ela ele proporia uma build impossivel com cara de otima.
 	Botas bool `json:"botas,omitempty"`
+
+	// categoriaBotas guarda a etiqueta DIRETA da fonte, antes da propagacao
+	// pela arvore de componentes. Ver marcarBotas.
+	categoriaBotas bool
 }
 
 // Rune e uma runa ou fragmento de stat do sistema Runes Reforged.
@@ -90,6 +94,21 @@ type Rune struct {
 	// pagina subotima com cara de exata, que e o pior erro possivel num sistema
 	// que promete exatidao.
 	LinhasSlot []int `json:"linhas_slot,omitempty"`
+
+	// Escopo e a classificacao curada: se a runa soma atributo e, quando nao
+	// soma, por que.
+	//
+	// Sai no dataset porque e o que explica ao leitor a ausencia de 58 das 69
+	// runas do pre-calculo. Sem isso o arquivo lista as runas e deixa a
+	// ausencia sem resposta, que e o mesmo que nao declarar limite nenhum.
+	Escopo string `json:"escopo,omitempty"`
+	// MotivoDoEscopo diz por que a runa fica fora do calculo.
+	MotivoDoEscopo string `json:"motivo_do_escopo,omitempty"`
+	// RessalvaDoEscopo registra a parte do efeito que ficou de fora quando a
+	// runa e so parcialmente somavel.
+	RessalvaDoEscopo string `json:"ressalva_do_escopo,omitempty"`
+	// StatsDaRuna e o que ela concede no nivel 18, quando soma.
+	StatsDaRuna canon.Vector `json:"stats,omitempty"`
 }
 
 // Fragmento informa se a runa e um fragmento de stat.

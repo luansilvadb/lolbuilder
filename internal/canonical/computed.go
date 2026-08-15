@@ -43,10 +43,16 @@ func (b *Builder) buildComputed(ds *Dataset) error {
 		return err
 	}
 
+	aplicarCuradoria(ds, cur)
 	cat := montarCatalogo(ds, cur)
 	itens := CandidatosDeItem(ds)
 
 	for _, stat := range canon.All {
+		// Forca adaptativa nao e alvo em si: ela sempre resolve para outro
+		// stat antes de valer alguma coisa. Ver ParseObjetivo.
+		if stat == canon.AdaptiveForce {
+			continue
+		}
 		for _, res := range []optimize.Resolucao{optimize.ResolucaoAD, optimize.ResolucaoAP} {
 			obj, err := optimize.ParseObjetivo(string(stat), res)
 			if err != nil {
@@ -120,6 +126,27 @@ func (b *Builder) conferirCuradoria(ds *Dataset, cur *canon.RuneCuration) error 
 			len(desatualizadas), desatualizadas)
 	}
 	return nil
+}
+
+// aplicarCuradoria leva a classificacao curada para o modelo publicado.
+//
+// Sem isto, a curadoria so existiria dentro do otimizador, e o arquivo de runas
+// listaria as 69 sem explicar por que 58 delas nao aparecem no pre-calculo — o
+// mesmo que nao declarar limite nenhum.
+func aplicarCuradoria(ds *Dataset, cur *canon.RuneCuration) {
+	for i := range ds.Runes {
+		r := &ds.Runes[i]
+		c, ok := cur.Get(r.ID)
+		if !ok {
+			continue
+		}
+		r.Escopo = string(c.Kind)
+		r.MotivoDoEscopo = c.Reason
+		r.RessalvaDoEscopo = c.Note
+		if v := c.VetorNoNivel(nivelDoPreCalculo); len(v) > 0 {
+			r.StatsDaRuna = v
+		}
+	}
 }
 
 // CatalogoDeRunas monta o catalogo do otimizador lendo a curadoria do disco.

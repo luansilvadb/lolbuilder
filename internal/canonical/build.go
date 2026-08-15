@@ -127,7 +127,8 @@ func (b *Builder) buildItems(ds *Dataset) error {
 			Componentes:  it.From,
 			Efeito:       TextoDeEfeito(pt.Description),
 			Compravel:    compravel,
-			Botas:        temCategoria(it.Categories, categoriaBotas),
+
+			categoriaBotas: temCategoria(it.Categories, categoriaBotas),
 		}
 
 		// Os stats saem do locale CANONICO, e nao do traduzido: o vocabulario de
@@ -156,11 +157,58 @@ func (b *Builder) buildItems(ds *Dataset) error {
 
 	sort.Slice(ds.Items, func(i, j int) bool { return ds.Items[i].ID < ds.Items[j].ID })
 	sort.Strings(ds.Coverage.Itens.SemBlocoNome)
+	marcarBotas(ds.Items)
 	return nil
 }
 
 // categoriaBotas e como a fonte marca calcado no campo categories.
 const categoriaBotas = "Boots"
+
+// marcarBotas identifica calcado percorrendo a arvore de componentes.
+//
+// A categoria direta NAO basta: Gunmetal Greaves evolui de Berserker's Greaves e
+// a fonte a categoriza como AttackSpeed, LifeSteal e NonbootsMovement, sem
+// Boots. Sem a transitividade o otimizador montaria uma build com dois pares de
+// botas — impossivel no jogo, e com cara de otima.
+//
+// Aprimoramento de botas e botas: e a unica leitura que sobrevive a fonte
+// esquecer a etiqueta em mais um item no proximo patch.
+func marcarBotas(itens []Item) {
+	porID := make(map[int32]*Item, len(itens))
+	for i := range itens {
+		porID[itens[i].ID] = &itens[i]
+	}
+
+	memo := map[int32]bool{}
+	var ehBotas func(id int32, visitando map[int32]bool) bool
+	ehBotas = func(id int32, visitando map[int32]bool) bool {
+		if v, ok := memo[id]; ok {
+			return v
+		}
+		it, ok := porID[id]
+		if !ok || visitando[id] {
+			return false
+		}
+		visitando[id] = true
+		defer delete(visitando, id)
+
+		r := it.categoriaBotas
+		if !r {
+			for _, c := range it.Componentes {
+				if ehBotas(c, visitando) {
+					r = true
+					break
+				}
+			}
+		}
+		memo[id] = r
+		return r
+	}
+
+	for i := range itens {
+		itens[i].Botas = ehBotas(itens[i].ID, map[int32]bool{})
+	}
+}
 
 func temCategoria(cats []string, alvo string) bool {
 	for _, c := range cats {

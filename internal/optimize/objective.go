@@ -72,6 +72,15 @@ func ParseObjetivo(s string, res Resolucao) (Objetivo, error) {
 			return obj, fmt.Errorf("stat %q fora do vocabulario canonico; validos: %s",
 				nome, listaDeStats())
 		}
+		// Pedir o maximo de forca adaptativa nao tem resposta: ela SEMPRE vira
+		// dano de ataque ou poder de habilidade antes de valer alguma coisa.
+		// Aceitar o pedido devolveria zero em silencio.
+		if stat == canon.AdaptiveForce {
+			return obj, fmt.Errorf(
+				"forca adaptativa resolve para dano de ataque ou poder de habilidade, " +
+					"e nao e alvo em si — peca attack_damage ou ability_power, e use " +
+					"-adaptive para dizer como resolve-la")
+		}
 		peso := 1.0
 		if temPeso {
 			p, err := strconv.ParseFloat(strings.TrimSpace(pesoTxt), 64)

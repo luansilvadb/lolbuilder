@@ -252,6 +252,27 @@ podia ter sido sobrescrita por um item posterior. A célula passou a carregar a
 combinação inteira — cabe, porque ela tem no máximo 6 itens — e a classe de erro
 sumiu. Há teste de regressão que reproduz.
 
+## Revisões durante a revisão do M4
+
+**A etiqueta de botas da fonte não é confiável.** `Gunmetal Greaves` evolui de
+Grevas do Berserker e a fonte a categoriza como `AttackSpeed`, `LifeSteal` e
+`NonbootsMovement` — **sem** `Boots`. Confiar na categoria direta deixava o
+otimizador livre para montar uma build com dois pares de calçado, impossível no
+jogo e com cara de ótima. A regra passou a ser transitiva pela árvore de
+componentes: aprimoramento de botas é botas. Ganha exatamente 1 item, sem falso
+positivo, e sobrevive à fonte esquecer a etiqueta em mais um item no próximo
+patch.
+
+**A curadoria não chegava ao modelo publicado.** `kind`, `reason` e `note` eram
+carregados, usados pelo otimizador e descartados. Sem eles o arquivo de runas
+listaria as 69 sem explicar por que 58 não aparecem no pré-cálculo — o mesmo que
+não declarar limite nenhum. Agora cada runa carrega escopo, motivo e ressalva.
+
+**Objetivo em força adaptativa é rejeitado com explicação.** Ela sempre resolve
+para dano de ataque ou poder de habilidade antes de valer alguma coisa, então
+`Valor()` a convertia e o objetivo pontuava zero — em silêncio. O erro agora diz
+o que pedir no lugar.
+
 ## Aberto
 
 - Valor de `coverage_minimums` — medido no M3.

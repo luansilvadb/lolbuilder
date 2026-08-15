@@ -401,3 +401,68 @@ func TestAlinhamentoDeRank(t *testing.T) {
 		}
 	}
 }
+
+// TestBotasSaoTransitivas e o teste do defeito que o dado real revelou: a fonte
+// categoriza Gunmetal Greaves como AttackSpeed, LifeSteal e NonbootsMovement,
+// sem Boots, apesar de ela evoluir de Berserker's Greaves. Sem a propagacao
+// pela arvore de componentes, o otimizador montaria uma build com dois pares de
+// botas — impossivel no jogo, e com cara de otima.
+func TestBotasSaoTransitivas(t *testing.T) {
+	itens := []Item{
+		{ID: 1001, categoriaBotas: true},       // botas base
+		{ID: 3006, Componentes: []int32{1001}}, // aprimoramento, sem etiqueta
+		{ID: 3172, Componentes: []int32{3006}}, // aprimoramento do aprimoramento
+		{ID: 3075, Componentes: []int32{1029}}, // nada a ver com calcado
+		{ID: 1029},                             // componente comum
+	}
+	marcarBotas(itens)
+
+	want := map[int32]bool{1001: true, 3006: true, 3172: true, 3075: false, 1029: false}
+	for _, it := range itens {
+		if it.Botas != want[it.ID] {
+			t.Errorf("item %d botas = %v, esperado %v", it.ID, it.Botas, want[it.ID])
+		}
+	}
+}
+
+// TestBotasNaoTravaEmCiclo: a arvore de componentes vem da fonte, e uma
+// referencia circular travaria o build em vez de acusar.
+func TestBotasNaoTravaEmCiclo(t *testing.T) {
+	itens := []Item{
+		{ID: 1, Componentes: []int32{2}},
+		{ID: 2, Componentes: []int32{1}},
+	}
+	marcarBotas(itens)
+	for _, it := range itens {
+		if it.Botas {
+			t.Errorf("ciclo sem calcado marcou o item %d como botas", it.ID)
+		}
+	}
+}
+
+// TestCuradoriaChegaAoModelo: sem isto o arquivo de runas listaria as 69 sem
+// explicar por que a maioria nao aparece no pre-calculo.
+func TestCuradoriaChegaAoModelo(t *testing.T) {
+	ds := fixture(t)
+	porID := map[int32]Rune{}
+	for _, r := range ds.Runes {
+		porID[r.ID] = r
+	}
+
+	fora := porID[8005]
+	if fora.Escopo != "out_of_scope" || fora.MotivoDoEscopo == "" {
+		t.Errorf("runa fora do calculo saiu sem escopo ou sem motivo: %+v", fora)
+	}
+	if len(fora.StatsDaRuna) != 0 {
+		t.Errorf("runa fora do calculo publicou stats: %v", fora.StatsDaRuna)
+	}
+
+	frag := porID[5001]
+	if frag.Escopo != "sum_per_level" {
+		t.Errorf("escopo do fragmento = %q", frag.Escopo)
+	}
+	// 10 no nivel 1 mais 10 por nivel: 180 no nivel 18.
+	if got := frag.StatsDaRuna[canon.Health]; got != 180 {
+		t.Errorf("stats da runa no nivel de pre-calculo = %v, esperado 180", got)
+	}
+}

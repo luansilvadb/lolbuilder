@@ -20,11 +20,11 @@ import (
 
 // ItemCandidato e um item compravel com o que ele concede.
 type ItemCandidato struct {
-	ID    int32
-	Nome  string
-	Custo int32
-	Stats canon.Vector
-	Botas bool
+	ID    int32        `json:"id"`
+	Nome  string       `json:"nome"`
+	Custo int32        `json:"custo"`
+	Stats canon.Vector `json:"stats,omitempty"`
+	Botas bool         `json:"botas,omitempty"`
 }
 
 // Build e o resultado: a combinacao de maior valor dentro das restricoes.
