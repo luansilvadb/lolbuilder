@@ -349,7 +349,51 @@ A comparação declara essa margem só na vida, e o veredito ali é `inconclusiv
 nunca `bate`. Crescer **abaixo** do previsto continua sendo divergência real em
 qualquer eixo: bônus soma, nunca subtrai.
 
+## O que a verificação contra um segundo patch real revelou
+
+A captura retroativa foi exercitada de verdade: `-patchline 16.15 sync` funciona,
+e o conteúdo é mesmo de outro patch — `Sunfire Aegis` custava 2700 e passou a
+2800. Com dois patches reais, o changelog rodou pela primeira vez fora de
+fixture e detectou balanceamento de verdade: Cutelo Negro 40→45 de dano, Grevas
+do Berserker 25→30% de velocidade, Poppy 60→56 de dano base.
+
+Isso também calibrou uma incógnita: **um patch normal move a cobertura de
+habilidades ~1,1 ponto**, e a folga do mínimo é ~6. A calibração está no tamanho
+certo.
+
+**E revelou um defeito grave, que só um segundo patch poderia revelar.**
+
+No 16.15 a fonte **não publicava `manaValues` em habilidade nenhuma** — o campo
+apareceu só no 16.16. Duas consequências, ambas silenciosas:
+
+1. O dataset do 16.15 saía com **zero de 692 habilidades com custo publicado**.
+2. A verificação de alinhamento de rank da série de mana **simplesmente não
+   rodava** — sem série, `Compare` retornava cedo, relatório nenhum era criado, e
+   o laço que confere os relatórios iterava sobre a ausência dela.
+
+"A verificação passou" e "a verificação não rodou" eram indistinguíveis. O
+export do 16.15 teria publicado um conjunto sem custo de habilidade nenhuma, com
+sucesso e sem aviso.
+
+O verificador passa a receber a lista de séries que ele **espera** ver. Série
+esperada que nunca foi comparada entra no relatório marcada como ausente e
+**derruba o export**. Confirmado: o export do 16.15 agora recusa, e o do 16.16
+segue publicando.
+
+Fica **em aberto** a decisão de negócio que isso levanta: quando a série
+redefinida não existe no catálogo inteiro, vale cair para a herdada? Ela concorda
+98,8% com o plugin no 16.16. O original escreveu explicitamente que publicar a
+herdada no lugar da redefinida era o defeito que a troca corrigia — mas aquilo
+era por habilidade, e isto é o campo não existir no patch.
+
 ## Aberto
+
+- **Cair para a série herdada quando a redefinida não existe no patch inteiro?**
+  Ver acima. Hoje o export recusa, que é seguro e correto; a alternativa é
+  publicar a herdada declarando a queda.
+- O comando `ingame` nunca rodou contra uma partida real.
+- A curadoria das 58 runas fora do cálculo é julgamento de quem não joga.
+- Seis enums de `mStat` seguem sem curadoria, 20 ocorrências.
 
 - Valor de `coverage_minimums` — medido no M3.
 - Valor de `token_budget_max` — medido no M5.
@@ -359,4 +403,3 @@ qualquer eixo: bônus soma, nunca subtrai.
   que a resposta é a mesma aqui. Decide-se no M3, confirma-se no M6.
 - Semântica de `ClampSubPartsCalculationPart`, a única parcela de cálculo dos
   173 campeões que o avaliador do original não trata. 6 ocorrências.
-- Nada pendente. Os seis marcos foram entregues e revisados.

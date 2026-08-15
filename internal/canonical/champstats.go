@@ -22,7 +22,7 @@ func (b *Builder) buildChampStats(ds *Dataset) error {
 	if err != nil {
 		return err
 	}
-	checker := gamedata.NewAlignChecker(b.cfg.CoverageMinimums.RankAlignment)
+	checker := gamedata.NewAlignChecker(b.cfg.CoverageMinimums.RankAlignment, "cooldown", "mana")
 	cov := &ds.Coverage.Campeoes
 
 	for i := range ds.Champions {

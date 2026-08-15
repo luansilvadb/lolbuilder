@@ -9,6 +9,54 @@ import (
 // entao o rank 1 esta no indice 1. As de 6 comecam no indice 0.
 func serieDe7(v ...float64) []float64 { return append([]float64{0}, v...) }
 
+// TestSerieEsperadaQueSumiuFalha e o teste do defeito que so apareceu ao rodar
+// contra um patch de verdade.
+//
+// No 16.15 a fonte nao publicava manaValues em habilidade nenhuma. Sem serie, o
+// Compare retornava cedo, relatorio nenhum era criado, e o export publicava um
+// dataset com ZERO de 692 custos sem nada alarmar. "A verificacao passou" e "a
+// verificacao nao rodou" eram indistinguiveis.
+func TestSerieEsperadaQueSumiuFalha(t *testing.T) {
+	c := NewAlignChecker(98, "cooldown", "mana")
+	// So a recarga e comparada; a mana sumiu da fonte.
+	for i := 0; i < 10; i++ {
+		c.Compare("cooldown", "champ", serieDe7(8, 8, 8, 8, 8, 8), []float64{8, 8, 8, 8, 8}, 5)
+	}
+
+	rel := c.Reports()
+	if len(rel) != 2 {
+		t.Fatalf("relatorios = %d; a serie ausente sumiu do relatorio", len(rel))
+	}
+	var mana AlignReport
+	for _, r := range rel {
+		if r.Series == "mana" {
+			mana = r
+		}
+	}
+	if !mana.Ausente {
+		t.Fatal("a serie que sumiu nao foi marcada como ausente")
+	}
+	if mana.OK() {
+		t.Fatal("a serie ausente passou na verificacao")
+	}
+	if !strings.Contains(mana.Err().Error(), "apaga o dado E a verificacao") {
+		t.Fatalf("o erro nao explica o risco: %v", mana.Err())
+	}
+}
+
+// TestSerieEsperadaPresenteNaoAlarma: a marca so vale quando a serie de fato
+// nao apareceu, senao todo build falharia.
+func TestSerieEsperadaPresenteNaoAlarma(t *testing.T) {
+	c := NewAlignChecker(98, "cooldown")
+	for i := 0; i < 10; i++ {
+		c.Compare("cooldown", "champ", serieDe7(8, 8, 8, 8, 8, 8), []float64{8, 8, 8, 8, 8}, 5)
+	}
+	rel := c.Reports()
+	if len(rel) != 1 || rel[0].Ausente || !rel[0].OK() {
+		t.Fatalf("serie presente foi marcada como ausente: %+v", rel)
+	}
+}
+
 func TestAlinhamentoConcordanteEstaOK(t *testing.T) {
 	c := NewAlignChecker(98)
 	for i := 0; i < 10; i++ {

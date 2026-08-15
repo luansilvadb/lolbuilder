@@ -25,6 +25,11 @@ type AlignReport struct {
 	// Minimo e a concordancia minima exigida, em pontos percentuais. Zero
 	// desliga a verificacao.
 	Minimo int
+
+	// Ausente marca uma serie que o verificador esperava e nunca viu. Nao e o
+	// mesmo que Compared zero por acaso: e a fonte ter parado de publicar a
+	// serie, o que apaga o dado E a verificacao dele ao mesmo tempo.
+	Ausente bool
 }
 
 // Agreement e a taxa de concordancia sob o deslocamento vencedor.
@@ -38,6 +43,9 @@ func (r AlignReport) Agreement() float64 {
 // OK informa se a convencao de indexacao continua sendo a esperada e se a
 // concordancia esta acima do minimo.
 func (r AlignReport) OK() bool {
+	if r.Ausente {
+		return false
+	}
 	if r.Compared == 0 {
 		return true
 	}
@@ -50,6 +58,14 @@ func (r AlignReport) OK() bool {
 func (r AlignReport) Err() error {
 	if r.OK() {
 		return nil
+	}
+	if r.Ausente {
+		return fmt.Errorf(
+			"a serie %s nao foi comparada em habilidade nenhuma: a fonte parou de "+
+				"publica-la, e isso apaga o dado E a verificacao dele ao mesmo tempo. "+
+				"Foi o que aconteceu no 16.15, em que manaValues nao existia e o dataset "+
+				"saiu com zero custo em 692 habilidades sem nada alarmar",
+			r.Series)
 	}
 	if r.Best != r.Expected {
 		return fmt.Errorf(
@@ -79,14 +95,24 @@ const tetoDaLista = 40
 
 // AlignChecker acumula a comparacao ao longo de todos os campeoes.
 type AlignChecker struct {
-	reports map[string]*AlignReport
-	minimo  int
+	reports  map[string]*AlignReport
+	minimo   int
+	esperado []string
 }
 
-// NewAlignChecker monta o verificador com a concordancia minima exigida.
-// Zero desliga a verificacao de minimo, mantendo apenas a de deslocamento.
-func NewAlignChecker(minimo int) *AlignChecker {
-	return &AlignChecker{reports: map[string]*AlignReport{}, minimo: minimo}
+// NewAlignChecker monta o verificador com a concordancia minima exigida e as
+// series que ele ESPERA ver.
+//
+// A lista de esperadas nao e cerimonia. Sem ela, "a verificacao passou" e "a
+// verificacao nao rodou" ficam indistinguiveis — e isso aconteceu de verdade:
+// no patch 16.15 a fonte nao publicava manaValues em habilidade nenhuma, o
+// dataset saiu com ZERO de 692 custos, e a checagem de alinhamento de mana
+// simplesmente nao existiu no relatorio. Nada alarmou.
+//
+// Zero no minimo desliga a verificacao de concordancia, mantendo a de
+// deslocamento e a de presenca.
+func NewAlignChecker(minimo int, esperado ...string) *AlignChecker {
+	return &AlignChecker{reports: map[string]*AlignReport{}, minimo: minimo, esperado: esperado}
 }
 
 // Compare cruza uma serie do dump com a correspondente do plugin.
@@ -145,8 +171,12 @@ func (c *AlignChecker) Compare(series, who string, dump, plugin []float64, ranks
 }
 
 // Reports fecha a apuracao, escolhendo o deslocamento vencedor de cada serie.
+//
+// Serie esperada que nunca foi comparada entra no relatorio com Compared zero e
+// Ausente verdadeiro, e nao some: um relatorio que encolhe em silencio e uma
+// verificacao que desligou sozinha.
 func (c *AlignChecker) Reports() []AlignReport {
-	out := make([]AlignReport, 0, len(c.reports))
+	out := make([]AlignReport, 0, len(c.reports)+len(c.esperado))
 	for _, r := range c.reports {
 		best, bestHits := r.Expected, -1
 		for _, off := range []int{0, 1} {
@@ -157,6 +187,11 @@ func (c *AlignChecker) Reports() []AlignReport {
 		r.Best = best
 		r.Minimo = c.minimo
 		out = append(out, *r)
+	}
+	for _, nome := range c.esperado {
+		if _, ok := c.reports[nome]; !ok {
+			out = append(out, AlignReport{Series: nome, Hits: map[int]int{}, Ausente: true})
+		}
 	}
 	return out
 }
