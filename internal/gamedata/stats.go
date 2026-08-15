@@ -10,13 +10,41 @@ type Scaling struct {
 
 // At devolve o valor no nivel pedido (1..18).
 //
-// O crescimento e linear a partir do nivel 1: no nivel 1 vale a base, e cada
-// nivel acima soma o incremento uma vez.
+// O crescimento NAO e linear. O jogo aplica um fator que sai de 0.7025 no nivel
+// 2 e chega a 1 no 18:
+//
+//	valor(n) = base + crescimento * (n-1) * (0.7025 + 0.0175*(n-1))
+//
+// Isto foi MEDIDO contra uma partida, e nao suposto. Rammus tem 2.05 de
+// resistencia magica por nivel; do nivel 1 ao 6 o jogo somou 8.0975, que e
+// 2.05 * 5 * 0.79 — e nao 2.05 * 5 = 10.25. A armadura confirmou na mesma
+// leitura: com 4.5 por nivel, o crescimento base foi 17.775, deixando exatos
+// 70 para os dois itens de armadura equipados.
+//
+// O erro ficou invisivel por muito tempo porque no nivel 18 o fator vale
+// exatamente 1: 0.7025 + 0.0175*17 = 1. Ou seja, o total no nivel maximo
+// coincide com o crescimento linear, e so os niveis intermediarios saiam
+// errados. Nenhuma fonte publica esse fator; so o oraculo em partida o revela.
 func (s Scaling) At(level int) float64 {
+	return s.Base + s.PerLevel*fatorDeCrescimento(level)
+}
+
+// fatorDeCrescimento e quantos "niveis efetivos" de crescimento ja se
+// acumularam ao chegar no nivel pedido.
+func fatorDeCrescimento(level int) float64 {
 	if level <= 1 {
-		return s.Base
+		return 0
 	}
-	return s.Base + s.PerLevel*float64(level-1)
+	n := float64(level - 1)
+	return n * (0.7025 + 0.0175*n)
+}
+
+// CrescimentoEntre devolve quanto a estatistica sobe de um nivel a outro.
+//
+// E a grandeza que a comparacao com a partida usa, porque ela cancela todo
+// bonus fixo de item e de runa.
+func (s Scaling) CrescimentoEntre(de, ate int) float64 {
+	return s.PerLevel * (fatorDeCrescimento(ate) - fatorDeCrescimento(de))
 }
 
 // Stats sao as estatisticas base de um campeao.

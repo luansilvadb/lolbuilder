@@ -142,39 +142,57 @@ func CompararIngame(ds *Dataset, amostras []AmostraIngame, tolerancia float64) (
 		eixos := []struct {
 			nome     string
 			jogo     float64
-			porNivel float64
+			previsto float64
 			margem   float64
 			nota     string
 		}{
-			{"vida", agora.MaxHealth - antes.MaxHealth, c.Stats.HP.PerLevel,
+			{"vida", agora.MaxHealth - antes.MaxHealth,
+				c.Stats.HP.CrescimentoEntre(antes.Nivel, agora.Nivel),
 				escalamentoDeVidaPorNivel * maximoDeFragmentosDeVida,
 				"o fragmento Escalamento de Vida cresce com o nivel, e cabem dois"},
-			{"armadura", agora.Armor - antes.Armor, c.Stats.Armor.PerLevel, 0, ""},
-			{"resistencia magica", agora.MagicResist - antes.MagicResist, c.Stats.MagicResist.PerLevel, 0, ""},
-			{"dano de ataque", agora.AttackDamage - antes.AttackDamage, c.Stats.AttackDamage.PerLevel, 0, ""},
+			{"armadura", agora.Armor - antes.Armor,
+				c.Stats.Armor.CrescimentoEntre(antes.Nivel, agora.Nivel), 0, ""},
+			{"resistencia magica", agora.MagicResist - antes.MagicResist,
+				c.Stats.MagicResist.CrescimentoEntre(antes.Nivel, agora.Nivel), 0, ""},
+			{"dano de ataque", agora.AttackDamage - antes.AttackDamage,
+				c.Stats.AttackDamage.CrescimentoEntre(antes.Nivel, agora.Nivel), 0, ""},
 		}
 
 		for _, e := range eixos {
-			previsto := e.porNivel * niveis
+			previsto := e.previsto
 			diff := e.jogo - previsto
 			cmp := ComparacaoIngame{
 				Eixo: e.nome, DeNivel: antes.Nivel, AteNivel: agora.Nivel,
 				Jogo: e.jogo, Previsto: previsto, Diff: diff,
 			}
 
+			// Os dois sentidos acusam, por motivos diferentes.
+			//
+			// ABAIXO do previsto nunca tem explicacao inocente, porque bonus
+			// soma e nunca subtrai — vale mesmo com a lista de itens mudada, e
+			// foi assim que o crescimento nao linear apareceu: a resistencia
+			// magica do Rammus subiu 8.0975 onde o modelo linear previa 10.25,
+			// com cinco itens equipados no caminho.
+			//
+			// ACIMA do previsto so e explicavel por algo que some. Com os itens
+			// iguais e sem runa que escale naquele eixo, nao ha o que some, e
+			// tambem e divergencia. Tratar todo excesso como inconclusivo
+			// deixaria a verificacao cega para metade dos erros possiveis.
 			switch {
 			case math.Abs(diff) <= tolerancia:
 				cmp.Veredito = VereditoBate
+			case diff < -tolerancia:
+				cmp.Veredito = VereditoDiverge
+				cmp.Nota = "crescer abaixo do previsto nao tem explicacao: bonus soma, nunca subtrai"
 			case rel.ItensMudaram:
 				cmp.Veredito = VereditoContaminado
 				cmp.Nota = "a lista de itens mudou entre as duas leituras"
-			// Bonus SOMA, nunca subtrai: crescer acima do previsto pode ser
-			// runa, mas crescer ABAIXO continua sendo divergencia real.
-			case diff > 0 && diff <= e.margem*niveis+tolerancia:
+			case diff <= e.margem*niveis+tolerancia:
 				cmp.Veredito = VereditoContaminado
 				cmp.Nota = e.nota
 			default:
 				cmp.Veredito = VereditoDiverge
+				cmp.Nota = "crescimento acima do previsto sem item novo nem runa que escale nesse eixo"
 			}
 			rel.Comparacoes = append(rel.Comparacoes, cmp)
 		}

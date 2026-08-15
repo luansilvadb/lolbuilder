@@ -386,6 +386,49 @@ redefinida não existe no catálogo inteiro, vale cair para a herdada? Ela conco
 herdada no lugar da redefinida era o defeito que a troca corrigia — mas aquilo
 era por habilidade, e isto é o campo não existir no patch.
 
+## O oráculo em partida achou o defeito que nenhuma outra verificação acharia
+
+O comando `ingame` rodou numa partida real — Rammus, Ferramenta de Treino,
+níveis 1, 6 e 7. E encontrou um erro de fórmula que estava no projeto desde o
+M3, herdado do dataset original.
+
+**O crescimento por nível no LoL não é linear.** O jogo aplica um fator que sai
+de 0,7025 no nível 2 e chega a 1 no 18:
+
+```
+valor(n) = base + por_nível × (n-1) × (0,7025 + 0,0175 × (n-1))
+```
+
+A evidência é exata, em dois eixos independentes e dois intervalos:
+
+| medida | modelo linear | fórmula correta | **medido no jogo** |
+|---|---:|---:|---:|
+| Rammus, resistência mágica, 1→6 | 10,2500 | 8,0975 | **8,0975** |
+| Rammus, armadura, 6→7 | 4,5000 | 4,0275 | **4,0275** |
+| Rammus, resistência mágica, 6→7 | 2,0500 | 1,8347 | **1,8348** |
+
+E a armadura de 1→6 fecha a conta pelo outro lado: crescimento base 17,775
+deixando **exatos 70,0000** para Cota de Malha (45) e Colete Espinhoso (25).
+
+**Por que ficou invisível tanto tempo:** no nível 18 o fator vale exatamente 1,
+porque `0,7025 + 0,0175 × 17 = 1`. O total no nível máximo coincide com o
+crescimento linear — e a coluna que o dataset publica é justamente `no 18`. Só
+os níveis intermediários saíam errados, e nenhuma fonte publica esse fator.
+
+O `06-champion-stats.md` passa a **declarar a fórmula**, porque o conjunto
+publica base e por-nível: sem ela, quem calcular um nível intermediário assume
+linear e erra.
+
+**A leitura também confirmou duas curadorias:** os +20 de vida entre os níveis 6
+e 7 são exatamente os dois fragmentos de Vida Escalável a 10 por nível, e a
+armadura e a resistência mágica base batem ao centavo no nível 1.
+
+**E expôs um segundo defeito na própria comparação.** Ela marcava tudo como
+inconclusivo quando a lista de itens mudava — inclusive o crescimento ABAIXO do
+previsto, que não tem explicação inocente porque bônus soma e nunca subtrai. Foi
+por pouco: os cinco itens equipados quase mascararam o achado. Agora os dois
+sentidos acusam, cada um pelo seu motivo.
+
 ## Aberto
 
 - **Cair para a série herdada quando a redefinida não existe no patch inteiro?**
