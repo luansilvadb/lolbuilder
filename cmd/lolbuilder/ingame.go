@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
 
 	"github.com/luansilvadb/lolbuilder/internal/canonical"
 	"github.com/luansilvadb/lolbuilder/internal/config"
@@ -51,11 +50,18 @@ func runIngame(configPath, patch, arquivo string) error {
 				modo, cfg.Mode.GameMode)
 		}
 
-		amostras = append(amostras, converter(am))
+		nova := converter(am, amostras)
+		if len(amostras) > 0 && nova.Sessao != amostras[len(amostras)-1].Sessao {
+			fmt.Printf("\npartida NOVA detectada (sessao %d) — as amostras anteriores\n", nova.Sessao)
+			fmt.Println("ficam guardadas, mas nao serao comparadas com estas: o crescimento so")
+			fmt.Println("cancela bonus fixo dentro da mesma partida.")
+		}
+		amostras = append(amostras, nova)
 		if err := gravarAmostras(arquivo, amostras); err != nil {
 			return err
 		}
-		fmt.Printf("  amostra gravada em %s (%d no total)\n", arquivo, len(amostras))
+		fmt.Printf("  amostra gravada em %s (sessao %d, %d no total)\n",
+			arquivo, nova.Sessao, len(amostras))
 	} else {
 		fmt.Println("nenhuma partida em andamento — comparando com as amostras ja gravadas")
 	}
@@ -93,9 +99,27 @@ func runIngame(configPath, patch, arquivo string) error {
 	return nil
 }
 
-func converter(a *lcu.Amostra) canonical.AmostraIngame {
+// converter traz a leitura para o vocabulario do dataset e decide a que partida
+// ela pertence.
+//
+// A decisao e por comparacao com a ULTIMA leitura gravada, e nao por busca no
+// arquivo inteiro: e a unica que tem cronologia. Dois sinais, porque nenhum dos
+// dois sozinho basta — escalacao diferente e outra partida, e mesmo com a
+// escalacao identica (duas partidas de Treino montadas iguais) o relogio
+// reiniciando do zero denuncia o recomeco.
+func converter(a *lcu.Amostra, anteriores []canonical.AmostraIngame) canonical.AmostraIngame {
+	sessao := 0
+	if n := len(anteriores); n > 0 {
+		ultima := anteriores[n-1]
+		sessao = ultima.Sessao
+		if ultima.Partida != a.Partida || a.TempoDeJogo < ultima.TempoDeJogo {
+			sessao++
+		}
+	}
+
 	return canonical.AmostraIngame{
 		Nivel: a.Nivel, Campeao: a.Campeao, Itens: a.Itens,
+		Sessao: sessao, Partida: a.Partida, TempoDeJogo: a.TempoDeJogo,
 		MaxHealth:       a.Stats.MaxHealth,
 		Armor:           a.Stats.Armor,
 		MagicResist:     a.Stats.MagicResist,
@@ -120,8 +144,11 @@ func carregarAmostras(caminho string) ([]canonical.AmostraIngame, error) {
 	return out, nil
 }
 
+// gravarAmostras salva o arquivo em ordem CRONOLOGICA de captura.
+//
+// Ordenar por nivel aqui destruiria a unica informacao que permite reconhecer
+// uma partida nova: a leitura anterior. A comparacao ordena por conta propria.
 func gravarAmostras(caminho string, amostras []canonical.AmostraIngame) error {
-	sort.Slice(amostras, func(i, j int) bool { return amostras[i].Nivel < amostras[j].Nivel })
 	raw, err := json.MarshalIndent(amostras, "", " ")
 	if err != nil {
 		return err
@@ -135,7 +162,11 @@ func gravarAmostras(caminho string, amostras []canonical.AmostraIngame) error {
 }
 
 func imprimirRelatorioIngame(rel *canonical.RelatorioIngame, tol float64) {
-	fmt.Printf("\n%s — niveis %v\n", rel.Campeao, rel.Niveis)
+	fmt.Printf("\n%s — niveis %v", rel.Campeao, rel.Niveis)
+	if rel.Sessoes > 1 {
+		fmt.Printf(" em %d partidas", rel.Sessoes)
+	}
+	fmt.Println()
 	fmt.Println("\nA comparacao e do CRESCIMENTO entre niveis, e nao do valor absoluto.")
 	fmt.Println("Valor absoluto e contaminado por item, fragmento de stat e runa;")
 	fmt.Println("crescimento cancela todo bonus fixo e deixa so a formula do campeao.")
@@ -150,6 +181,12 @@ func imprimirRelatorioIngame(rel *canonical.RelatorioIngame, tol float64) {
 		fmt.Println("\naviso: a lista de itens mudou entre leituras, e isso quebra o")
 		fmt.Println("cancelamento. As linhas afetadas saem como inconclusivas.")
 	}
+	if len(rel.SessoesSemPar) > 0 {
+		fmt.Printf("\naviso: a(s) partida(s) %v tem uma amostra so e nao entraram em\n",
+			rel.SessoesSemPar)
+		fmt.Println("comparacao nenhuma. Uma leitura solta so mostra valor absoluto, que e")
+		fmt.Println("contaminado por item e runa — suba de nivel e leia de novo na mesma partida.")
+	}
 
 	fmt.Printf("\n%-22s %9s %10s %10s %10s   %s\n",
 		"estatistica", "niveis", "jogo", "previsto", "diferenca", "veredito")
@@ -158,8 +195,12 @@ func imprimirRelatorioIngame(rel *canonical.RelatorioIngame, tol float64) {
 		if c.Veredito == canonical.VereditoDiverge {
 			marca = "!"
 		}
-		fmt.Printf("%s %-20s %4d→%-4d %10.4f %10.4f %10.4f   %s\n",
-			marca, c.Eixo, c.DeNivel, c.AteNivel, c.Jogo, c.Previsto, c.Diff, c.Veredito)
+		niveis := fmt.Sprintf("%d→%d", c.DeNivel, c.AteNivel)
+		if rel.Sessoes > 1 {
+			niveis = fmt.Sprintf("p%d %s", c.Sessao+1, niveis)
+		}
+		fmt.Printf("%s %-20s %9s %10.4f %10.4f %10.4f   %s\n",
+			marca, c.Eixo, niveis, c.Jogo, c.Previsto, c.Diff, c.Veredito)
 		if c.Nota != "" {
 			fmt.Printf("  %-20s %s\n", "", c.Nota)
 		}

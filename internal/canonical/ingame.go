@@ -31,6 +31,23 @@ type AmostraIngame struct {
 	Campeao string   `json:"campeao"`
 	Itens   []string `json:"itens,omitempty"`
 
+	// Sessao agrupa as amostras de uma mesma partida.
+	//
+	// Sem isto o arquivo acumulava leituras de partidas diferentes e as ordenava
+	// so por nivel, entao o par comparado podia ter um lado de cada partida. O
+	// crescimento so cancela bonus fixo dentro da MESMA partida: entre duas, as
+	// runas e os fragmentos mudam junto, e a diferenca deixa de significar
+	// qualquer coisa. Pior, ela sairia com veredito confiante.
+	//
+	// Zero e o valor das amostras gravadas antes deste campo existir. Elas eram
+	// todas de uma partida so, entao ficam num grupo unico.
+	Sessao int `json:"sessao"`
+
+	// Partida e TempoDeJogo sao o que separa uma sessao da outra na hora de
+	// gravar. Ficam registrados para que o arquivo continue auditavel a mao.
+	Partida     string  `json:"partida,omitempty"`
+	TempoDeJogo float64 `json:"tempo_de_jogo,omitempty"`
+
 	MaxHealth       float64 `json:"max_health"`
 	Armor           float64 `json:"armor"`
 	MagicResist     float64 `json:"magic_resist"`
@@ -55,6 +72,7 @@ const (
 // ComparacaoIngame e uma linha do relatorio.
 type ComparacaoIngame struct {
 	Eixo     string   `json:"eixo"`
+	Sessao   int      `json:"sessao"`
 	DeNivel  int      `json:"de_nivel"`
 	AteNivel int      `json:"ate_nivel"`
 	Jogo     float64  `json:"jogo"`
@@ -76,6 +94,11 @@ type RelatorioIngame struct {
 	// IntervalosCegos lista os pares de nivel em que o crescimento real coincide
 	// com o linear, e que por isso nao testam a curvatura da formula.
 	IntervalosCegos []string `json:"intervalos_cegos,omitempty"`
+
+	// Sessoes e quantas partidas distintas o arquivo contem, e SessoesSemPar
+	// quais delas nao renderam comparacao nenhuma por terem uma amostra so.
+	Sessoes       int   `json:"sessoes"`
+	SessoesSemPar []int `json:"sessoes_sem_par,omitempty"`
 }
 
 // Diverge informa se alguma comparacao acusou divergencia real.
@@ -116,7 +139,8 @@ func CompararIngame(ds *Dataset, amostras []AmostraIngame, tolerancia float64) (
 		if a.Campeao != campeao {
 			return nil, fmt.Errorf(
 				"as amostras sao de campeoes diferentes (%s e %s) — o crescimento so "+
-					"cancela o bonus fixo dentro da mesma partida", campeao, a.Campeao)
+					"cancela o bonus fixo dentro da mesma partida. Use -samples com outro "+
+					"arquivo para o segundo campeao", campeao, a.Campeao)
 		}
 	}
 
@@ -126,21 +150,39 @@ func CompararIngame(ds *Dataset, amostras []AmostraIngame, tolerancia float64) (
 	}
 
 	ord := append([]AmostraIngame(nil), amostras...)
-	sort.Slice(ord, func(i, j int) bool { return ord[i].Nivel < ord[j].Nivel })
+	// Sessao primeiro, nivel depois: cada partida vira um bloco contiguo, e
+	// dentro dele os niveis sobem.
+	sort.Slice(ord, func(i, j int) bool {
+		if ord[i].Sessao != ord[j].Sessao {
+			return ord[i].Sessao < ord[j].Sessao
+		}
+		return ord[i].Nivel < ord[j].Nivel
+	})
 
 	rel := &RelatorioIngame{Campeao: campeao}
 	for _, a := range ord {
 		rel.Niveis = append(rel.Niveis, a.Nivel)
 	}
+	rel.Sessoes = contarSessoes(ord)
+	rel.SessoesSemPar = sessoesComUmaAmostraSo(ord)
 
 	// Compara cada par consecutivo. Pares e nao extremos: um erro que so aparece
 	// numa faixa de nivel some quando se olha so o comeco e o fim.
 	for i := 1; i < len(ord); i++ {
 		antes, agora := ord[i-1], ord[i]
+		// Par de sessoes diferentes nao e par: as duas leituras vem de partidas
+		// distintas, e a diferenca entre elas nao e crescimento de nivel.
+		if antes.Sessao != agora.Sessao {
+			continue
+		}
 		if agora.Nivel == antes.Nivel {
 			continue
 		}
-		if !mesmosItens(antes.Itens, agora.Itens) {
+		// Por par, e nao acumulado. O sinalizador do relatorio serve ao aviso
+		// geral; usa-lo no veredito faria uma compra no par 1→6 desculpar um
+		// excesso no par 6→7, que nao tem nada a ver com ela.
+		itensMudaram := !mesmosItens(antes.Itens, agora.Itens)
+		if itensMudaram {
 			rel.ItensMudaram = true
 		}
 		niveis := float64(agora.Nivel - antes.Nivel)
@@ -172,7 +214,8 @@ func CompararIngame(ds *Dataset, amostras []AmostraIngame, tolerancia float64) (
 			previsto := e.previsto
 			diff := e.jogo - previsto
 			cmp := ComparacaoIngame{
-				Eixo: e.nome, DeNivel: antes.Nivel, AteNivel: agora.Nivel,
+				Eixo: e.nome, Sessao: antes.Sessao,
+				DeNivel: antes.Nivel, AteNivel: agora.Nivel,
 				Jogo: e.jogo, Previsto: previsto, Diff: diff,
 			}
 
@@ -194,7 +237,7 @@ func CompararIngame(ds *Dataset, amostras []AmostraIngame, tolerancia float64) (
 			case diff < -tolerancia:
 				cmp.Veredito = VereditoDiverge
 				cmp.Nota = "crescer abaixo do previsto nao tem explicacao: bonus soma, nunca subtrai"
-			case rel.ItensMudaram:
+			case itensMudaram:
 				cmp.Veredito = VereditoContaminado
 				cmp.Nota = "a lista de itens mudou entre as duas leituras"
 			case diff <= e.margem*niveis+tolerancia:
@@ -223,6 +266,39 @@ func acharCampeao(ds *Dataset, nome string) *Champion {
 		}
 	}
 	return nil
+}
+
+// contarSessoes conta quantas partidas distintas as amostras cobrem.
+func contarSessoes(ord []AmostraIngame) int {
+	n := 0
+	for i, a := range ord {
+		if i == 0 || a.Sessao != ord[i-1].Sessao {
+			n++
+		}
+	}
+	return n
+}
+
+// sessoesComUmaAmostraSo aponta as partidas que nao produziram par nenhum.
+//
+// Uma leitura solta nao prova nada — e sem este aviso ela desaparece calada no
+// meio do relatorio, dando a impressao de que foi aproveitada.
+func sessoesComUmaAmostraSo(ord []AmostraIngame) []int {
+	niveis := map[int]map[int]bool{}
+	for _, a := range ord {
+		if niveis[a.Sessao] == nil {
+			niveis[a.Sessao] = map[int]bool{}
+		}
+		niveis[a.Sessao][a.Nivel] = true
+	}
+	var sos []int
+	for s, n := range niveis {
+		if len(n) < 2 {
+			sos = append(sos, s)
+		}
+	}
+	sort.Ints(sos)
+	return sos
 }
 
 func mesmosItens(a, b []string) bool {

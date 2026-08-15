@@ -438,6 +438,25 @@ nível efetivo.
 O comando agora avisa quando um intervalo é cego. Sem isso, uma leitura desse
 tipo daria falsa confiança — que é pior que não ter leitura nenhuma.
 
+**E uma segunda partida expôs mais dois defeitos, antes de ser jogada.** O
+arquivo de amostras acumula entre execuções e ordenava tudo por nível: nada
+identificava de que partida cada leitura vinha. Uma partida nova se intercalaria
+com a anterior e o par comparado poderia ter um lado de cada — com páginas de
+runa e fragmentos diferentes, portanto valores absolutos deslocados por bônus
+que não se cancelam. O veredito sairia confiante em cima de lixo.
+
+A amostra passa a carregar `sessao`, atribuída na captura por dois sinais:
+escalação diferente é outra partida, e mesmo com escalação idêntica (duas
+partidas de Treino montadas iguais) o relógio reiniciando do zero denuncia o
+recomeço. A comparação só forma pares dentro da mesma sessão. O arquivo passa a
+ser gravado em ordem cronológica, porque ordenar por nível destruía a única
+informação que permite reconhecer o recomeço: qual foi a leitura anterior.
+
+O segundo defeito estava ao lado: o sinalizador `ItensMudaram` era do relatório
+inteiro e o veredito lia ele. Uma compra no par 1→6 desculpava um excesso no par
+6→7, que não tinha relação nenhuma com ela — metade dos pares de uma partida com
+compras ficava cega. Agora é por par.
+
 ## Aberto
 
 - **Cair para a série herdada quando a redefinida não existe no patch inteiro?**

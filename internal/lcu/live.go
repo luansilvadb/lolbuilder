@@ -12,12 +12,16 @@
 package lcu
 
 import (
+	"crypto/sha256"
 	"crypto/tls"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"sort"
+	"strings"
 	"time"
 )
 
@@ -105,6 +109,15 @@ type Amostra struct {
 
 	// TempoDeJogo em segundos, para ordenar amostras do mesmo nivel.
 	TempoDeJogo float64 `json:"tempo_de_jogo"`
+
+	// Partida identifica a partida pela escalacao. Duas leituras com escalacoes
+	// diferentes sao de partidas diferentes, e comparar o crescimento entre elas
+	// nao cancela bonus nenhum — as runas e os fragmentos mudam junto.
+	//
+	// A API nao publica identificador de partida, entao a escalacao e o que da
+	// para usar. Ela NAO distingue duas partidas de Treino montadas iguais; quem
+	// pega esse caso e o tempo de jogo, que reinicia do zero.
+	Partida string `json:"partida,omitempty"`
 }
 
 type respostaLive struct {
@@ -128,6 +141,29 @@ type respostaLive struct {
 	} `json:"gameData"`
 }
 
+// escalacao resume quem esta na partida, para servir de identidade dela.
+//
+// Ordenada antes de resumir porque a API nao promete ordem estavel entre
+// chamadas, e uma reordenacao viraria "outra partida" sem que nada tivesse
+// mudado. O resumo e curto de proposito: ele so precisa distinguir, e o arquivo
+// de amostras e lido por gente.
+func (r respostaLive) escalacao() string {
+	linhas := make([]string, 0, len(r.AllPlayers))
+	for _, p := range r.AllPlayers {
+		quem := p.RiotID
+		if quem == "" {
+			quem = p.SummonerName
+		}
+		linhas = append(linhas, quem+"|"+p.ChampionName)
+	}
+	if len(linhas) == 0 {
+		return ""
+	}
+	sort.Strings(linhas)
+	soma := sha256.Sum256([]byte(strings.Join(linhas, "\n")))
+	return hex.EncodeToString(soma[:4])
+}
+
 // Amostrar le o estado atual da partida.
 func (c *LiveClient) Amostrar() (*Amostra, error) {
 	raw, err := c.get("/allgamedata")
@@ -144,6 +180,7 @@ func (c *LiveClient) Amostrar() (*Amostra, error) {
 		Nivel:       r.ActivePlayer.Level,
 		Stats:       r.ActivePlayer.ChampionStats,
 		TempoDeJogo: r.GameData.GameTime,
+		Partida:     r.escalacao(),
 	}
 
 	// O nome do campeao nao vem no bloco do jogador ativo: e preciso casar com a

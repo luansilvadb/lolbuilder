@@ -203,6 +203,94 @@ func TestItemNovoNaoMascaraCrescimentoAbaixo(t *testing.T) {
 	}
 }
 
+// naSessao devolve a amostra marcada como de outra partida.
+func naSessao(a AmostraIngame, s int) AmostraIngame {
+	a.Sessao = s
+	return a
+}
+
+// TestSessoesDiferentesNaoComparam e a razao de o campo Sessao existir.
+//
+// O arquivo de amostras acumula entre execucoes. Sem separar por partida, as
+// leituras se ordenavam so por nivel e o par comparado podia ter um lado de cada
+// partida — com runas e fragmentos diferentes, e mesmo assim veredito confiante.
+func TestSessoesDiferentesNaoComparam(t *testing.T) {
+	p1 := amostra(3, 890, 46, 36, 79)
+	// Segunda partida: mesmo campeao e mesmos niveis, mas 200 de vida a menos
+	// porque a pagina de runas era outra. Comparar entre as duas daria -200.
+	p2 := naSessao(amostra(6, 690, 38, 32, 69), 1)
+
+	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{p1, p2}, 0.02)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rel.Diverge() {
+		t.Fatal("amostras de partidas diferentes foram comparadas entre si")
+	}
+	if len(rel.Comparacoes) != 0 {
+		t.Fatalf("comparacoes = %d, esperado nenhuma: nao ha par dentro de uma mesma partida",
+			len(rel.Comparacoes))
+	}
+	if rel.Sessoes != 2 {
+		t.Fatalf("sessoes = %d, esperado 2", rel.Sessoes)
+	}
+	if len(rel.SessoesSemPar) != 2 {
+		t.Fatalf("sessoes sem par = %v, esperado as duas avisadas", rel.SessoesSemPar)
+	}
+}
+
+// TestCadaSessaoCompararSeparadamente: separar partidas nao pode custar as
+// comparacoes validas de dentro de cada uma.
+func TestCadaSessaoCompararSeparadamente(t *testing.T) {
+	a1 := amostra(3, 890, 46, 36, 79)
+	a2 := depoisDeSubir(a1, 6)
+	b1 := naSessao(amostra(4, 1200, 60, 40, 90), 1)
+	b2 := naSessao(depoisDeSubir(b1, 9), 1)
+
+	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{a1, b2, a2, b1}, 0.02)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rel.Diverge() {
+		for _, c := range rel.Comparacoes {
+			t.Logf("%+v", c)
+		}
+		t.Fatal("crescimento correto dentro de cada partida foi acusado de divergir")
+	}
+	if len(rel.Comparacoes) != 8 {
+		t.Fatalf("comparacoes = %d, esperado 4 eixos em cada uma das 2 partidas",
+			len(rel.Comparacoes))
+	}
+	if len(rel.SessoesSemPar) != 0 {
+		t.Fatalf("sessoes sem par = %v, esperado nenhuma", rel.SessoesSemPar)
+	}
+}
+
+// TestItemNovoNaoContaminaOProximoPar: o sinalizador de itens era do relatorio
+// inteiro, entao uma compra no par 1→6 desculpava um excesso no par 6→7 — que
+// nao tinha nada a ver com ela. Metade dos pares de uma partida com compras
+// ficava cega.
+func TestItemNovoNaoContaminaOProximoPar(t *testing.T) {
+	a1 := amostra(3, 890, 46, 36, 79)
+	a2 := depoisDeSubir(a1, 6, "Cota de Malha") // compra aqui
+	a2.Armor += 45
+	a3 := depoisDeSubir(a2, 9, "Cota de Malha") // nenhuma compra daqui pra frente
+	a3.Armor += 50                              // excesso sem explicacao
+
+	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{a1, a2, a3}, 0.02)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !rel.Diverge() {
+		t.Fatal("o excesso no par 6→9 foi desculpado pela compra ocorrida no par 3→6")
+	}
+	for _, c := range rel.Comparacoes {
+		if c.Eixo == "armadura" && c.DeNivel == 3 && c.Veredito != VereditoContaminado {
+			t.Errorf("o par 3→6 tinha item novo e deveria ser inconclusivo, veio %q", c.Veredito)
+		}
+	}
+}
+
 func TestPrecisaDeDuasAmostras(t *testing.T) {
 	_, err := CompararIngame(datasetIngame(), []AmostraIngame{amostra(3, 890, 46, 36, 79)}, 0.02)
 	if err == nil {
