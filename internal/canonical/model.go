@@ -217,6 +217,15 @@ type Habilidade struct {
 	// mesmo dano duas vezes como se fossem parcelas somaveis.
 	SeriesNomeadas []SerieNomeada `json:"series_nomeadas,omitempty"`
 
+	// TodasAsSeries inclui tambem as series JA consumidas por alguma formula.
+	//
+	// Nao e serializada: publicar as consumidas ao lado do efeito resolvido
+	// apresentaria o mesmo dano duas vezes, como se fossem parcelas somaveis.
+	// Ela existe porque o texto da habilidade referencia series consumidas —
+	// Garen W escreve @ResistsForTooltip@, que uma formula consome — e sem elas
+	// o marcador nao resolve e a frase sai quebrada.
+	TodasAsSeries []SerieNomeada `json:"-"`
+
 	// Series do plugin, guardadas so para o cruzamento de alinhamento de rank.
 	recargaDoPlugin []float64
 	custoDoPlugin   []float64

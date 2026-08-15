@@ -111,6 +111,29 @@ func (s *Store) LatestPatch() (string, error) {
 	return patches[len(patches)-1], nil
 }
 
+// PatchAnteriorA devolve a captura imediatamente anterior a um patch, ou string
+// vazia se ele for o primeiro.
+func (s *Store) PatchAnteriorA(patch string) (string, error) {
+	entries, err := os.ReadDir(s.dir)
+	if errors.Is(err, os.ErrNotExist) {
+		return "", nil
+	}
+	if err != nil {
+		return "", err
+	}
+	var anteriores []string
+	for _, e := range entries {
+		if e.IsDir() && s.Exists(e.Name()) && lessVersion(e.Name(), patch) {
+			anteriores = append(anteriores, e.Name())
+		}
+	}
+	if len(anteriores) == 0 {
+		return "", nil
+	}
+	sort.Slice(anteriores, func(i, j int) bool { return lessVersion(anteriores[i], anteriores[j]) })
+	return anteriores[len(anteriores)-1], nil
+}
+
 // ReadFile le um arquivo bruto de uma captura anterior — usado quando o
 // servidor responde 304 e o conteudo pode ser reaproveitado.
 func (s *Store) ReadFile(patch, name string) ([]byte, error) {

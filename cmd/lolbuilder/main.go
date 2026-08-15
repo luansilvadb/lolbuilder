@@ -24,6 +24,7 @@ func run() error {
 		adaptativa = flag.String("adaptive", "ad", "como resolver forca adaptativa: ad ou ap")
 		nivel      = flag.Int("level", 18, "nivel do campeao, para as runas que escalam")
 		ouro       = flag.Int("gold", 20000, "orcamento em ouro, para a build de itens")
+		saida      = flag.String("out", "_data", "diretorio de destino do export")
 	)
 	flag.Usage = usage
 	flag.Parse()
@@ -39,6 +40,8 @@ func run() error {
 		return runSync(*configPath, *patchline)
 	case "build":
 		return runBuild(*configPath, *patch)
+	case "export":
+		return runExport(*configPath, *patch, *saida)
 	case "runes":
 		return runRunes(*configPath, *patch, *objetivo, *adaptativa, *nivel)
 	case "builds":
@@ -60,6 +63,8 @@ comandos:
           patch. Aborta sem escrever se qualquer contagem vier abaixo do minimo.
   build   Monta o modelo canonico a partir de um snapshot e imprime a cobertura
           de leitura. Offline. Grava build/<patch>/canonical.json.
+  export  Gera os arquivos do Project e o changelog do patch. Offline. Recusa
+          publicar enquanto config.json estiver marcado como provisional.
   runes   Pagina de runas de valor maximo para um objetivo.
   builds  Maximo de um stat por ouro em 6 slots. NAO e build otima: o calculo
           ignora passiva e ativa de item.

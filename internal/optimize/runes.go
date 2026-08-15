@@ -55,6 +55,11 @@ type Escolha struct {
 
 // Pagina e uma pagina de runas completa.
 type Pagina struct {
+	// Objetivo diz o que esta pagina maximiza. Sem ele, uma tabela de paginas
+	// nao teria como rotular as linhas, e o leitor veria varias paginas sem
+	// saber qual responde a pergunta dele.
+	Objetivo string `json:"objetivo"`
+
 	EstiloPrimario   int32  `json:"estilo_primario"`
 	NomePrimario     string `json:"nome_primario"`
 	EstiloSecundario int32  `json:"estilo_secundario"`
@@ -121,6 +126,7 @@ func desempate(a, b Pagina) bool {
 // da soma e a soma dos maximos.
 func (cat Catalogo) melhorComEstilos(prim, sec Estilo, obj Objetivo, nivel int) Pagina {
 	p := Pagina{
+		Objetivo:         obj.String(),
 		EstiloPrimario:   prim.ID,
 		NomePrimario:     prim.Nome,
 		EstiloSecundario: sec.ID,

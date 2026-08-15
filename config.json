@@ -31,24 +31,24 @@
     "summoner_spells": 7
   },
 
-  "_comment_provisional": "Enquanto provisional for verdadeiro, coverage_minimums e token_budget_max podem estar zerados e o EXPORT SE RECUSA A PUBLICAR. Existe porque um minimo de cobertura so mede degradacao futura se nascer de um valor medido que alguem olhou e aprovou — herdar o numero do Classicorone seria calibrar com dado de outro jogo, e definir por expectativa arriscaria congelar um defeito. Some quando o M3 medir a cobertura real e o M5 medir o tamanho do conjunto.",
-  "provisional": true,
+  "_comment_provisional": "Enquanto provisional for verdadeiro, coverage_minimums e token_budget_max podem estar zerados e o EXPORT SE RECUSA A PUBLICAR. Caiu para false no 16.16, depois que o M3 mediu a cobertura e o M5 mediu o tamanho. Voltar para true so faz sentido num porte para outro modo, que precisaria medir tudo de novo.",
+  "provisional": false,
 
-  "_comment_coverage": "Taxa minima de extracao do dump de dados do jogo, em pontos percentuais, calculada sobre o TOTAL de entidades — nao sobre o subconjunto com formula. Abaixo disso o build aborta. Os campos *_without_formula_max sao TETOS para a fracao sem formula alguma. Ainda nao medido: ver provisional acima.",
+  "_comment_coverage": "Taxa minima de extracao do dump de dados do jogo, em pontos percentuais, calculada sobre o TOTAL de entidades — nao sobre o subconjunto com formula. Abaixo disso o export aborta. Os campos *_without_formula_max sao TETOS para a fracao SEM formula alguma; existem porque a taxa de resolucao sozinha nao detecta esse movimento, e uma taxa calibrada para caber nas lacunas de hoje cabe tambem no dobro delas. MEDIDO no 16.16: champion_stats 100.0%, abilities 81.9%, passives 66.5%, sem formula 8.8% em habilidades e 13.3% em passivas, alinhamento de rank 100.0% nas duas series. Folga: ~6pp nas taxas de resolucao, ~4pp e ~6pp nos tetos, 2pp no alinhamento. Os numeros NAO devem ser afrouxados para caber num resultado pior — um minimo que persegue a medicao deixa de medir alguma coisa.",
   "coverage_minimums": {
-    "champion_stats": 0,
-    "abilities": 0,
-    "passives": 0,
-    "abilities_without_formula_max": 0,
-    "passives_without_formula_max": 0,
-    "rank_alignment": 0
+    "champion_stats": 100,
+    "abilities": 76,
+    "passives": 61,
+    "abilities_without_formula_max": 13,
+    "passives_without_formula_max": 19,
+    "rank_alignment": 98
   },
 
   "_comment_ingame": "Tolerancia do comando ingame, em unidades da estatistica. O jogo reporta em float32 e o dataset calcula em float64, entao diferenca na terceira casa e ruido de representacao, nao divergencia.",
   "ingame_tolerance": 0.02,
 
-  "_comment_token_budget": "Teto do conjunto exportado, em tokens estimados. Nao e ajustado para caber no resultado corrente — um teto que persegue o tamanho deixa de medir alguma coisa. Ainda nao medido: ver provisional acima. Projecao do spike 0, a confirmar no M5: 130k a 160k.",
-  "token_budget_max": 0,
+  "_comment_token_budget": "Teto do conjunto exportado, em tokens estimados. Nao e ajustado para caber no resultado corrente — um teto que persegue o tamanho deixa de medir alguma coisa. Historico: o spike 0 projetou 130k a 160k e errou; a primeira medicao real deu 217403. Duas correcoes de qualidade cortaram 23531 sem tirar informacao — publicar a precisao real do float32 em vez de 4.199999809265137, e resolver os marcadores do texto de habilidade contra as series do dump. Medido em 193872 no 16.16, com 04-champions em 78618 e 06-champion-stats em 92492. Teto em 240000, ~24% de folga: espaco para o elenco crescer sem que um patch normal derrube o export. Completude do dado prevalece sobre economia de tamanho — a omissao de um valor que a fonte publica custa mais que o espaco que ele ocupa.",
+  "token_budget_max": 240000,
 
   "snapshots_dir": "snapshots",
   "http_timeout_seconds": 60

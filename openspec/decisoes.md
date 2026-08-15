@@ -273,6 +273,35 @@ para dano de ataque ou poder de habilidade antes de valer alguma coisa, então
 `Valor()` a convertia e o objetivo pontuava zero — em silêncio. O erro agora diz
 o que pedir no lugar.
 
+## Achados do M5
+
+**A projeção do Spike 0 errou.** Estimei 130k–160k tokens; a primeira medição
+real deu **217.403**. Duas correções de qualidade cortaram 23.531 sem tirar
+informação nenhuma, e o conjunto fechou em **194.504**, com teto em 240.000.
+
+**A fonte publica ruído de float32 como se fosse precisão.** O jogo calcula em
+float32 e o dump serializa a representação float64 disso, então 4,2 chega como
+`4.199999809265137`. Publicar os 17 dígitos era duas coisas ruins ao mesmo
+tempo: mentir sobre a precisão do dado, e gastar cinco tokens onde um basta —
+num arquivo com dezenas de milhares desses números. Formatar na precisão do
+float32 cortou **22.253 tokens** sozinho.
+
+**Os marcadores do texto de habilidade agora resolvem.** Eram 3.247 ocorrências
+de `@TotalDamage@` e afins — o cliente as preenche em tempo de execução a partir
+das mesmas séries que o dump publica. Resolvê-las transforma "causa
+@TotalDamage@ de Dano Físico" em "causa 30/60/90/120/150 + 1.5 attack_damage de
+Dano Físico". Era a pendência que o M2 registrou.
+
+**Marcador sem valor vira `(?)`, e não some.** Apagar quebrava a frase — "Garen
+fica com de Armadura" lê pior que a versão com o marcador. `(?)` mantém a frase
+de pé e declara a lacuna, que é a mesma regra do resto do conjunto.
+
+**O resolvedor precisa de TODAS as séries, inclusive as consumidas.** O modelo
+filtra as séries que alguma fórmula já consome, para não publicar o mesmo número
+duas vezes ao lado do efeito resolvido. Mas o texto referencia essas séries, e
+sem elas 63 marcadores a mais viravam `(?)`. O campo com todas existe no modelo
+e **não** é serializado.
+
 ## Aberto
 
 - Valor de `coverage_minimums` — medido no M3.

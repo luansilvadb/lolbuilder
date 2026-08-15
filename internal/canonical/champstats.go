@@ -108,6 +108,7 @@ func (b *Builder) aplicarHabilidades(
 
 		resolvidos, total := b.resolverEfeitos(alvo, &sp, nomes, ranks)
 		alvo.SeriesNomeadas = seriesNaoConsumidas(&sp, ranks)
+		alvo.TodasAsSeries = todasAsSeries(&sp, ranks)
 
 		contar(cov, sp.Slot == gamedata.SlotPassive, resolvidos, total)
 	}
@@ -211,6 +212,24 @@ func seriesNaoConsumidas(sp *gamedata.Spell, ranks int) []SerieNomeada {
 		}
 		valores := recortar(dv.Values, ranks)
 		if len(valores) == 0 || todosZero(valores) {
+			continue
+		}
+		out = append(out, SerieNomeada{Nome: dv.Name, PorRank: valores})
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].Nome < out[j].Nome })
+	return out
+}
+
+// todasAsSeries devolve TODAS as series nomeadas, inclusive as consumidas.
+//
+// Serve so para resolver o texto da habilidade, que referencia series que
+// alguma formula ja consome. Nao e publicada: ao lado do efeito resolvido, ela
+// apresentaria o mesmo numero duas vezes.
+func todasAsSeries(sp *gamedata.Spell, ranks int) []SerieNomeada {
+	var out []SerieNomeada
+	for _, dv := range sp.DataValues {
+		valores := recortar(dv.Values, ranks)
+		if len(valores) == 0 {
 			continue
 		}
 		out = append(out, SerieNomeada{Nome: dv.Name, PorRank: valores})
@@ -344,6 +363,7 @@ func (b *Builder) aplicarSubHabilidades(
 
 		resolvidos, total := b.resolverEfeitos(h, sp, nomes, ranks)
 		h.SeriesNomeadas = seriesNaoConsumidas(sp, ranks)
+		h.TodasAsSeries = todasAsSeries(sp, ranks)
 
 		contarEm(&cov.SubHabilidades, resolvidos, total)
 	}
