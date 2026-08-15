@@ -241,7 +241,7 @@ func TestBonusDeSubEstiloNaoERunaDeSlot(t *testing.T) {
 
 func TestEstilo(t *testing.T) {
 	ds := fixture(t)
-	if len(ds.RuneStyles) != 1 {
+	if len(ds.RuneStyles) != 2 {
 		t.Fatalf("estilos = %d", len(ds.RuneStyles))
 	}
 	st := ds.RuneStyles[0]

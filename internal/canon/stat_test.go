@@ -21,9 +21,10 @@ func TestAllCobreOVocabulario(t *testing.T) {
 		}
 	}
 	// 23 rotulos medidos nos itens compraveis do 16.16, mais forca adaptativa,
-	// que so aparece em itens que nao estao na loja hoje.
-	if len(All) != 24 {
-		t.Errorf("All tem %d stats, esperado 24", len(All))
+	// que so aparece em itens fora da loja, mais as duas aceleracoes que so a
+	// runa Cosmic Insight concede.
+	if len(All) != 26 {
+		t.Errorf("All tem %d stats, esperado 26", len(All))
 	}
 }
 

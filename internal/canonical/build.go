@@ -73,6 +73,10 @@ func (b *Builder) Build(patch string) (*Dataset, error) {
 	if err := b.buildChampStats(ds); err != nil {
 		return nil, err
 	}
+	// Por ultimo: o pre-calculo consome o catalogo ja montado.
+	if err := b.buildComputed(ds); err != nil {
+		return nil, err
+	}
 	return ds, nil
 }
 
@@ -123,6 +127,7 @@ func (b *Builder) buildItems(ds *Dataset) error {
 			Componentes:  it.From,
 			Efeito:       TextoDeEfeito(pt.Description),
 			Compravel:    compravel,
+			Botas:        temCategoria(it.Categories, categoriaBotas),
 		}
 
 		// Os stats saem do locale CANONICO, e nao do traduzido: o vocabulario de
@@ -152,6 +157,18 @@ func (b *Builder) buildItems(ds *Dataset) error {
 	sort.Slice(ds.Items, func(i, j int) bool { return ds.Items[i].ID < ds.Items[j].ID })
 	sort.Strings(ds.Coverage.Itens.SemBlocoNome)
 	return nil
+}
+
+// categoriaBotas e como a fonte marca calcado no campo categories.
+const categoriaBotas = "Boots"
+
+func temCategoria(cats []string, alvo string) bool {
+	for _, c := range cats {
+		if c == alvo {
+			return true
+		}
+	}
+	return false
 }
 
 // buildRunes monta o catalogo de runas e os cinco estilos.

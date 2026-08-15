@@ -1,0 +1,465 @@
+{
+  "_comment": "Semantica das 69 runas jogaveis do sistema Runes Reforged. Sao valores CURADOS: o plugin nao publica bloco estruturado de atributo para runa, e os numeros existem so dentro do texto, misturados com condicao de combate na mesma frase. Um parser generico acertaria a maioria e erraria em silencio nos casos compostos.",
+  "_comment_deteccao": "O que e automatizado e a DETECCAO. A fonte publica majorChangePatchVersion por runa, e o campo patch_da_curadoria guarda o valor no momento em que a entrada foi escrita. Divergiu, a runa mudou e o build aborta pedindo revisao.",
+  "_comment_escopo": "Das 69, apenas 11 somam atributo: os 7 fragmentos de stat e 4 runas menores. As outras 58 dependem de estado de partida. Isso nao e defeito da curadoria — e a natureza do sistema moderno, onde a keystone define comportamento e nao atributo. Cada uma delas traz o motivo escrito, porque runa fora do calculo sem motivo e indistinguivel de runa que alguem esqueceu de curar.",
+  "_comment_incompletas": "As 103 entradas de perks.json incluem 34 que o jogo nao oferece: runas removidas, um registro Template e os titulos cosmeticos de pagina que subStyleBonus referencia. Elas NAO entram aqui — curar entidade que o jogo nao oferece seria ruido.",
+  "curated_from_patch": "16.16",
+  "runes": {
+    "5001": {
+      "kind": "sum_per_level",
+      "stats": {
+        "health": 10
+      },
+      "stats_por_nivel": {
+        "health": 10
+      },
+      "note": "A fonte declara +10-180 de Vida com base no nivel: 10 no nivel 1 e 180 no 18, o que da 10 por nivel acima do primeiro.",
+      "name": "Health Scaling",
+      "patch_da_curadoria": ""
+    },
+    "5005": {
+      "kind": "sum",
+      "stats": {
+        "attack_speed_pct": 10
+      },
+      "name": "Attack Speed",
+      "patch_da_curadoria": ""
+    },
+    "5007": {
+      "kind": "sum",
+      "stats": {
+        "ability_haste": 8
+      },
+      "name": "Ability Haste",
+      "patch_da_curadoria": ""
+    },
+    "5008": {
+      "kind": "sum",
+      "stats": {
+        "adaptive_force": 9
+      },
+      "name": "Adaptive Force",
+      "patch_da_curadoria": ""
+    },
+    "5010": {
+      "kind": "sum",
+      "stats": {
+        "move_speed_pct": 2.5
+      },
+      "name": "Move Speed",
+      "patch_da_curadoria": ""
+    },
+    "5011": {
+      "kind": "sum",
+      "stats": {
+        "health": 65
+      },
+      "name": "Health",
+      "patch_da_curadoria": ""
+    },
+    "5013": {
+      "kind": "sum",
+      "stats": {
+        "tenacity_pct": 15
+      },
+      "note": "A fonte declara tenacidade E resistencia a lentidao no mesmo numero. So a tenacidade tem stat no vocabulario; a resistencia a lentidao vai junto no jogo, mas nao e somada aqui.",
+      "name": "Tenacity and Slow Resist",
+      "patch_da_curadoria": ""
+    },
+    "8005": {
+      "name": "Press the Attack",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Atingir um Campeão inimigo 3 vezes consecutivas causa dano adicional e amplifica seu dano até sair de combate",
+      "patch_da_curadoria": ""
+    },
+    "8008": {
+      "name": "Lethal Tempo",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Atacar um Campeão inimigo concede a você Velocidade de Ataque, até 6 acúmulos. Com o máximo de acúmulos, causa",
+      "patch_da_curadoria": ""
+    },
+    "8009": {
+      "name": "Presence of Mind",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Restaura uma pequena quantidade de Mana ou Energia ao causar dano a um Campeão inimigo. Eliminações restauram",
+      "patch_da_curadoria": "8.7"
+    },
+    "8010": {
+      "name": "Conqueror",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Ganha acúmulos de Força Adaptativa ao atacar Campeões inimigos. Após alcançar 12 acúmulos, cura uma parte do d",
+      "patch_da_curadoria": "9.4"
+    },
+    "8014": {
+      "name": "Coup de Grace",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Causa mais dano a Campeões inimigos com pouca Vida.",
+      "patch_da_curadoria": ""
+    },
+    "8017": {
+      "name": "Cut Down",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Causa mais dano a Campeões inimigos com muita Vida.",
+      "patch_da_curadoria": ""
+    },
+    "8021": {
+      "name": "Fleet Footwork",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Atacar e se movimentar geram acúmulos de Energia. Com 100 acúmulos, seu próximo ataque cura você e concede um",
+      "patch_da_curadoria": ""
+    },
+    "8105": {
+      "name": "Relentless Hunter",
+      "kind": "out_of_scope",
+      "reason": "depende de abates acumulados na partida: Abates únicos concedem VdM permanente fora de combate.",
+      "patch_da_curadoria": "9.9"
+    },
+    "8106": {
+      "name": "Ultimate Hunter",
+      "kind": "out_of_scope",
+      "reason": "depende de abates acumulados na partida: Abates únicos concedem Redução de Tempo de Recarga permanente para a ultimate.",
+      "patch_da_curadoria": "9.9"
+    },
+    "8112": {
+      "name": "Electrocute",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Acertar um Campeão com 3 ataques ou habilidades separadas em 3s causa Dano Adaptativo adicional.",
+      "patch_da_curadoria": ""
+    },
+    "8126": {
+      "name": "Cheap Shot",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Causa Dano Verdadeiro adicional a Campeões inimigos com mobilidade ou ações debilitadas.",
+      "patch_da_curadoria": "9.9"
+    },
+    "8128": {
+      "name": "Dark Harvest",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Causar dano a um Campeão que está com pouca Vida inflige Dano Adaptativo e colhe a alma de sua vítima.",
+      "patch_da_curadoria": "8.23"
+    },
+    "8135": {
+      "name": "Treasure Hunter",
+      "kind": "out_of_scope",
+      "reason": "depende de abates acumulados na partida: Eliminações únicas concedem ouro adicional na primeira vez que são coletadas.",
+      "patch_da_curadoria": ""
+    },
+    "8137": {
+      "name": "Sixth Sense",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Com um longo Tempo de Recarga, detecta automaticamente uma sentinela oculta próxima, rastreando-a para a equip",
+      "patch_da_curadoria": "14.1"
+    },
+    "8139": {
+      "name": "Taste of Blood",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Cura ao causar dano a um Campeão inimigo.",
+      "patch_da_curadoria": ""
+    },
+    "8140": {
+      "name": "Grisly Mementos",
+      "kind": "out_of_scope",
+      "reason": "depende de abates acumulados na partida: Colete 1 Lembranças ao eliminar Campeões, até um máximo de 18. Recebe 6 de Aceleração de Amuleto para cada Lem",
+      "patch_da_curadoria": "14.1"
+    },
+    "8141": {
+      "name": "Deep Ward",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Suas sentinelas na selva inimiga são Profundas, recebendo Vida e Duração. Nível 9: As sentinelas no rio também",
+      "patch_da_curadoria": "14.1"
+    },
+    "8143": {
+      "name": "Sudden Impact",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Depois de usar um avanço, salto, teleporte ou ao sair da furtividade, seus ataques básicos e habilidades de da",
+      "patch_da_curadoria": ""
+    },
+    "8210": {
+      "kind": "sum",
+      "degraus": [
+        {
+          "nivel": 5,
+          "stats": {
+            "ability_haste": 5
+          }
+        },
+        {
+          "nivel": 8,
+          "stats": {
+            "ability_haste": 5
+          }
+        }
+      ],
+      "note": "O nivel 11 concede reducao de recarga da ultimate ao abater, que depende de estado de partida e fica fora.",
+      "name": "Transcendence",
+      "patch_da_curadoria": ""
+    },
+    "8214": {
+      "name": "Summon Aery",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Seus ataques e habilidades enviam Aery até um alvo, causando dano a inimigos ou protegendo aliados com um escu",
+      "patch_da_curadoria": ""
+    },
+    "8224": {
+      "name": "Axiom Arcanist",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Sua ultimate causa mais dano e recebe mais cura e Escudo. Eliminar um Campeão inimigo reduz o Tempo de Recarga",
+      "patch_da_curadoria": "14.1"
+    },
+    "8226": {
+      "name": "Manaflow Band",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Atingir um Campeão inimigo com uma habilidade aumenta permanentemente seu Mana máximo em 25, até o total de 25",
+      "patch_da_curadoria": "8.7"
+    },
+    "8229": {
+      "name": "Arcane Comet",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Ao causar dano a um Campeão com uma habilidade, um cometa é lançado onde ele estiver.",
+      "patch_da_curadoria": ""
+    },
+    "8230": {
+      "name": "Stormraider's Surge",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Causar dano equivalente a 25% da Vida máxima de um Campeão concede um impulso de VdM e Resistência a Lentidão.",
+      "patch_da_curadoria": "16.9"
+    },
+    "8232": {
+      "name": "Waterwalking",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Concede VdM e PdH ou DdA Adaptativos no rio.",
+      "patch_da_curadoria": ""
+    },
+    "8233": {
+      "name": "Absolute Focus",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Acima de 70% de Vida, recebe Dano Adaptativo adicional.",
+      "patch_da_curadoria": ""
+    },
+    "8234": {
+      "kind": "sum",
+      "stats": {
+        "move_speed_pct": 1
+      },
+      "note": "So o 1% incondicional entra. O multiplicador de 7% sobre efeitos de movimentacao e multiplicativo sobre valor que vem de outro lugar, e quebra a separabilidade do objetivo linear.",
+      "name": "Celerity",
+      "patch_da_curadoria": "9.9"
+    },
+    "8236": {
+      "name": "Gathering Storm",
+      "kind": "out_of_scope",
+      "reason": "depende de abates acumulados na partida: Recebe quantidades crescentes de DdA ou PdH Adaptativo ao longo da partida.",
+      "patch_da_curadoria": ""
+    },
+    "8237": {
+      "name": "Scorch",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Sua primeira habilidade de dano a atingir o alvo a cada 10s incinerará Campeões.",
+      "patch_da_curadoria": "9.9"
+    },
+    "8242": {
+      "name": "Unflinching",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Recebe Armadura e Resistência Mágica ao sofrer Controle de Grupo.",
+      "patch_da_curadoria": ""
+    },
+    "8275": {
+      "name": "Nimbus Cloak",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Após conjurar um Feitiço de Invocador, concede um breve aumento de Velocidade de Movimento que permite atraves",
+      "patch_da_curadoria": "8.11"
+    },
+    "8299": {
+      "name": "Last Stand",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Cause mais dano a Campeões enquanto estiver com pouca Vida.",
+      "patch_da_curadoria": ""
+    },
+    "8304": {
+      "name": "Magical Footwear",
+      "kind": "out_of_scope",
+      "reason": "depende do tempo decorrido de partida: Concede botas gratuitamente aos 12 mins, mas não é possível comprar botas antes disso. Cada abate bem-sucedido",
+      "patch_da_curadoria": "9.9"
+    },
+    "8306": {
+      "name": "Hextech Flashtraption",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Enquanto o Flash estiver em Tempo de Recarga, ele é substituído pelo Flash Hextec. Flash Hextec: canalize e de",
+      "patch_da_curadoria": ""
+    },
+    "8313": {
+      "name": "Triple Tonic",
+      "kind": "out_of_scope",
+      "reason": "depende do tempo decorrido de partida: Ao alcançar o nível 3, recebe um Elixir da Avareza. Ao alcançar o nível 6, recebe um Elixir da Força. Ao alcan",
+      "patch_da_curadoria": ""
+    },
+    "8316": {
+      "name": "Jack Of All Trades",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: A cada atributo diferente recebido de itens, recebe um acúmulo de Quebra-galho. Cada acúmulo concede a você 1",
+      "patch_da_curadoria": "9.6"
+    },
+    "8321": {
+      "name": "Cash Back",
+      "kind": "out_of_scope",
+      "reason": "depende do tempo decorrido de partida: Recebe parte do ouro de volta ao comprar itens Lendários.",
+      "patch_da_curadoria": ""
+    },
+    "8345": {
+      "name": "Biscuit Delivery",
+      "kind": "out_of_scope",
+      "reason": "depende do tempo decorrido de partida: Ganha um Biscoito grátis a cada 2min, até o minuto 6. Consumir ou vender Biscoitos aumenta permanentemente sua",
+      "patch_da_curadoria": ""
+    },
+    "8347": {
+      "kind": "sum",
+      "stats": {
+        "summoner_spell_haste": 18,
+        "item_haste": 10
+      },
+      "name": "Cosmic Insight",
+      "patch_da_curadoria": ""
+    },
+    "8351": {
+      "name": "Glacial Augment",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Imobilizar um Campeão inimigo invocará 3 raios glaciais que causam Lentidão a inimigos próximos e reduzem o da",
+      "patch_da_curadoria": ""
+    },
+    "8352": {
+      "name": "Time Warp Tonic",
+      "kind": "out_of_scope",
+      "reason": "depende do tempo decorrido de partida: Poções concedem um pouco de restauração imediatamente.",
+      "patch_da_curadoria": "8.22"
+    },
+    "8360": {
+      "name": "Unsealed Spellbook",
+      "kind": "out_of_scope",
+      "reason": "efeito sem atributo correspondente no vocabulario canonico: Troque Feitiços de Invocador enquanto estiver fora de combate. Trocar para Feitiços de Invocador únicos aument",
+      "patch_da_curadoria": "8.9"
+    },
+    "8369": {
+      "name": "First Strike",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Ao iniciar um combate contra um Campeão, você causa 7% de dano adicional por 3s e recebe ouro com base no dano",
+      "patch_da_curadoria": "11.23"
+    },
+    "8401": {
+      "name": "Shield Bash",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Sempre que receber um escudo, seu próximo ataque básico contra um Campeão causará Dano Adaptativo adicional.",
+      "patch_da_curadoria": "8.23"
+    },
+    "8410": {
+      "name": "Approach Velocity",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: VdM adicional em direção a Campeões inimigos próximos com movimento debilitado, aumentada em Campeões inimigos",
+      "patch_da_curadoria": ""
+    },
+    "8429": {
+      "name": "Conditioning",
+      "kind": "out_of_scope",
+      "reason": "depende do tempo decorrido de partida: Depois de 12min, recebe +8 de Armadura, +8 de Resistência Mágica e aumenta sua Armadura e Resistência Mágica e",
+      "patch_da_curadoria": "9.9"
+    },
+    "8437": {
+      "name": "Grasp of the Undying",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: A cada 4s, seu próximo ataque contra um Campeão causa Dano Mágico adicional, cura você e aumenta permanentemen",
+      "patch_da_curadoria": ""
+    },
+    "8439": {
+      "name": "Aftershock",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Após imobilizar um Campeão inimigo, ganha defesas e depois causa um ataque de Dano Mágico explosivo ao seu red",
+      "patch_da_curadoria": "9.9"
+    },
+    "8444": {
+      "name": "Second Wind",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Após receber dano de um Campeão inimigo, um pouco da Vida perdida é restaurada ao longo do tempo.",
+      "patch_da_curadoria": ""
+    },
+    "8446": {
+      "name": "Demolish",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Seu terceiro ataque contra torres causa dano adicional.",
+      "patch_da_curadoria": ""
+    },
+    "8451": {
+      "name": "Overgrowth",
+      "kind": "out_of_scope",
+      "reason": "depende de abates acumulados na partida: Recebe Vida máxima permanente quando tropas inimigas ou monstros são abatidos perto de você.",
+      "patch_da_curadoria": "8.23"
+    },
+    "8453": {
+      "kind": "sum",
+      "stats": {
+        "heal_shield_power_pct": 5
+      },
+      "note": "So os 5% incondicionais entram. O bonus de 10% em alvos abaixo de 40% de vida depende de estado de combate e fica fora.",
+      "name": "Revitalize",
+      "patch_da_curadoria": ""
+    },
+    "8463": {
+      "name": "Font of Life",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Debilitar o movimento de um Campeão inimigo cura Campeões aliados próximos.",
+      "patch_da_curadoria": ""
+    },
+    "8465": {
+      "name": "Guardian",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Protege aliados nos quais você conjurou habilidades e aliados muito próximos a você. Se você ou um Campeão ali",
+      "patch_da_curadoria": ""
+    },
+    "8473": {
+      "name": "Bone Plating",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Após sofrer dano de um Campeão inimigo, os próximos 3 Ataques ou Habilidades que você sofrer desse inimigo cau",
+      "patch_da_curadoria": "9.9"
+    },
+    "8992": {
+      "name": "Deathfire Touch",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Causar dano a um Campeão com uma habilidade o queima ao longo do tempo.",
+      "patch_da_curadoria": "16.9"
+    },
+    "9101": {
+      "name": "Absorb Life",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Abater um alvo cura você.",
+      "patch_da_curadoria": ""
+    },
+    "9103": {
+      "name": "Legend: Bloodline",
+      "kind": "out_of_scope",
+      "reason": "depende de abates acumulados na partida: Abates de inimigos concedem Roubo de Vida permanente até um limite. Quando o limite é atingido, aumentam sua V",
+      "patch_da_curadoria": ""
+    },
+    "9104": {
+      "name": "Legend: Alacrity",
+      "kind": "out_of_scope",
+      "reason": "depende de abates acumulados na partida: Abates em inimigos concedem Velocidade de Ataque permanente.",
+      "patch_da_curadoria": ""
+    },
+    "9105": {
+      "name": "Legend: Haste",
+      "kind": "out_of_scope",
+      "reason": "depende de abates acumulados na partida: Eliminar inimigos concede Aceleração permanente de habilidades básicas.",
+      "patch_da_curadoria": ""
+    },
+    "9111": {
+      "name": "Triumph",
+      "kind": "out_of_scope",
+      "reason": "depende de abates acumulados na partida: Abates restauram 5% da sua Vida perdida e concedem 20 de ouro adicional.",
+      "patch_da_curadoria": ""
+    },
+    "9923": {
+      "name": "Hail of Blades",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: Recebe uma grande quantidade de Velocidade de Ataque e Dano Verdadeiro adicional pelos primeiros 3 ataques con",
+      "patch_da_curadoria": "16.9"
+    }
+  }
+}

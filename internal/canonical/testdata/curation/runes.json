@@ -1,0 +1,37 @@
+{
+  "_comment": "Curadoria da fixture. Deliberadamente NAO e copia da real: um teste que depende do arquivo de producao quebra quando a Riot mexe numa runa, e a quebra nao teria nada a ver com o que o teste verifica.",
+  "curated_from_patch": "16.99",
+  "runes": {
+    "8005": {
+      "name": "Press the Attack",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: tres ataques consecutivos no mesmo alvo",
+      "patch_da_curadoria": "14.10"
+    },
+    "5008": {
+      "name": "Adaptive Force",
+      "kind": "sum",
+      "stats": {
+        "adaptive_force": 9
+      },
+      "patch_da_curadoria": ""
+    },
+    "5001": {
+      "name": "Health Scaling",
+      "kind": "sum_per_level",
+      "stats": {
+        "health": 10
+      },
+      "stats_por_nivel": {
+        "health": 10
+      },
+      "patch_da_curadoria": ""
+    },
+    "8112": {
+      "name": "Electrocute",
+      "kind": "out_of_scope",
+      "reason": "depende de estado de combate: tres acertos em tres segundos",
+      "patch_da_curadoria": "14.10"
+    }
+  }
+}

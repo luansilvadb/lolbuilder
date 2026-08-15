@@ -20,6 +20,10 @@ func run() error {
 		configPath = flag.String("config", "config.json", "arquivo de configuracao")
 		patchline  = flag.String("patchline", "", "patchline do CDragon a capturar; vazio usa o do config (latest)")
 		patch      = flag.String("patch", "", "patch a montar; vazio usa o snapshot mais recente")
+		objetivo   = flag.String("objective", "", "stat a maximizar; vazio imprime a tabela pre-calculada")
+		adaptativa = flag.String("adaptive", "ad", "como resolver forca adaptativa: ad ou ap")
+		nivel      = flag.Int("level", 18, "nivel do campeao, para as runas que escalam")
+		ouro       = flag.Int("gold", 20000, "orcamento em ouro, para a build de itens")
 	)
 	flag.Usage = usage
 	flag.Parse()
@@ -35,6 +39,10 @@ func run() error {
 		return runSync(*configPath, *patchline)
 	case "build":
 		return runBuild(*configPath, *patch)
+	case "runes":
+		return runRunes(*configPath, *patch, *objetivo, *adaptativa, *nivel)
+	case "builds":
+		return runBuilds(*configPath, *patch, *objetivo, *adaptativa, *ouro)
 	default:
 		usage()
 		return fmt.Errorf("comando desconhecido: %q", cmd)
@@ -52,6 +60,9 @@ comandos:
           patch. Aborta sem escrever se qualquer contagem vier abaixo do minimo.
   build   Monta o modelo canonico a partir de um snapshot e imprime a cobertura
           de leitura. Offline. Grava build/<patch>/canonical.json.
+  runes   Pagina de runas de valor maximo para um objetivo.
+  builds  Maximo de um stat por ouro em 6 slots. NAO e build otima: o calculo
+          ignora passiva e ativa de item.
 
 flags:
 `)
@@ -62,5 +73,8 @@ exemplos:
   lolbuilder -patchline 15.20 sync     # captura retroativa de um patch antigo
   lolbuilder build                     # monta o snapshot mais recente
   lolbuilder -patch 16.16 build        # monta um snapshot especifico
+  lolbuilder -objective armor runes    # pagina de runas com mais armadura
+  lolbuilder -objective ability_power -adaptive ap runes
+  lolbuilder -objective armor -gold 10000 builds
 `)
 }

@@ -21,6 +21,7 @@ type Dataset struct {
 	Champions      []Champion      `json:"champions"`
 	SummonerSpells []SummonerSpell `json:"summoner_spells"`
 
+	Computed Computed `json:"computed"`
 	Coverage Coverage `json:"coverage"`
 }
 
@@ -51,6 +52,11 @@ type Item struct {
 	// referencia mas a fonte nao poe na loja, que sao buffs de torre,
 	// marcadores de estrutura e placeholders.
 	Compravel bool `json:"compravel"`
+
+	// Botas marca o item como calcado. O jogo nao deixa carregar dois, e o
+	// otimizador de build precisa da restricao — sem ela ele proporia uma build
+	// impossivel com cara de otima.
+	Botas bool `json:"botas,omitempty"`
 }
 
 // Rune e uma runa ou fragmento de stat do sistema Runes Reforged.

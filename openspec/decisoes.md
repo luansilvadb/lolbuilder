@@ -216,6 +216,42 @@ campos de crescimento saíram da lista de obrigatórios; os campos **base**
 continuam nela, e `baseStaticHPRegen` segue como lacuna declarada em 8 campeões,
 porque ali a omissão não é interpretável.
 
+## Achados do M4
+
+**A decisão 2 se confirmou por inteiro: só 11 das 69 runas somam atributo.** Os
+7 fragmentos de stat mais 4 menores — Cosmic Insight, Revitalize, Celerity e
+Transcendence. As outras 58 dependem de estado de partida. Isso não é defeito da
+curadoria: é a natureza do sistema moderno, onde a keystone define comportamento
+e não atributo. É também exatamente por isso que a decisão 13 existe.
+
+**Duas runas são parcialmente somáveis, e a parte que fica de fora está
+registrada.** Revitalize dá 5% de cura e escudo incondicional mais 10%
+condicional; Celerity dá 1% de deslocamento fixo mais um multiplicador de 7%
+sobre efeitos de movimentação. Nos dois casos o `note` diz o que não entrou.
+
+**Transcendence exigiu um mecanismo novo: degraus por nível.** Ela dá aceleração
+de habilidade no nível 5 e de novo no 8 — nem valor fixo nem crescimento linear.
+Sem os degraus ela cairia em `out_of_scope`, e o dataset perderia um atributo
+real e incondicional só por não saber expressá-lo.
+
+**Duas grandezas entraram no vocabulário sem que item algum as publique.**
+Aceleração de feitiço de invocador e de item só existem em Cosmic Insight.
+Deixá-las de fora obrigaria a classificar como `out_of_scope` uma runa que dá
+atributo fixo — o zero silencioso que a curadoria existe para impedir.
+
+**O atalho do otimizador de runas é o ótimo, e há teste que prova.** Com objetivo
+linear, cada slot é independente dado o par de estilos, então o máximo da soma é
+a soma dos máximos — 20 pares em vez de 1,5 milhão de páginas. O teste compara
+contra busca exaustiva sobre um catálogo de forma real.
+
+**O dado real revelou um defeito que os testes não pegaram.** A mochila de itens
+dava o valor certo e reconstruía a combinação errada: `Presságio de Randuin` e
+`Couraça do Defunto` saíam **duas vezes** na mesma build de armadura. O ponteiro
+de volta apontava para o estado da camada em que o item entrou, e essa célula
+podia ter sido sobrescrita por um item posterior. A célula passou a carregar a
+combinação inteira — cabe, porque ela tem no máximo 6 itens — e a classe de erro
+sumiu. Há teste de regressão que reproduz.
+
 ## Aberto
 
 - Valor de `coverage_minimums` — medido no M3.

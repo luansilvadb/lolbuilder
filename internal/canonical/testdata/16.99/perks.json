@@ -46,5 +46,17 @@
   "iconPath": "h.png",
   "endOfGameStatDescs": [],
   "recommendationDescriptorAttributes": {}
+ },
+ {
+  "id": 8112,
+  "name": "Electrocute",
+  "majorChangePatchVersion": "14.10",
+  "tooltip": "",
+  "shortDesc": "",
+  "longDesc": "",
+  "recommendationDescriptor": "",
+  "iconPath": "e.png",
+  "endOfGameStatDescs": [],
+  "recommendationDescriptorAttributes": {}
  }
 ]

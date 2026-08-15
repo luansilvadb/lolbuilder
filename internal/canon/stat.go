@@ -53,6 +53,14 @@ const (
 	GoldPer10           Stat = "gold_per_10"
 	HealShieldPowerPct  Stat = "heal_shield_power_pct"
 	Health              Stat = "health"
+
+	// Aceleracao de feiticos e de itens sao grandezas reais e incondicionais,
+	// mas nenhum ITEM as publica no bloco de atributos — so a runa Cosmic
+	// Insight as concede. Entram no vocabulario mesmo assim: deixa-las de fora
+	// obrigaria a classificar como out_of_scope uma runa que da atributo fixo,
+	// que e exatamente o zero silencioso que a curadoria existe para impedir.
+	ItemHaste           Stat = "item_haste"
+	SummonerSpellHaste  Stat = "summoner_spell_haste"
 	Lethality           Stat = "lethality"
 	LifeStealPct        Stat = "life_steal_pct"
 	MagicPenetration    Stat = "magic_penetration"
@@ -72,6 +80,7 @@ var All = []Stat{
 	CriticalDamagePct, GoldPer10, HealShieldPowerPct, Health, Lethality,
 	LifeStealPct, MagicPenetration, MagicPenetrationPct, MagicResist, Mana,
 	MoveSpeed, MoveSpeedPct, OmnivampPct, TenacityPct,
+	ItemHaste, SummonerSpellHaste,
 }
 
 // Percentual informa se o stat e medido em pontos percentuais.
