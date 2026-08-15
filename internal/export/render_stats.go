@@ -7,6 +7,7 @@ import (
 
 	"github.com/luansilvadb/lolbuilder/internal/canonical"
 	"github.com/luansilvadb/lolbuilder/internal/gamedata"
+	"github.com/luansilvadb/lolbuilder/internal/optimize"
 )
 
 // ---------- 05-computed.md ----------
@@ -29,16 +30,19 @@ func renderComputed(ds *canonical.Dataset) string {
 	if len(ds.Computed.PaginasDeRuna) == 0 {
 		b.WriteString("Nenhuma página calculada.\n\n")
 	} else {
-		b.WriteString("| atributo | primário | secundário | pedra fundamental | fragmentos | total |\n")
-		b.WriteString("|---|---|---|---|---|---|\n")
+		b.WriteString("Slot marcado _indiferente_ é slot em que **nenhuma** opção soma nada ao\n")
+		b.WriteString("atributo pedido: a escolha fica livre, e nomear uma runa ali seria publicar\n")
+		b.WriteString("um desempate como se fosse recomendação. Nas páginas abaixo, a pedra\n")
+		b.WriteString("fundamental é sempre indiferente — nenhuma delas concede atributo.\n\n")
+		b.WriteString("| atributo | adaptativa | primário | secundário | runas que contribuem | slots livres | total |\n")
+		b.WriteString("|---|---|---|---|---|---|---:|\n")
 		for _, p := range ds.Computed.PaginasDeRuna {
-			frags := make([]string, 0, len(p.Fragmentos))
-			for _, f := range p.Fragmentos {
-				frags = append(frags, f.Nome)
-			}
-			fmt.Fprintf(&b, "| %s | %s | %s | %s | %s | %s |\n",
-				celula(p.Objetivo), celula(p.NomePrimario), celula(p.NomeSecundario),
-				celula(p.Keystone.Nome), celula(strings.Join(frags, ", ")), celula(vetor(p.Total)))
+			contribuem, livres := separarEscolhas(p)
+			fmt.Fprintf(&b, "| %s | %s | %s | %s | %s | %d de 9 | %s |\n",
+				celula(p.Objetivo), string(p.Resolucao),
+				celula(p.NomePrimario), celula(p.NomeSecundario),
+				celula(strings.Join(contribuem, ", ")), livres,
+				celula(vetor(p.Total)))
 		}
 		b.WriteString("\n")
 	}
@@ -63,6 +67,26 @@ func renderComputed(ds *canonical.Dataset) string {
 		fmt.Fprintf(&b, "\n**Total:** %s\n\n", vetor(bl.Total))
 	}
 	return b.String()
+}
+
+// separarEscolhas divide a pagina entre o que contribui e o que fica livre.
+//
+// Listar so a keystone e os fragmentos escondia de onde vinha o total: a pagina
+// de cura e escudo tem os dois indiferentes, e os 5% vinham de uma runa
+// secundaria que a tabela nao mostrava. O leitor via um numero sem origem.
+func separarEscolhas(p optimize.Pagina) (contribuem []string, livres int) {
+	todas := append([]optimize.Escolha{p.Keystone}, p.Menores...)
+	todas = append(todas, p.Secundarias...)
+	todas = append(todas, p.Fragmentos...)
+
+	for _, e := range todas {
+		if e.Indiferente {
+			livres++
+			continue
+		}
+		contribuem = append(contribuem, fmt.Sprintf("%s (%s)", e.Nome, vetor(e.Stats)))
+	}
+	return contribuem, livres
 }
 
 // ---------- 06-champion-stats.md ----------

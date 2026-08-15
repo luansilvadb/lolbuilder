@@ -14,17 +14,22 @@ A página de valor máximo para cada atributo, no nível 18.
 > a pedra fundamental é quase sempre mais importante que o atributo, e essa
 > escolha o conjunto não calcula. Ver a coluna `escopo` em `02-runes.md`.
 
-| atributo | primário | secundário | pedra fundamental | fragmentos | total |
-|---|---|---|---|---|---|
-| ability_haste | Precisão | Feitiçaria | Pressione o Ataque | Aceleração de Habilidade, Escalamento de Vida, Escalamento de Vida | 18 acel, 360 vida |
-| attack_damage | Precisão | Dominação | Pressione o Ataque | Força Adaptativa, Força Adaptativa, Escalamento de Vida | 18 adapt, 180 vida |
-| attack_speed_pct | Precisão | Dominação | Pressione o Ataque | Velocidade de Ataque, Escalamento de Vida, Escalamento de Vida | 10 %AS, 360 vida |
-| heal_shield_power_pct | Precisão | Determinação | Pressione o Ataque | Velocidade de Ataque, Escalamento de Vida, Escalamento de Vida | 10 %AS, 5 %cura e escudo, 360 vida |
-| health | Precisão | Dominação | Pressione o Ataque | Velocidade de Ataque, Escalamento de Vida, Escalamento de Vida | 10 %AS, 360 vida |
-| move_speed_pct | Precisão | Feitiçaria | Pressione o Ataque | Velocidade de Ataque, Velocidade de Movimento, Escalamento de Vida | 10 %AS, 180 vida, 3.5 %mov |
-| tenacity_pct | Precisão | Dominação | Pressione o Ataque | Velocidade de Ataque, Escalamento de Vida, Tenacidade e Resistência a Lentidão | 10 %AS, 180 vida, 15 %tenacidade |
-| item_haste | Precisão | Inspiração | Pressione o Ataque | Velocidade de Ataque, Escalamento de Vida, Escalamento de Vida | 10 %AS, 360 vida, 10 acel item, 18 acel feitico |
-| summoner_spell_haste | Precisão | Inspiração | Pressione o Ataque | Velocidade de Ataque, Escalamento de Vida, Escalamento de Vida | 10 %AS, 360 vida, 10 acel item, 18 acel feitico |
+Slot marcado _indiferente_ é slot em que **nenhuma** opção soma nada ao
+atributo pedido: a escolha fica livre, e nomear uma runa ali seria publicar
+um desempate como se fosse recomendação. Nas páginas abaixo, a pedra
+fundamental é sempre indiferente — nenhuma delas concede atributo.
+
+| atributo | adaptativa | primário | secundário | runas que contribuem | slots livres | total |
+|---|---|---|---|---|---|---:|
+| ability_haste | ad | Precisão | Feitiçaria | Transcendência (10 acel), Aceleração de Habilidade (8 acel) | 7 de 9 | 18 acel |
+| attack_damage | ad | Precisão | Dominação | Força Adaptativa (9 adapt), Força Adaptativa (9 adapt) | 7 de 9 | 18 adapt |
+| attack_speed_pct | ad | Precisão | Dominação | Velocidade de Ataque (10 %AS) | 8 de 9 | 10 %AS |
+| heal_shield_power_pct | ad | Precisão | Determinação | Revitalizar (5 %cura e escudo) | 8 de 9 | 5 %cura e escudo |
+| health | ad | Precisão | Dominação | Escalamento de Vida (180 vida), Escalamento de Vida (180 vida) | 7 de 9 | 360 vida |
+| move_speed_pct | ad | Precisão | Feitiçaria | Celeridade (1 %mov), Velocidade de Movimento (2.5 %mov) | 7 de 9 | 3.5 %mov |
+| tenacity_pct | ad | Precisão | Dominação | Tenacidade e Resistência a Lentidão (15 %tenacidade) | 8 de 9 | 15 %tenacidade |
+| item_haste | ad | Precisão | Inspiração | Perspicácia Cósmica (10 acel item, 18 acel feitico) | 8 de 9 | 10 acel item, 18 acel feitico |
+| summoner_spell_haste | ad | Precisão | Inspiração | Perspicácia Cósmica (10 acel item, 18 acel feitico) | 8 de 9 | 10 acel item, 18 acel feitico |
 
 ## Máximo de atributo por ouro
 

@@ -247,3 +247,46 @@ func TestCatalogoVazioEErro(t *testing.T) {
 		t.Fatal("catalogo vazio passou")
 	}
 }
+
+// TestSlotSemContribuicaoEIndiferente e o teste do defeito que a revisao do M5
+// encontrou: 49 das 81 escolhas publicadas nas paginas do 16.16 nao somavam
+// nada ao objetivo, e saiam com nome de runa. As nove paginas mostravam
+// "pedra fundamental: Pressione o Ataque" — o menor id, e nao o melhor.
+func TestSlotSemContribuicaoEIndiferente(t *testing.T) {
+	cat := catalogoDeTeste()
+	// Objetivo que NENHUMA runa do catalogo atende.
+	obj, err := ParseObjetivo("lethality", ResolucaoAD)
+	if err != nil {
+		t.Fatal(err)
+	}
+	p, err := MelhorPagina(cat, obj, 18)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	todas := append(append(append([]Escolha{p.Keystone}, p.Menores...), p.Secundarias...), p.Fragmentos...)
+	for _, e := range todas {
+		if !e.Indiferente {
+			t.Errorf("slot sem contribuicao saiu como %q (id %d) em vez de indiferente", e.Nome, e.ID)
+		}
+		if e.Nome != "" || e.ID != 0 {
+			t.Errorf("slot indiferente carregou runa: %+v", e)
+		}
+	}
+}
+
+// TestSlotComContribuicaoNaoEIndiferente: a marca so vale quando de fato nao ha
+// escolha melhor, senao ela esconderia o resultado.
+func TestSlotComContribuicaoNaoEIndiferente(t *testing.T) {
+	obj, _ := ParseObjetivo("armor", ResolucaoAD)
+	p, err := MelhorPagina(catalogoDeTeste(), obj, 18)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p.Keystone.Indiferente || p.Keystone.Nome == "" {
+		t.Errorf("keystone que soma armadura saiu como indiferente: %+v", p.Keystone)
+	}
+	if p.Valor <= 0 {
+		t.Errorf("a pagina perdeu valor: %v", p.Valor)
+	}
+}

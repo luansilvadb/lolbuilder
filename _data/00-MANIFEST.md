@@ -80,9 +80,9 @@ rotativos têm catálogo de itens e ajustes próprios que não estão aqui.
 | Arquivo | Tokens estimados |
 |---|---:|
 | `01-items.md` | 11571 |
-| `02-runes.md` | 5504 |
+| `02-runes.md` | 5620 |
 | `03-summoner-spells.md` | 349 |
 | `04-champions.md` | 79250 |
-| `05-computed.md` | 4379 |
+| `05-computed.md` | 4375 |
 | `06-champion-stats.md` | 92492 |
-| **total sem este arquivo** | **193545** |
+| **total sem este arquivo** | **193657** |

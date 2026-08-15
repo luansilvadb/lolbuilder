@@ -47,10 +47,20 @@ type Estilo struct {
 }
 
 // Escolha e uma runa escolhida, com o que ela concede.
+//
+// Indiferente marca o slot em que NENHUMA opcao soma nada ao objetivo.
+//
+// Sem essa marca, o desempate por menor id vira informacao publicada: as nove
+// paginas do 16.16 sairiam todas com "pedra fundamental: Pressione o Ataque",
+// porque keystone nenhuma soma atributo e todas empatam em zero. Um leitor
+// concluiria que ela foi escolhida por merito. E a mesma classe de erro que
+// publicar zero no lugar de uma lacuna: apresentar artefato do algoritmo como
+// se fosse resposta.
 type Escolha struct {
-	ID    int32        `json:"id"`
-	Nome  string       `json:"nome"`
-	Stats canon.Vector `json:"stats,omitempty"`
+	ID          int32        `json:"id,omitempty"`
+	Nome        string       `json:"nome,omitempty"`
+	Stats       canon.Vector `json:"stats,omitempty"`
+	Indiferente bool         `json:"indiferente,omitempty"`
 }
 
 // Pagina e uma pagina de runas completa.
@@ -158,7 +168,12 @@ func (cat Catalogo) melhorComEstilos(prim, sec Estilo, obj Objetivo, nivel int) 
 	if len(candidatos) > 2 {
 		candidatos = candidatos[:2]
 	}
-	sort.Slice(candidatos, func(i, j int) bool { return candidatos[i].ID < candidatos[j].ID })
+	sort.Slice(candidatos, func(i, j int) bool {
+		if candidatos[i].Indiferente != candidatos[j].Indiferente {
+			return !candidatos[i].Indiferente
+		}
+		return candidatos[i].ID < candidatos[j].ID
+	})
 	p.Secundarias = candidatos
 
 	// Os fragmentos vem do primario, mas sao os mesmos nos cinco estilos.
@@ -189,6 +204,11 @@ func (cat Catalogo) melhorDaLinha(linha []int32, obj Objetivo, nivel int) Escolh
 		if !achou || v > melhorValor || (v == melhorValor && id < melhor.ID) {
 			melhor, melhorValor, achou = e, v, true
 		}
+	}
+	// Nenhuma opcao da linha soma nada: o slot fica livre, e dizer qual runa
+	// "venceu" seria publicar o desempate como se fosse escolha.
+	if melhorValor == 0 {
+		return Escolha{Indiferente: true}
 	}
 	return melhor
 }

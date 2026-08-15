@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/luansilvadb/lolbuilder/internal/canonical"
 	"github.com/luansilvadb/lolbuilder/internal/config"
@@ -90,6 +92,12 @@ func runExport(configPath, patch, out string) error {
 	if err := res.WriteChangelog("changelogs"); err != nil {
 		return err
 	}
+	// O export monta o modelo de qualquer jeito, entao regrava o canonical.json
+	// junto. Sem isso os dois artefatos descrevem o mesmo patch e podem
+	// discordar, porque o do disco fica do ultimo build.
+	if err := gravarCanonical(patch, ds); err != nil {
+		return err
+	}
 	fmt.Printf("\n%d arquivos em %s/, changelog em changelogs/%s\n",
 		len(res.Files), out, res.Changelog.Name)
 
@@ -100,6 +108,19 @@ func runExport(configPath, patch, out string) error {
 				"vai le-los como conhecimento.\n", len(estranhos), out, estranhos)
 	}
 	return nil
+}
+
+// gravarCanonical grava o modelo canonico junto do export.
+func gravarCanonical(patch string, ds *canonical.Dataset) error {
+	destino := filepath.Join("build", patch)
+	if err := os.MkdirAll(destino, 0o755); err != nil {
+		return err
+	}
+	raw, err := json.MarshalIndent(ds, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(filepath.Join(destino, "canonical.json"), append(raw, '\n'), 0o644)
 }
 
 // carregarAnterior monta o patch anterior para o changelog. Falhar aqui nao

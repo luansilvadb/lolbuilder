@@ -302,6 +302,35 @@ duas vezes ao lado do efeito resolvido. Mas o texto referencia essas séries, e
 sem elas 63 marcadores a mais viravam `(?)`. O campo com todas existe no modelo
 e **não** é serializado.
 
+## Revisões durante a revisão do M5
+
+**60% das escolhas publicadas nas páginas eram desempates arbitrários.** Eram
+**49 de 81**. As nove páginas saíam com "pedra fundamental: Pressione o Ataque"
+— não por mérito, mas porque nenhuma keystone soma atributo, todas empatam em
+zero e o desempate é pelo menor id. É a mesma classe de erro que publicar zero
+no lugar de uma lacuna: apresentar um artefato do algoritmo como se fosse
+resposta. E contradizia o aviso do próprio arquivo, que diz duas linhas acima
+que a keystone não entra no cálculo.
+
+Slot em que nenhuma opção contribui passa a sair como `indiferente`. Isso torna
+a tabela mais informativa, e não menos: o leitor vê que a página de armadura
+determina 1 escolha e deixa 8 livres, que é a verdade útil.
+
+**A tabela não mostrava de onde vinha o total.** Ela listava keystone e
+fragmentos; a página de cura e escudo tem os dois indiferentes, e os 5% vinham
+de uma runa secundária que a tabela não exibia — um número sem origem visível.
+As colunas viraram "runas que contribuem", com o que cada uma dá, e "slots
+livres".
+
+**A coluna `motivo` de `02-runes.md` misturava duas semânticas.** "Fora do
+cálculo porque" explica a exclusão de uma runa `out_of_scope`; "ressalva"
+registra a parte do efeito que ficou de fora numa runa que soma **em parte**.
+Sob rótulo único, o leitor não tinha como saber qual dos dois estava lendo.
+
+**O `export` regrava o `canonical.json`.** Ele monta o modelo de qualquer jeito,
+e sem isso os dois artefatos descrevem o mesmo patch e podem discordar — o do
+disco fica do último `build`.
+
 ## Aberto
 
 - Valor de `coverage_minimums` — medido no M3.

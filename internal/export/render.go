@@ -185,8 +185,13 @@ func renderRunes(ds *canonical.Dataset) string {
 }
 
 func tabelaDeRunas(b *strings.Builder, rs []canonical.Rune) {
-	b.WriteString("| id | runa | nome canônico | tipo | escopo | stats | efeito | motivo |\n")
-	b.WriteString("|---|---|---|---|---|---|---|---|\n")
+	// As duas ultimas colunas sao coisas diferentes e por isso nao se juntam:
+	// "fora do calculo porque" explica a exclusao de uma runa out_of_scope, e
+	// "ressalva" registra a parte do efeito que ficou de fora numa runa que soma
+	// EM PARTE. Sob um rotulo unico, o leitor nao teria como saber qual dos dois
+	// esta lendo.
+	b.WriteString("| id | runa | nome canônico | tipo | escopo | stats | efeito | fora do cálculo porque | ressalva |\n")
+	b.WriteString("|---|---|---|---|---|---|---|---|---|\n")
 	for _, r := range rs {
 		tipo := "menor"
 		switch {
@@ -195,13 +200,10 @@ func tabelaDeRunas(b *strings.Builder, rs []canonical.Rune) {
 		case r.Fragmento():
 			tipo = "fragmento"
 		}
-		motivo := r.MotivoDoEscopo
-		if r.RessalvaDoEscopo != "" {
-			motivo = r.RessalvaDoEscopo
-		}
-		fmt.Fprintf(b, "| %d | %s | %s | %s | %s | %s | %s | %s |\n",
+		fmt.Fprintf(b, "| %d | %s | %s | %s | %s | %s | %s | %s | %s |\n",
 			r.ID, celula(r.Nome), celula(r.NomeCanonico), tipo, r.Escopo,
-			celula(vetor(r.StatsDaRuna)), celula(r.Resumo), celula(motivo))
+			celula(vetor(r.StatsDaRuna)), celula(r.Resumo),
+			celula(r.MotivoDoEscopo), celula(r.RessalvaDoEscopo))
 	}
 	b.WriteString("\n")
 }
