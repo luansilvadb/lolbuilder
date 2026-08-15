@@ -331,6 +331,24 @@ Sob rótulo único, o leitor não tinha como saber qual dos dois estava lendo.
 e sem isso os dois artefatos descrevem o mesmo patch e podem discordar — o do
 disco fica do último `build`.
 
+## Achados do M6
+
+**O `-watch-rules` do original não tem função aqui, e por isso não existe.** Ele
+vigiava constantes que ninguém publicava em JSON — 30 slots de runa, 30 pontos
+de maestria. No moderno, `perkstyles.json` publica a estrutura da página, então
+não há constante curada para vigiar. Isso já estava previsto na revisão da
+decisão 5 depois do Spike 0.
+
+**O crescimento de vida é o único eixo contaminado, e isso é novo.** O fragmento
+Escalamento de Vida cresce **com o nível** — 10 por nível — e o jogador pode
+levar dois. Então o crescimento de vida pode vir até 20 por nível acima do
+previsto sem que nada esteja errado. No modo Jade nenhuma runa escalava por
+nível, e o crescimento era limpo em todos os eixos.
+
+A comparação declara essa margem só na vida, e o veredito ali é `inconclusivo`,
+nunca `bate`. Crescer **abaixo** do previsto continua sendo divergência real em
+qualquer eixo: bônus soma, nunca subtrai.
+
 ## Aberto
 
 - Valor de `coverage_minimums` — medido no M3.
@@ -341,4 +359,4 @@ disco fica do último `build`.
   que a resposta é a mesma aqui. Decide-se no M3, confirma-se no M6.
 - Semântica de `ClampSubPartsCalculationPart`, a única parcela de cálculo dos
   173 campeões que o avaliador do original não trata. 6 ocorrências.
-- Nada pendente do M2.
+- Nada pendente. Os seis marcos foram entregues e revisados.

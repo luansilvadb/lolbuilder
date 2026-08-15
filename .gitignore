@@ -7,3 +7,4 @@ snapshots/.tmp-*
 
 # saida do build (regeravel a partir do snapshot)
 /build/
+ingame-samples.json

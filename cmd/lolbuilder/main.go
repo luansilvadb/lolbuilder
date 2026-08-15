@@ -25,6 +25,7 @@ func run() error {
 		nivel      = flag.Int("level", 18, "nivel do campeao, para as runas que escalam")
 		ouro       = flag.Int("gold", 20000, "orcamento em ouro, para a build de itens")
 		saida      = flag.String("out", "_data", "diretorio de destino do export")
+		amostras   = flag.String("samples", "ingame-samples.json", "arquivo de amostras do comando ingame")
 	)
 	flag.Usage = usage
 	flag.Parse()
@@ -42,6 +43,8 @@ func run() error {
 		return runBuild(*configPath, *patch)
 	case "export":
 		return runExport(*configPath, *patch, *saida)
+	case "ingame":
+		return runIngame(*configPath, *patch, *amostras)
 	case "runes":
 		return runRunes(*configPath, *patch, *objetivo, *adaptativa, *nivel)
 	case "builds":
@@ -65,6 +68,9 @@ comandos:
           de leitura. Offline. Grava build/<patch>/canonical.json.
   export  Gera os arquivos do Project e o changelog do patch. Offline. Recusa
           publicar enquanto config.json estiver marcado como provisional.
+  ingame  Confronta o dataset com o que o jogo esta calculando numa partida em
+          andamento. Acumula amostras entre execucoes; com duas ou mais em
+          niveis diferentes, confere a formula pelo crescimento.
   runes   Pagina de runas de valor maximo para um objetivo.
   builds  Maximo de um stat por ouro em 6 slots. NAO e build otima: o calculo
           ignora passiva e ativa de item.
@@ -81,5 +87,6 @@ exemplos:
   lolbuilder -objective armor runes    # pagina de runas com mais armadura
   lolbuilder -objective ability_power -adaptive ap runes
   lolbuilder -objective armor -gold 10000 builds
+  lolbuilder ingame                    # com uma partida aberta, grava e compara
 `)
 }
