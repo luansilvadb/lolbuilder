@@ -68,3 +68,23 @@ func TestAtNoNivel1EABase(t *testing.T) {
 		t.Fatalf("crescimento de um nivel para ele mesmo = %v", got)
 	}
 }
+
+// TestIntervalosCegos: nem todo par de niveis testa a curvatura. Do 7 ao 12 o
+// fator acumula exatamente 5, o mesmo que 5 niveis lineares, e do 1 ao 18
+// acumula 17 — uma amostragem nesses pares passaria com nota maxima mesmo com a
+// formula errada.
+func TestIntervalosCegos(t *testing.T) {
+	cegos := [][2]int{{7, 12}, {1, 18}}
+	for _, c := range cegos {
+		if IntervaloTestaACurvatura(c[0], c[1]) {
+			t.Errorf("o intervalo %d->%d foi dado como diagnostico, mas e cego", c[0], c[1])
+		}
+	}
+	// Estes sao os que revelaram o defeito numa partida real.
+	uteis := [][2]int{{1, 6}, {6, 7}, {1, 12}, {6, 18}}
+	for _, c := range uteis {
+		if !IntervaloTestaACurvatura(c[0], c[1]) {
+			t.Errorf("o intervalo %d->%d foi dado como cego, mas distingue os modelos", c[0], c[1])
+		}
+	}
+}

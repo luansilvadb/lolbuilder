@@ -140,6 +140,12 @@ func imprimirRelatorioIngame(rel *canonical.RelatorioIngame, tol float64) {
 	fmt.Println("Valor absoluto e contaminado por item, fragmento de stat e runa;")
 	fmt.Println("crescimento cancela todo bonus fixo e deixa so a formula do campeao.")
 
+	if len(rel.IntervalosCegos) > 0 {
+		fmt.Printf("\naviso: o(s) intervalo(s) %v nao testam a curvatura da formula.\n",
+			rel.IntervalosCegos)
+		fmt.Println("Neles o crescimento real coincide com o linear ingenuo, entao passariam")
+		fmt.Println("mesmo com a formula errada. Amostre um par como 1 ao 6 para testar de fato.")
+	}
 	if rel.ItensMudaram {
 		fmt.Println("\naviso: a lista de itens mudou entre leituras, e isso quebra o")
 		fmt.Println("cancelamento. As linhas afetadas saem como inconclusivas.")

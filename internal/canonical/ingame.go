@@ -5,6 +5,8 @@ import (
 	"math"
 	"sort"
 	"strings"
+
+	"github.com/luansilvadb/lolbuilder/internal/gamedata"
 )
 
 // A comparacao com a partida existe porque nenhuma fonte publica o que o jogo
@@ -70,6 +72,10 @@ type RelatorioIngame struct {
 	// ItensMudaram avisa que a lista de itens nao e a mesma nas duas amostras,
 	// o que quebra o cancelamento do bonus fixo.
 	ItensMudaram bool `json:"itens_mudaram"`
+
+	// IntervalosCegos lista os pares de nivel em que o crescimento real coincide
+	// com o linear, e que por isso nao testam a curvatura da formula.
+	IntervalosCegos []string `json:"intervalos_cegos,omitempty"`
 }
 
 // Diverge informa se alguma comparacao acusou divergencia real.
@@ -138,6 +144,10 @@ func CompararIngame(ds *Dataset, amostras []AmostraIngame, tolerancia float64) (
 			rel.ItensMudaram = true
 		}
 		niveis := float64(agora.Nivel - antes.Nivel)
+		if !gamedata.IntervaloTestaACurvatura(antes.Nivel, agora.Nivel) {
+			rel.IntervalosCegos = append(rel.IntervalosCegos,
+				fmt.Sprintf("%d→%d", antes.Nivel, agora.Nivel))
+		}
 
 		eixos := []struct {
 			nome     string

@@ -39,6 +39,24 @@ func fatorDeCrescimento(level int) float64 {
 	return n * (0.7025 + 0.0175*n)
 }
 
+// IntervaloTestaACurvatura informa se um par de niveis consegue distinguir o
+// crescimento real do modelo linear ingenuo.
+//
+// Nem todo intervalo consegue. Do 7 ao 12 o fator acumula exatamente 5, que e o
+// mesmo que 5 niveis lineares; do 1 ao 18 acumula 17, idem. Uma amostragem
+// nesses pares passaria com nota maxima mesmo com a formula errada — e foi por
+// sorte que a primeira medicao caiu no 1 ao 6, onde a diferenca e de 1.05
+// nivel efetivo.
+//
+// Sem este aviso, uma leitura cega daria falsa confianca, que e pior que nao
+// ter leitura nenhuma.
+func IntervaloTestaACurvatura(de, ate int) bool {
+	linear := float64(ate - de)
+	real := fatorDeCrescimento(ate) - fatorDeCrescimento(de)
+	d := real - linear
+	return d > 0.0001 || d < -0.0001
+}
+
 // CrescimentoEntre devolve quanto a estatistica sobe de um nivel a outro.
 //
 // E a grandeza que a comparacao com a partida usa, porque ela cancela todo

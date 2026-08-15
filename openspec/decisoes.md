@@ -429,12 +429,20 @@ previsto, que não tem explicação inocente porque bônus soma e nunca subtrai.
 por pouco: os cinco itens equipados quase mascararam o achado. Agora os dois
 sentidos acusam, cada um pelo seu motivo.
 
+**Nem todo intervalo de níveis testa a fórmula.** Do 7 ao 12 o fator acumula
+exatamente 5, que é o mesmo que 5 níveis lineares; do 1 ao 18 acumula 17, idem.
+Uma amostragem nesses pares passaria com nota máxima **mesmo com a fórmula
+errada**. Foi sorte a primeira medição cair no 1→6, onde a diferença é de 1,05
+nível efetivo.
+
+O comando agora avisa quando um intervalo é cego. Sem isso, uma leitura desse
+tipo daria falsa confiança — que é pior que não ter leitura nenhuma.
+
 ## Aberto
 
 - **Cair para a série herdada quando a redefinida não existe no patch inteiro?**
   Ver acima. Hoje o export recusa, que é seguro e correto; a alternativa é
   publicar a herdada declarando a queda.
-- O comando `ingame` nunca rodou contra uma partida real.
 - A curadoria das 58 runas fora do cálculo é julgamento de quem não joga.
 - Seis enums de `mStat` seguem sem curadoria, 20 ocorrências.
 
