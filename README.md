@@ -29,7 +29,7 @@ O `sync` é idempotente: patch já capturado, ele não faz nada. O `export` lê 
 | `sync` | Baixa os catálogos do CommunityDragon nos dois locales, o dump do mapa e o dump de dados do jogo de cada campeão, e grava um snapshot imutável. Aborta sem escrever se qualquer contagem vier abaixo do mínimo. Não precisa do cliente aberto. |
 | `build` | Monta o modelo canônico e imprime a cobertura de extração. Offline. Grava `build/<patch>/canonical.json`. |
 | `export` | Gera os arquivos do Project e o changelog. Offline. Recusa publicar se a cobertura cair abaixo dos mínimos ou o conjunto passar do teto de tokens. |
-| `runes` | Página de runas de valor máximo para um objetivo. |
+| `runes` | Página de runas de valor máximo para um objetivo, com slots livres explícitos. |
 | `builds` | Máximo de um atributo por ouro em 6 slots. **Não** é build ótima. |
 | `ingame` | Confronta o dataset com o que o jogo está calculando numa partida. |
 
@@ -37,10 +37,18 @@ O `sync` é idempotente: patch já capturado, ele não faz nada. O `export` lê 
 go run ./cmd/lolbuilder -objective armor runes
 go run ./cmd/lolbuilder -objective ability_power -adaptive ap runes
 go run ./cmd/lolbuilder -objective attack_damage -gold 10000 builds
+go run ./cmd/lolbuilder -objective armor -format json runes
 ```
 
 Sem `-objective`, os dois imprimem a tabela pré-calculada — a mesma que vai para
 `05-computed.md`.
+
+A saída padrão de `runes` e `builds` é texto humano, com atributos traduzidos,
+slots indiferentes e totais legíveis. Use `-format json` para automação; as
+flags ficam antes do comando, como nas outras opções globais. O JSON contém o
+patch usado, o objetivo, a resolução da força adaptativa, o resultado com as
+chaves canônicas e uma lista de avisos. O stdout contém somente o documento
+JSON, então ele pode ser encaminhado diretamente para outra ferramenta.
 
 ## Fontes
 

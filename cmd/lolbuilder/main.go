@@ -26,6 +26,7 @@ func run() error {
 		ouro       = flag.Int("gold", 20000, "orcamento em ouro, para a build de itens")
 		saida      = flag.String("out", "_data", "diretorio de destino do export")
 		amostras   = flag.String("samples", "ingame-samples.json", "arquivo de amostras do comando ingame")
+		formato    = flag.String("format", "text", "formato da saida de runes/builds: text ou json")
 	)
 	flag.Usage = usage
 	flag.Parse()
@@ -46,9 +47,9 @@ func run() error {
 	case "ingame":
 		return runIngame(*configPath, *patch, *amostras)
 	case "runes":
-		return runRunes(*configPath, *patch, *objetivo, *adaptativa, *nivel)
+		return runRunes(*configPath, *patch, *objetivo, *adaptativa, *nivel, *formato)
 	case "builds":
-		return runBuilds(*configPath, *patch, *objetivo, *adaptativa, *ouro)
+		return runBuilds(*configPath, *patch, *objetivo, *adaptativa, *ouro, *formato)
 	default:
 		usage()
 		return fmt.Errorf("comando desconhecido: %q", cmd)
@@ -87,6 +88,7 @@ exemplos:
   lolbuilder -objective armor runes    # pagina de runas com mais armadura
   lolbuilder -objective ability_power -adaptive ap runes
   lolbuilder -objective armor -gold 10000 builds
+  lolbuilder -objective armor -format json runes
   lolbuilder ingame                    # com uma partida aberta, grava e compara
 `)
 }
