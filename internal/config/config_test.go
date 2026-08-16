@@ -15,6 +15,7 @@ const configValido = `{
   "plugin_path": "plugins/p",
   "game_data_path": "game/data/characters",
   "map_data_path": "game/data/maps/shipping",
+  "item_data_path": "game/items.cdtb.bin.json",
   "locale_canonical": "default",
   "locale_display": "pt_br",
   "mode": {
@@ -24,7 +25,8 @@ const configValido = `{
   },
   "minimums": {
     "item_catalog": 500, "item_shop": 200, "runes": 80,
-    "perk_styles": 5, "champions": 150, "summoner_spells": 7
+    "perk_styles": 5, "champions": 150, "summoner_spells": 7,
+    "item_groups": 16
   },
   "provisional": true,
   "coverage_minimums": {

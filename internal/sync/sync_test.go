@@ -20,14 +20,14 @@ func syncer(min config.Minimums, patchline string) *Syncer {
 
 var minimosOK = config.Minimums{
 	ItemCatalog: 500, ItemShop: 200, Runes: 80,
-	PerkStyles: 5, Champions: 150, SummonerSpells: 7,
+	PerkStyles: 5, Champions: 150, SummonerSpells: 7, ItemGroups: 16,
 }
 
 // medidoNo1616 sao as contagens reais do patch 16.16. Servem de referencia
 // viva: se os minimos subirem acima delas, este teste avisa antes do sync.
 var medidoNo1616 = decoded{
 	modeItems: 705, shopIDs: 266, runes: 103,
-	styles: 5, champions: 173, spells: 9,
+	styles: 5, champions: 173, spells: 9, itemGroups: 20,
 }
 
 func TestValidateAceitaOMedidoNoPatchDeReferencia(t *testing.T) {
@@ -81,6 +81,7 @@ func TestCountEntitiesLigaEntidadeAFonte(t *testing.T) {
 		"perk_styles":     "perkstyles.json",
 		"champions":       "champion-summary.json",
 		"summoner_spells": "summoner-spells.json",
+		"item_groups":     "items.bin.json",
 	}
 	got := s.countEntities(medidoNo1616)
 	if len(got) != len(want) {

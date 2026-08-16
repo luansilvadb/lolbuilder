@@ -1,6 +1,6 @@
 # League of Legends — Summoner's Rift
 
-**Patch 16.16** · capturado em 2026-08-14T09:53:21Z · mapa Summoner's Rift (11), modo CLASSIC
+**Patch 16.16** · capturado em 2026-08-16T04:13:21Z · mapa Summoner's Rift (11), modo CLASSIC
 
 Este conjunto descreve **apenas o Summoner's Rift**. ARAM, Arena e os modos
 rotativos têm catálogo de itens e ajustes próprios que não estão aqui.
@@ -26,13 +26,14 @@ rotativos têm catálogo de itens e ajustes próprios que não estão aqui.
 | Estilos de runa | 5 |
 | Campeões | 173 |
 | Feitiços de invocador | 9 |
+| Grupos de exclusividade de item | 20 |
 
 ## Proveniência
 
 | Origem | O que vem daí |
 |---|---|
 | `cdragon`, plugin | itens, runas, campeões, feitiços — dado publicado pela Riot |
-| `cdragon`, dump do jogo | estatística base e fórmula de habilidade |
+| `cdragon`, dump do jogo | estatística base, fórmula de habilidade e grupos de exclusividade |
 | `curated` | semântica das runas e tradução dos enums de stat |
 | `derived` | os máximos de `05-computed.md` |
 
@@ -46,6 +47,10 @@ rotativos têm catálogo de itens e ajustes próprios que não estão aqui.
   e runas, porque a discussão externa usa o segundo.
 - Um item é **comprável** se aparece em `01-items.md`. O catálogo do modo tem
   entradas que a loja não vende.
+- **Itens do mesmo grupo de exclusividade não se acumulam.** Comprar um trava
+  os outros na loja. Antes de propor qualquer build, confira a coluna `grupos`
+  em `01-items.md`: uma combinação com dois itens do mesmo grupo é impossível
+  de executar, por melhor que os números pareçam.
 
 ## Limites conhecidos
 
@@ -68,6 +73,10 @@ rotativos têm catálogo de itens e ajustes próprios que não estão aqui.
   jogáveis dependem de estado de partida, e a coluna `escopo` de `02-runes.md`
   diz o motivo de cada uma. A página de `05-computed.md` maximiza um atributo,
   e **não** a força do campeão.
+- **20 grupos de exclusividade restringem a loja**, e as combinações de
+  `05-computed.md` já os respeitam. Eles vêm do dump do jogo: o catálogo do
+  cliente não publica essa regra em campo nenhum, e sem ela o cálculo devolvia
+  o ótimo exato de um conjunto que a loja não vende.
 - **A build de `05-computed.md` não é uma build boa.** Ela é o máximo de um
   atributo por ouro, ignorando efeitos — útil como piso de comparação, inútil
   como recomendação de jogo.
@@ -79,10 +88,10 @@ rotativos têm catálogo de itens e ajustes próprios que não estão aqui.
 
 | Arquivo | Tokens estimados |
 |---|---:|
-| `01-items.md` | 11571 |
+| `01-items.md` | 12781 |
 | `02-runes.md` | 5620 |
 | `03-summoner-spells.md` | 349 |
 | `04-champions.md` | 79250 |
-| `05-computed.md` | 4375 |
+| `05-computed.md` | 4189 |
 | `06-champion-stats.md` | 92492 |
-| **total sem este arquivo** | **193657** |
+| **total sem este arquivo** | **194681** |

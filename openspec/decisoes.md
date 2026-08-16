@@ -509,6 +509,73 @@ o arquivo editado à mão.
 Padrão que se repete: cada verificação nova que encosta em dado real encontra
 uma premissa que era verdadeira quando foi escrita e deixou de ser.
 
+## M7 — os grupos de exclusividade, achados por uma pergunta de partida
+
+O gatilho não foi verificação nenhuma: foi o dataset em uso, num Projeto, dando
+uma recomendação impossível. Irelia contra Nasus, quarto item Terminus — e a
+loja recusou, porque o Lembrete Mortal já ocupava a vaga.
+
+**O jogo limita quantos itens de um mesmo grupo cabem no inventário**, e o
+catálogo do plugin não publica isso em campo nenhum: conferido item a item nos
+quatro envolvidos, não há nada. O dado existe só no dump do jogo, em
+`mItemGroups` e `mMaxGroupOwnable`.
+
+O estrago ia além da conversa. Medido contra o `05-computed.md` publicado:
+
+| build publicada | violação |
+|---|---|
+| máximo de penetração de armadura | **4 itens** do grupo LastWhisper |
+| máximo de ouro por 10 | 5 de GoldItems, 5 de DoransItems |
+| máximo de penetração mágica | 3 de VoidPen |
+| máximo de mana | 2 de TearItems |
+| máximo de omnivamp | 2 de DoransItems |
+
+**5 das 24 combinações publicadas não podiam ser compradas.** O otimizador era
+exato — sobre um conjunto viável que não existe. Um ótimo que não existe é pior
+que nenhum ótimo: quem lê não tem como desconfiar, e a regra que o proíbe não
+estava em lugar algum do conjunto.
+
+**Decisão 20: `game/items.cdtb.bin.json` entra como fonte.** São 15,8 MB no
+snapshot, da mesma ordem do dump do mapa (10 MB), que já estava lá.
+
+Não passa por `DecodeStrict`: são 60 mil chaves de topo com identificadores
+opacos, como o dump do mapa e o dos campeões. A vigilância é a contagem mínima
+`item_groups`, medida em 20 e travada em 16 — se a Riot renomear `mItemGroups`,
+a extração cai a zero e o sync aborta antes de escrever.
+
+**Decisão 21: o recorte é o conjunto COMPRÁVEL, e o mínimo conta o mesmo
+conjunto.** O dump mistura os modos — o grupo Botas chega com 30 itens, 9 deles
+variantes de Arena. E grupo cujos membros compráveis cabem no limite não
+restringe nada e sai fora: publicar limite sem consequência ensina uma regra que
+o jogo não aplica, que é o mesmo defeito ao contrário. Dos 270 grupos declarados,
+20 sobrevivem.
+
+O mínimo passou a contar sobre o conjunto publicado, e não sobre a loja: contar
+sobre um conjunto maior deixaria o mínimo passar enquanto o publicado já tivesse
+degradado.
+
+**Decisão 22: a regra de botas única deixa de ser código.** Ela era uma dedução
+à mão pela árvore de componentes, escrita porque a fonte esquece a etiqueta
+`Boots` em alguns aprimoramentos. O grupo `Boots` do jogo é autoritativo e cobre
+os mesmos itens — um caso particular do mecanismo geral, e não uma exceção.
+
+**A mochila trocou de algoritmo.** A grade era slots × ouro × botas; com até 256
+estados de grupo ela passaria de 35 milhões de células e não caberia na memória.
+Reduzir o eixo de ouro não era possível: o MDC dos custos é 1, por causa de dois
+preços de piada (1337 e 3333).
+
+A grade passa a ser slots × estado dos grupos, guardando em cada estado a
+**fronteira de Pareto** em (custo, valor). Continua exata — um ponto só é
+descartado quando existe outro que custa o mesmo ou menos E vale o mesmo ou mais.
+O export inteiro roda em 3 segundos. A busca exaustiva do teste respeita os
+mesmos grupos, senão a verificação seria circular; e quando a instância não cabe,
+a mochila **recusa em vez de aproximar**.
+
+**Padrão que se repetiu de novo:** o defeito não estava na lógica, estava na
+premissa — e quem o revelou foi o dataset sendo usado para o que ele existe.
+Cinco milestones foram fechados com verificação sintética passando; o furo
+apareceu na primeira pergunta real de partida.
+
 ## Aberto
 
 - **Cair para a série herdada quando a redefinida não existe no patch inteiro?**

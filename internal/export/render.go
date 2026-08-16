@@ -126,14 +126,62 @@ func renderItems(ds *canonical.Dataset) string {
 	b.WriteString("> os efeitos: passiva e ativa dependem de estado de combate e estão só na\n")
 	b.WriteString("> coluna `efeito`, em texto.\n\n")
 
-	b.WriteString("| id | item | nome canônico | custo | combina | componentes | stats | efeito |\n")
-	b.WriteString("|---|---|---|---:|---:|---|---|---|\n")
+	escreverGruposDeItem(&b, ds)
+
+	b.WriteString("| id | item | nome canônico | custo | combina | componentes | stats | grupos | efeito |\n")
+	b.WriteString("|---|---|---|---:|---:|---|---|---|---|\n")
 	for _, it := range compraveis {
-		fmt.Fprintf(&b, "| %d | %s | %s | %d | %d | %s | %s | %s |\n",
+		fmt.Fprintf(&b, "| %d | %s | %s | %d | %d | %s | %s | %s | %s |\n",
 			it.ID, celula(it.Nome), celula(it.NomeCanonico), it.Custo, it.Combina,
-			ids(it.Componentes), celula(vetor(it.Stats)), celula(it.Efeito))
+			ids(it.Componentes), celula(vetor(it.Stats)),
+			celula(strings.Join(it.Grupos, ", ")), celula(it.Efeito))
 	}
 	return b.String()
+}
+
+// escreverGruposDeItem publica os limites de posse que o jogo aplica.
+//
+// Sem isto o conjunto afirmava combinações que a loja recusa. O caso que
+// revelou: com Lembrete Mortal equipado o Terminus fica travado, porque os dois
+// são do grupo LastWhisper — e nada no conjunto dizia isso.
+func escreverGruposDeItem(b *strings.Builder, ds *canonical.Dataset) {
+	if len(ds.GruposDeItem) == 0 {
+		return
+	}
+	nome := make(map[int32]string, len(ds.Items))
+	for _, it := range ds.Items {
+		nome[it.ID] = it.Nome
+	}
+
+	b.WriteString("## Grupos de exclusividade\n\n")
+	b.WriteString("O jogo limita quantos itens de um mesmo grupo cabem no inventário. **Comprar\n")
+	b.WriteString("um trava os outros na loja** — não é preferência de build, é regra do jogo. A\n")
+	b.WriteString("coluna `grupos` da tabela abaixo diz a que grupos cada item pertence.\n\n")
+	b.WriteString("> Alguns grupos não têm nome publicado e aparecem pelo identificador interno,\n")
+	b.WriteString("> entre chaves. O que vale é a lista: esses itens se excluem entre si, com\n")
+	b.WriteString("> nome ou sem.\n\n")
+	b.WriteString("| grupo | cabem | itens |\n|---|---:|---|\n")
+	for _, g := range ds.GruposDeItem {
+		// Homonimo dentro do grupo ganha o id: a Lança Negra da Kalista aparece
+		// duas vezes com o mesmo nome, e "X, X" nao diz a ninguem quais sao.
+		repetido := map[string]int{}
+		for _, id := range g.Itens {
+			repetido[nome[id]]++
+		}
+		nomes := make([]string, 0, len(g.Itens))
+		for _, id := range g.Itens {
+			n := nome[id]
+			if n == "" {
+				n = fmt.Sprint(id)
+			} else if repetido[n] > 1 {
+				n = fmt.Sprintf("%s (%d)", n, id)
+			}
+			nomes = append(nomes, n)
+		}
+		fmt.Fprintf(b, "| %s | %d | %s |\n",
+			celula(g.ID), g.Maximo, celula(strings.Join(nomes, ", ")))
+	}
+	b.WriteString("\n")
 }
 
 // ---------- 02-runes.md ----------

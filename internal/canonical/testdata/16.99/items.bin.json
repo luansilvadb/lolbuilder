@@ -1,0 +1,51 @@
+{
+ "Items/ItemGroups/Default": {
+  "mItemGroupID": "Default",
+  "mMaxGroupOwnable": 1,
+  "__type": "ItemGroup"
+ },
+ "Items/ItemGroups/Boots": {
+  "mItemGroupID": "Boots",
+  "mMaxGroupOwnable": 1,
+  "__type": "ItemGroup"
+ },
+ "Items/ItemGroups/GrupoVazio": {
+  "mItemGroupID": "GrupoVazio",
+  "mMaxGroupOwnable": 1,
+  "__type": "ItemGroup"
+ },
+ "Items/ItemGroups/SemLimite": {
+  "mItemGroupID": "SemLimite",
+  "mMaxGroupOwnable": 0,
+  "__type": "ItemGroup"
+ },
+ "Items/1001": {
+  "itemID": 1001,
+  "mItemGroups": ["Items/ItemGroups/Default", "Items/ItemGroups/Boots"],
+  "__type": "ItemData"
+ },
+ "Items/3006": {
+  "itemID": 3006,
+  "mItemGroups": ["Items/ItemGroups/Default", "Items/ItemGroups/Boots"],
+  "__type": "ItemData"
+ },
+ "Items/771001": {
+  "itemID": 771001,
+  "mItemGroups": ["Items/ItemGroups/Default", "Items/ItemGroups/Boots"],
+  "__type": "ItemData"
+ },
+ "Items/3865": {
+  "itemID": 3865,
+  "mItemGroups": ["Items/ItemGroups/Default", "Items/ItemGroups/SemLimite"],
+  "__type": "ItemData"
+ },
+ "{a1b2c3d4}": {
+  "mNaoInteressa": true,
+  "__type": "OutroTipoQualquer"
+ },
+ "Items/ItemGroups/NuncaUsado": {
+  "mItemGroupID": "NuncaUsado",
+  "mMaxGroupOwnable": 1,
+  "__type": "ItemGroup"
+ }
+}

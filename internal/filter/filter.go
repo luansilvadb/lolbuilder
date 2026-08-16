@@ -109,3 +109,23 @@ func ShopIDsOutOfRange(shopIDs []int32, m config.Mode) []int32 {
 	}
 	return out
 }
+
+// PurchasableIDs devolve os ids que a loja do modo de fato oferece.
+//
+// A conjuncao e a mesma que o modelo canonico usa em Item.Compravel, e existe
+// aqui para que o sync possa contar sobre o mesmo conjunto que o build publica.
+// Nenhum dos dois criterios sozinho serve: InStore e verdadeiro para itens de
+// ARAM e Arena, e a lista do mapa referencia buffs de torre e marcadores.
+func PurchasableIDs(itens []model.Item, referenciados []int32) []int32 {
+	naLoja := make(map[int32]bool, len(referenciados))
+	for _, id := range referenciados {
+		naLoja[id] = true
+	}
+	var out []int32
+	for _, it := range itens {
+		if naLoja[it.ID] && it.InStore {
+			out = append(out, it.ID)
+		}
+	}
+	return out
+}

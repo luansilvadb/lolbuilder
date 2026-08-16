@@ -69,7 +69,7 @@ func runBuilds(configPath, patch, objetivo, adaptativa string, ouro int) error {
 	if err != nil {
 		return err
 	}
-	b, err := optimize.MelhorBuild(canonical.CandidatosDeItem(ds), obj, 6, int32(ouro))
+	b, err := optimize.MelhorBuild(canonical.CandidatosDeItem(ds), canonical.GruposParaMochila(ds), obj, 6, int32(ouro))
 	if err != nil {
 		return err
 	}

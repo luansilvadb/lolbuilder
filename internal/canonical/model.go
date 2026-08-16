@@ -21,8 +21,23 @@ type Dataset struct {
 	Champions      []Champion      `json:"champions"`
 	SummonerSpells []SummonerSpell `json:"summoner_spells"`
 
+	// GruposDeItem sao os limites de posse que o jogo aplica sobre a loja deste
+	// modo. Vem do dump de itens; o catalogo do plugin nao os publica.
+	GruposDeItem []GrupoDeItem `json:"grupos_de_item"`
+
 	Computed Computed `json:"computed"`
 	Coverage Coverage `json:"coverage"`
+}
+
+// GrupoDeItem e um limite de quantos itens de um conjunto o jogador pode ter.
+//
+// Botas era o unico caso que o projeto conhecia, deduzido a mao pela arvore de
+// componentes. Sao vinte e seis, e ignora-los fazia o otimizador publicar o
+// otimo exato de um conjunto viavel que nao existe.
+type GrupoDeItem struct {
+	ID     string  `json:"id"`
+	Maximo int     `json:"maximo"`
+	Itens  []int32 `json:"itens"`
 }
 
 // Item e um item do catalogo do modo.
@@ -57,6 +72,11 @@ type Item struct {
 	// deixa carregar dois, e o otimizador de build precisa da restricao — sem
 	// ela ele proporia uma build impossivel com cara de otima.
 	Botas bool `json:"botas,omitempty"`
+
+	// Grupos sao os ids dos grupos de exclusividade a que o item pertence, e que
+	// de fato restringem a loja deste modo. Publicado por item porque e assim
+	// que quem le a tabela descobre por que a loja travou uma compra.
+	Grupos []string `json:"grupos,omitempty"`
 
 	// categoriaBotas guarda a etiqueta DIRETA da fonte, antes da propagacao
 	// pela arvore de componentes. Ver marcarBotas.

@@ -9,6 +9,7 @@ import (
 	"github.com/luansilvadb/lolbuilder/internal/canon"
 	"github.com/luansilvadb/lolbuilder/internal/config"
 	"github.com/luansilvadb/lolbuilder/internal/filter"
+	"github.com/luansilvadb/lolbuilder/internal/itemgroups"
 	"github.com/luansilvadb/lolbuilder/internal/mapdata"
 	"github.com/luansilvadb/lolbuilder/internal/model"
 )
@@ -73,11 +74,54 @@ func (b *Builder) Build(patch string) (*Dataset, error) {
 	if err := b.buildChampStats(ds); err != nil {
 		return nil, err
 	}
+	// Antes do pre-calculo: o otimizador de build depende dos grupos para nao
+	// propor combinacao que a loja recusa.
+	if err := b.buildGruposDeItem(ds); err != nil {
+		return nil, err
+	}
 	// Por ultimo: o pre-calculo consome o catalogo ja montado.
 	if err := b.buildComputed(ds); err != nil {
 		return nil, err
 	}
 	return ds, nil
+}
+
+// buildGruposDeItem carrega os limites de posse do dump de itens do jogo.
+//
+// Recorta ao conjunto COMPRAVEL, e nao ao catalogo: o dump mistura os modos, e o
+// grupo Botas chega com 30 itens dos quais 9 sao variantes de Arena que a loja
+// do Summoner's Rift nunca oferece. Um grupo cujos membros compraveis cabem no
+// limite nao restringe nada e sai fora — publicar limite sem consequencia ensina
+// uma regra que o jogo nao aplica, que e o mesmo defeito ao contrario.
+func (b *Builder) buildGruposDeItem(ds *Dataset) error {
+	raw, err := b.ler("items.bin.json")
+	if err != nil {
+		return err
+	}
+	todos, err := itemgroups.Ler(raw)
+	if err != nil {
+		return err
+	}
+
+	var compraveis []int32
+	for _, it := range ds.Items {
+		if it.Compravel {
+			compraveis = append(compraveis, it.ID)
+		}
+	}
+	restritos := itemgroups.Restringir(todos, compraveis)
+
+	ds.GruposDeItem = make([]GrupoDeItem, 0, len(restritos))
+	for _, g := range restritos {
+		ds.GruposDeItem = append(ds.GruposDeItem,
+			GrupoDeItem{ID: g.ID, Maximo: g.Maximo, Itens: g.Itens})
+	}
+
+	porItem := itemgroups.PorItem(restritos)
+	for i := range ds.Items {
+		ds.Items[i].Grupos = porItem[ds.Items[i].ID]
+	}
+	return nil
 }
 
 // buildItems monta o catalogo e decide o que e compravel.

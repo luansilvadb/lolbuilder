@@ -43,18 +43,18 @@ respeitando a regra de botas únicas.
 
 ### maximo de ability_haste por ouro, ignorando efeitos de item
 
-13900 de ouro dos 20000 disponíveis, em 6 slots. Força adaptativa resolvida como ad.
+15500 de ouro dos 20000 disponíveis, em 6 slots. Força adaptativa resolvida como ad.
 
 | id | item | custo | stats |
 |---|---|---:|---|
 | 3003 | Cajado do Arcanjo | 2900 | 25 acel, 70 AP, 600 mana |
-| 3171 | Lucidez Escarlate | 900 | 20 acel, 45 mov |
+| 3110 | Coração Congelado | 2500 | 20 acel, 75 armadura, 400 mana |
 | 4628 | Foco do Horizonte | 2700 | 25 acel, 75 AP |
 | 4629 | Ímpeto Cósmico | 3000 | 25 acel, 70 AP, 350 vida, 4 %mov |
 | 6617 | Regenerador de Pedra Lunar | 2200 | 20 acel, 25 AP, 125 %regen mana, 200 vida |
 | 6620 | Ecos de Helia | 2200 | 20 acel, 35 AP, 125 %regen mana, 200 vida |
 
-**Total:** 135 acel, 275 AP, 250 %regen mana, 750 vida, 600 mana, 45 mov, 4 %mov
+**Total:** 135 acel, 275 AP, 75 armadura, 250 %regen mana, 750 vida, 1000 mana, 4 %mov
 
 ### maximo de ability_power por ouro, ignorando efeitos de item
 
@@ -88,16 +88,13 @@ respeitando a regra de botas únicas.
 
 ### maximo de armor_penetration_pct por ouro, ignorando efeitos de item
 
-10750 de ouro dos 20000 disponíveis, em 6 slots. Força adaptativa resolvida como ad.
+3000 de ouro dos 20000 disponíveis, em 6 slots. Força adaptativa resolvida como ad.
 
 | id | item | custo | stats |
 |---|---|---:|---|
-| 3033 | Lembrete Mortal | 3000 | 30 %pen armadura, 35 AD, 25 %crit |
-| 3035 | Último Sussurro | 1450 | 18 %pen armadura, 20 AD |
-| 3036 | Lembranças do Lorde Dominik | 3300 | 35 %pen armadura, 35 AD, 25 %crit |
 | 6694 | Rancor de Serylda | 3000 | 15 acel, 35 %pen armadura, 45 AD |
 
-**Total:** 15 acel, 118 %pen armadura, 135 AD, 50 %crit
+**Total:** 15 acel, 35 %pen armadura, 45 AD
 
 ### maximo de attack_damage por ouro, ignorando efeitos de item
 
@@ -201,17 +198,13 @@ respeitando a regra de botas únicas.
 
 ### maximo de gold_per_10 por ouro, ignorando efeitos de item
 
-2000 de ouro dos 20000 disponíveis, em 6 slots. Força adaptativa resolvida como ad.
+400 de ouro dos 20000 disponíveis, em 6 slots. Força adaptativa resolvida como ad.
 
 | id | item | custo | stats |
 |---|---|---:|---|
 | 3869 | Oposição Celestial | 400 | 75 %regen vida, 75 %regen mana, 9 ouro/10, 200 vida |
-| 3870 | Criassonhos | 400 | 75 %regen vida, 75 %regen mana, 9 ouro/10, 200 vida |
-| 3871 | Invadomínio de Zaz'Zak | 400 | 75 %regen vida, 75 %regen mana, 9 ouro/10, 200 vida |
-| 3876 | Trenó do Solstício | 400 | 75 %regen vida, 75 %regen mana, 9 ouro/10, 200 vida |
-| 3877 | Canção de Sangue | 400 | 75 %regen vida, 75 %regen mana, 9 ouro/10, 200 vida |
 
-**Total:** 375 %regen vida, 375 %regen mana, 45 ouro/10, 1000 vida
+**Total:** 75 %regen vida, 75 %regen mana, 9 ouro/10, 200 vida
 
 ### maximo de heal_shield_power_pct por ouro, ignorando efeitos de item
 
@@ -287,16 +280,14 @@ respeitando a regra de botas únicas.
 
 ### maximo de magic_penetration_pct por ouro, ignorando efeitos de item
 
-8200 de ouro dos 20000 disponíveis, em 6 slots. Força adaptativa resolvida como ad.
+4100 de ouro dos 20000 disponíveis, em 6 slots. Força adaptativa resolvida como ad.
 
 | id | item | custo | stats |
 |---|---|---:|---|
 | 3135 | Cajado do Vazio | 3000 | 95 AP, 40 %pen magica |
-| 3137 | Criptoflora | 3000 | 20 acel, 75 AP, 30 %pen magica |
 | 3175 | Sapatos Enfeitiçados | 1100 | 20 pen magica, 8 %pen magica, 45 mov |
-| 4630 | Joia da Ruína | 1100 | 25 AP, 13 %pen magica |
 
-**Total:** 20 acel, 195 AP, 20 pen magica, 91 %pen magica, 45 mov
+**Total:** 95 AP, 20 pen magica, 48 %pen magica, 45 mov
 
 ### maximo de magic_resist por ouro, ignorando efeitos de item
 
@@ -315,18 +306,18 @@ respeitando a regra de botas únicas.
 
 ### maximo de mana por ouro, ignorando efeitos de item
 
-16150 de ouro dos 20000 disponíveis, em 6 slots. Força adaptativa resolvida como ad.
+16250 de ouro dos 20000 disponíveis, em 6 slots. Força adaptativa resolvida como ad.
 
 | id | item | custo | stats |
 |---|---|---:|---|
 | 2503 | Tocha de Chamas Negras | 2800 | 20 acel, 80 AP, 600 mana |
 | 3003 | Cajado do Arcanjo | 2900 | 25 acel, 70 AP, 600 mana |
+| 3110 | Coração Congelado | 2500 | 20 acel, 75 armadura, 400 mana |
 | 3118 | Malevolência | 2700 | 15 acel, 90 AP, 600 mana |
-| 3119 | Aproximação Invernal | 2400 | 15 acel, 550 vida, 500 mana |
 | 6655 | Eco de Luden | 2750 | 10 acel, 100 AP, 600 mana |
 | 6657 | Bastão das Eras | 2600 | 45 AP, 350 vida, 500 mana |
 
-**Total:** 85 acel, 385 AP, 900 vida, 3400 mana
+**Total:** 90 acel, 385 AP, 75 armadura, 350 vida, 3300 mana
 
 ### maximo de move_speed por ouro, ignorando efeitos de item
 
@@ -355,17 +346,16 @@ respeitando a regra de botas únicas.
 
 ### maximo de omnivamp_pct por ouro, ignorando efeitos de item
 
-7950 de ouro dos 20000 disponíveis, em 6 slots. Força adaptativa resolvida como ad.
+7550 de ouro dos 20000 disponíveis, em 6 slots. Força adaptativa resolvida como ad.
 
 | id | item | custo | stats |
 |---|---|---:|---|
 | 1055 | Lâmina de Doran | 450 | 10 AD, 80 vida, 2.5 %omnivamp |
-| 1086 | Arco de Doran | 400 | 8 AD, 15 %AS, 1.5 %omnivamp |
 | 2517 | Fome Eterna | 3100 | 65 AD, 5 %omnivamp, 20 %tenacidade |
 | 3008 | Grevas Vorazes | 1000 | 45 mov, 4 %omnivamp |
 | 3146 | Pistola Laminar Hextec | 3000 | 80 AP, 40 AD, 10 %omnivamp |
 
-**Total:** 80 AP, 123 AD, 15 %AS, 80 vida, 45 mov, 23 %omnivamp, 20 %tenacidade
+**Total:** 80 AP, 115 AD, 80 vida, 45 mov, 21.5 %omnivamp, 20 %tenacidade
 
 ### maximo de tenacity_pct por ouro, ignorando efeitos de item
 

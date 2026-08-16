@@ -1,12 +1,13 @@
 {
   "patch": "16.16",
   "patch_full": "16.16.8049184+branch.releases-16-16.content.release",
-  "captured_at": "2026-08-14T09:53:21Z",
+  "captured_at": "2026-08-16T04:13:21Z",
   "source": "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/",
   "patchline": "latest",
   "counts": {
     "champions": 173,
     "item_catalog": 705,
+    "item_groups": 20,
     "item_shop": 266,
     "perk_styles": 5,
     "runes": 103,
@@ -1400,6 +1401,10 @@
     "characters/zyra/zyra.bin.json": {
       "etag": "\"6a7c1b73-10af3\"",
       "bytes": 68339
+    },
+    "items.bin.json": {
+      "etag": "W/\"6a7c1bc1-f22e5f\"",
+      "bytes": 15871583
     },
     "items.json": {
       "etag": "\"6a7c1cfe-a6cd3\"",

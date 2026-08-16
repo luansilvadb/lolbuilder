@@ -23,7 +23,12 @@ const (
 		"from":[],"to":[],"categories":["Boots"],"maxStacks":1,"requiredChampion":"",
 		"requiredAlly":"","requiredBuffCurrencyName":"","requiredBuffCurrencyCost":0,
 		"specialRecipe":0,"isEnchantment":false,"price":300,"priceTotal":300,
-		"displayInItemSets":true,"iconPath":"a.png"}]`
+		"displayInItemSets":true,"iconPath":"a.png"},
+		{"id":3006,"name":"Berserker's Greaves","description":"","active":false,"inStore":true,
+		"from":[1001],"to":[],"categories":["Boots"],"maxStacks":1,"requiredChampion":"",
+		"requiredAlly":"","requiredBuffCurrencyName":"","requiredBuffCurrencyCost":0,
+		"specialRecipe":0,"isEnchantment":false,"price":800,"priceTotal":1100,
+		"displayInItemSets":true,"iconPath":"b.png"}]`
 
 	fixPerks = `[{"id":8005,"name":"Press the Attack","majorChangePatchVersion":"14.10",
 		"tooltip":"","shortDesc":"","longDesc":"","recommendationDescriptor":"",
@@ -45,7 +50,7 @@ const (
 
 	fixMapa = `{"Maps/Shipping/Map11/Modes/CLASSIC":{"__type":"GameModeMapData",
 		"mModeName":"CLASSIC","itemLists":["{a}"]},
-		"{a}":{"__type":"GameModeItemList","mItems":["Items/1001"]}}`
+		"{a}":{"__type":"GameModeItemList","mItems":["Items/1001","Items/3006"]}}`
 
 	fixChampion = `{"id":86,"contentId":"c","name":"Garen","alias":"Garen","title":"t",
 		"shortBio":"b","isVisibleInClient":true,
@@ -60,22 +65,33 @@ const (
 
 	fixDump = `{"Characters/Garen/CharacterRecords/Root":{"__type":"CharacterRecord",
 		"mCharacterName":"Garen","spells":[],"spellNames":[],"mCharacterPassiveSpell":""}}`
+
+	// Dois itens no mesmo grupo, para que ele restrinja de fato — grupo com um
+	// membro so seria descartado por nao poder ser violado.
+	fixItensBin = `{
+		"Items/ItemGroups/Default":{"__type":"ItemGroup","mItemGroupID":"Default","mMaxGroupOwnable":1},
+		"Items/ItemGroups/Boots":{"__type":"ItemGroup","mItemGroupID":"Boots","mMaxGroupOwnable":1},
+		"Items/1001":{"__type":"ItemData","itemID":1001,
+		 "mItemGroups":["Items/ItemGroups/Default","Items/ItemGroups/Boots"]},
+		"Items/3006":{"__type":"ItemData","itemID":3006,
+		 "mItemGroups":["Items/ItemGroups/Default","Items/ItemGroups/Boots"]}}`
 )
 
 // servidorDeFontes responde a todas as URLs que o sync busca.
 func servidorDeFontes(t *testing.T, falhaEm string) *httptest.Server {
 	t.Helper()
 	corpo := map[string]string{
-		"items.json":            fixItems,
-		"perks.json":            fixPerks,
-		"perkstyles.json":       fixStyles,
-		"champion-summary.json": fixSummary,
-		"summoner-spells.json":  fixSpells,
-		"champions/86.json":     fixChampion,
-		"map11/map11.bin.json":  fixMapa,
-		"garen/garen.bin.json":  fixDump,
-		"content-metadata.json": `{"version":"16.99.1+branch.releases-16-99.content.release"}`,
-		"json/status.live.txt":  "2026-08-15T00:00:00Z done",
+		"items.json":               fixItems,
+		"perks.json":               fixPerks,
+		"perkstyles.json":          fixStyles,
+		"champion-summary.json":    fixSummary,
+		"summoner-spells.json":     fixSpells,
+		"champions/86.json":        fixChampion,
+		"map11/map11.bin.json":     fixMapa,
+		"garen/garen.bin.json":     fixDump,
+		"game/items.cdtb.bin.json": fixItensBin,
+		"content-metadata.json":    `{"version":"16.99.1+branch.releases-16-99.content.release"}`,
+		"json/status.live.txt":     "2026-08-15T00:00:00Z done",
 	}
 
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -100,6 +116,7 @@ func cfgDeTeste(t *testing.T, base string) *config.Config {
 		BaseURL: base, Patchline: "latest",
 		PluginPath: "plugins/p", GameDataPath: "game/data/characters",
 		MapDataPath:     "game/data/maps/shipping",
+		ItemDataPath:    "game/items.cdtb.bin.json",
 		LocaleCanonical: "default", LocaleDisplay: "pt_br",
 		Mode: config.Mode{
 			Name: "classic", GameMode: "CLASSIC", MapID: 11,
@@ -108,7 +125,7 @@ func cfgDeTeste(t *testing.T, base string) *config.Config {
 		},
 		Minimums: config.Minimums{
 			ItemCatalog: 1, ItemShop: 1, Runes: 1,
-			PerkStyles: 1, Champions: 1, SummonerSpells: 1,
+			PerkStyles: 1, Champions: 1, SummonerSpells: 1, ItemGroups: 1,
 		},
 		SnapshotsDir:       t.TempDir(),
 		HTTPTimeoutSeconds: 5,
@@ -132,6 +149,7 @@ func TestRunGravaOSnapshotCompleto(t *testing.T) {
 	esperados := []string{
 		"capture.json", "items.json", "perks.json", "perkstyles.json",
 		"champion-summary.json", "summoner-spells.json", "map11.bin.json",
+		"items.bin.json",
 		"champions/86.json", "pt_br/items.json", "pt_br/champions/86.json",
 		"characters/garen/garen.bin.json",
 	}
@@ -145,8 +163,12 @@ func TestRunGravaOSnapshotCompleto(t *testing.T) {
 	if err != nil || cap == nil {
 		t.Fatalf("capture.json = %v (%v)", cap, err)
 	}
-	if cap.Counts["champions"] != 1 || cap.Counts["item_shop"] != 1 {
+	if cap.Counts["champions"] != 1 || cap.Counts["item_shop"] != 2 {
 		t.Errorf("contagens = %+v", cap.Counts)
+	}
+	// O grupo Botas tem os dois itens da loja, entao restringe de fato.
+	if cap.Counts["item_groups"] != 1 {
+		t.Errorf("grupos de exclusividade nao contados: %+v", cap.Counts)
 	}
 	if cap.Patchline != "latest" {
 		t.Errorf("procedencia perdida: %q", cap.Patchline)
@@ -267,16 +289,17 @@ func TestRunConfereOLocaleDeExibicao(t *testing.T) {
 // pelo teste que sobrescreve so um caminho.
 func servidorDeFontesHandler(w http.ResponseWriter, r *http.Request) {
 	corpo := map[string]string{
-		"items.json":            fixItems,
-		"perks.json":            fixPerks,
-		"perkstyles.json":       fixStyles,
-		"champion-summary.json": fixSummary,
-		"summoner-spells.json":  fixSpells,
-		"champions/86.json":     fixChampion,
-		"map11/map11.bin.json":  fixMapa,
-		"garen/garen.bin.json":  fixDump,
-		"content-metadata.json": `{"version":"16.99.1+x"}`,
-		"json/status.live.txt":  "2026-08-15T00:00:00Z done",
+		"items.json":               fixItems,
+		"perks.json":               fixPerks,
+		"perkstyles.json":          fixStyles,
+		"champion-summary.json":    fixSummary,
+		"summoner-spells.json":     fixSpells,
+		"champions/86.json":        fixChampion,
+		"map11/map11.bin.json":     fixMapa,
+		"garen/garen.bin.json":     fixDump,
+		"game/items.cdtb.bin.json": fixItensBin,
+		"content-metadata.json":    `{"version":"16.99.1+x"}`,
+		"json/status.live.txt":     "2026-08-15T00:00:00Z done",
 	}
 	for sufixo, body := range corpo {
 		if strings.HasSuffix(r.URL.Path, sufixo) {

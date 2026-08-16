@@ -46,6 +46,12 @@ type Minimums struct {
 	PerkStyles     int `json:"perk_styles"`
 	Champions      int `json:"champions"`
 	SummonerSpells int `json:"summoner_spells"`
+
+	// ItemGroups e o minimo de grupos de exclusividade que restringem a loja do
+	// modo. E a unica vigilancia dessa fonte: ela nao passa por DecodeStrict,
+	// entao uma renomeacao de campo pela Riot zeraria a extracao em silencio e o
+	// otimizador voltaria a publicar build que a loja se recusa a vender.
+	ItemGroups int `json:"item_groups"`
 }
 
 // CoverageMinimums define a taxa minima de extracao aceitavel, em pontos
@@ -86,6 +92,11 @@ type Config struct {
 	// itens a loja do modo vende: items.json nao tem campo de mapa, e InStore
 	// e verdadeiro para itens de ARAM e Arena tambem.
 	MapDataPath string `json:"map_data_path"`
+
+	// ItemDataPath e o dump de itens do jogo. E a unica fonte dos grupos de
+	// exclusividade: o catalogo do plugin nao publica isso em campo nenhum, e
+	// sem eles o otimizador monta build que a loja se recusa a vender.
+	ItemDataPath string `json:"item_data_path"`
 
 	LocaleCanonical string `json:"locale_canonical"`
 	LocaleDisplay   string `json:"locale_display"`
@@ -150,6 +161,7 @@ func (c *Config) validate() error {
 		{"plugin_path", c.PluginPath},
 		{"game_data_path", c.GameDataPath},
 		{"map_data_path", c.MapDataPath},
+		{"item_data_path", c.ItemDataPath},
 		{"locale_canonical", c.LocaleCanonical},
 		{"locale_display", c.LocaleDisplay},
 		{"snapshots_dir", c.SnapshotsDir},
@@ -179,6 +191,7 @@ func (c *Config) validate() error {
 		"perk_styles":     c.Minimums.PerkStyles,
 		"champions":       c.Minimums.Champions,
 		"summoner_spells": c.Minimums.SummonerSpells,
+		"item_groups":     c.Minimums.ItemGroups,
 	}
 	for name, v := range mins {
 		if v <= 0 {
@@ -274,6 +287,12 @@ func (c *Config) GameDataURL(file string) string {
 // MapDataURL monta a URL do dump do mapa do modo.
 func (c *Config) MapDataURL() string {
 	return fmt.Sprintf("%s/%s/%s/%s", c.BaseURL, c.Patchline, c.MapDataPath, MapDataFile(c.Mode.MapID))
+}
+
+// ItemDataURL e o dump de itens do jogo, de onde saem os grupos de
+// exclusividade.
+func (c *Config) ItemDataURL() string {
+	return fmt.Sprintf("%s/%s/%s", c.BaseURL, c.Patchline, c.ItemDataPath)
 }
 
 // StatusURL e o sinal de que o CDragon terminou de processar o patchline.

@@ -22,6 +22,7 @@ import (
 	"github.com/luansilvadb/lolbuilder/internal/cdragon"
 	"github.com/luansilvadb/lolbuilder/internal/config"
 	"github.com/luansilvadb/lolbuilder/internal/filter"
+	"github.com/luansilvadb/lolbuilder/internal/itemgroups"
 	"github.com/luansilvadb/lolbuilder/internal/locale"
 	"github.com/luansilvadb/lolbuilder/internal/mapdata"
 	"github.com/luansilvadb/lolbuilder/internal/model"
@@ -42,6 +43,9 @@ var catalogFiles = []string{
 	"champion-summary.json",
 	"summoner-spells.json",
 }
+
+// itemDataFile e o nome com que o dump de itens do jogo entra no snapshot.
+const itemDataFile = "items.bin.json"
 
 // Syncer executa uma captura.
 type Syncer struct {
@@ -217,6 +221,33 @@ func (s *Syncer) Run() (*Result, error) {
 			len(fora), fora)
 	}
 
+	// 7b. Dump de itens do jogo — a unica fonte dos grupos de exclusividade.
+	//
+	// O catalogo do plugin nao publica isso em campo nenhum, conferido item a
+	// item. Sem esta fonte o otimizador calculava o otimo exato sobre um
+	// conjunto viavel errado, e 5 das 24 builds do 16.16 sairam impossiveis de
+	// comprar.
+	gotItemData, err := s.fetchOne(itemDataFile, s.cfg.ItemDataURL(), prev, prevPatch)
+	if err != nil {
+		return nil, fmt.Errorf("dump de itens do jogo: %w — "+
+			"veja item_data_path em config.json", err)
+	}
+	all = append(all, *gotItemData)
+
+	grupos, err := itemgroups.Ler(gotItemData.data)
+	if err != nil {
+		return nil, err
+	}
+	// Restringe ao que a loja do modo oferece: o dump mistura os modos, e um
+	// grupo cujos membros do modo cabem no limite nao restringe nada.
+	//
+	// Recorta pelo mesmo conjunto que o build publica — referenciado pela loja E
+	// declarado em loja pela fonte — para que o minimo guarde exatamente o que
+	// sai no dataset. Contar sobre um conjunto maior aqui deixaria o minimo
+	// passar enquanto o publicado ja tivesse degradado.
+	grupos = itemgroups.Restringir(grupos, filter.PurchasableIDs(items, shopIDs))
+	s.logf("  %d grupo(s) de exclusividade restringem a loja do modo", len(grupos))
+
 	// 8. Detalhe de cada campeao do modo, nos dois locales.
 	sort.Slice(modeChamps, func(i, j int) bool { return modeChamps[i].ID < modeChamps[j].ID })
 	for _, c := range modeChamps {
@@ -271,6 +302,8 @@ func (s *Syncer) Run() (*Result, error) {
 		styles:    len(styles.Styles),
 		champions: len(modeChamps),
 		spells:    len(modeSpells),
+
+		itemGroups: len(grupos),
 	})
 	counts := countMap(counted)
 
@@ -484,6 +517,13 @@ type decoded struct {
 	styles    int // perkstyles.json
 	champions int // champion-summary.json, recortado pela faixa de id
 	spells    int // summoner-spells.json, recortado por gameModes
+
+	// itemGroups sao os grupos de exclusividade que restringem a loja DESTE
+	// modo, e nao os declarados no dump. Fica aqui com minimo proprio porque e
+	// ele que detecta a degradacao desta fonte: nao ha DecodeStrict num arquivo
+	// de 60 mil chaves opacas, entao se a Riot renomear mItemGroups a extracao
+	// cai para zero em silencio e o otimizador volta a publicar build impossivel.
+	itemGroups int
 }
 
 // entityCount liga uma entidade contada ao arquivo que a alimenta e ao minimo
@@ -509,6 +549,7 @@ func (s *Syncer) countEntities(d decoded) []entityCount {
 		{"perk_styles", "perkstyles.json", d.styles, m.PerkStyles},
 		{"champions", "champion-summary.json", d.champions, m.Champions},
 		{"summoner_spells", "summoner-spells.json", d.spells, m.SummonerSpells},
+		{"item_groups", itemDataFile, d.itemGroups, m.ItemGroups},
 	}
 }
 

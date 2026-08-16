@@ -67,7 +67,7 @@ func (b *Builder) buildComputed(ds *Dataset) error {
 				ds.Computed.PaginasDeRuna = append(ds.Computed.PaginasDeRuna, p)
 			}
 
-			bl, err := optimize.MelhorBuild(itens, obj, slotsDeInventario, orcamentoDoPreCalculo)
+			bl, err := optimize.MelhorBuild(itens, GruposParaMochila(ds), obj, slotsDeInventario, orcamentoDoPreCalculo)
 			if err != nil {
 				return err
 			}
@@ -193,6 +193,15 @@ func montarCatalogo(ds *Dataset, cur *canon.RuneCuration) optimize.Catalogo {
 	return cat
 }
 
+// GruposParaMochila traduz os limites do dataset para o vocabulario da mochila.
+func GruposParaMochila(ds *Dataset) []optimize.Grupo {
+	out := make([]optimize.Grupo, 0, len(ds.GruposDeItem))
+	for _, g := range ds.GruposDeItem {
+		out = append(out, optimize.Grupo{ID: g.ID, Maximo: g.Maximo})
+	}
+	return out
+}
+
 // CandidatosDeItem monta o que a mochila precisa, so com o que e compravel.
 func CandidatosDeItem(ds *Dataset) []optimize.ItemCandidato {
 	out := make([]optimize.ItemCandidato, 0, 256)
@@ -202,7 +211,7 @@ func CandidatosDeItem(ds *Dataset) []optimize.ItemCandidato {
 		}
 		out = append(out, optimize.ItemCandidato{
 			ID: it.ID, Nome: it.Nome, Custo: it.Custo,
-			Stats: it.Stats, Botas: it.Botas,
+			Stats: it.Stats, Grupos: it.Grupos,
 		})
 	}
 	return out
