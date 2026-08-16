@@ -1,7 +1,7 @@
 {
   "patch": "16.16",
   "patch_full": "16.16.8049184+branch.releases-16-16.content.release",
-  "captured_at": "2026-08-16T04:16:06Z",
+  "captured_at": "2026-08-16T11:30:37Z",
   "source": "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/",
   "patchline": "latest",
   "counts": {
@@ -1403,7 +1403,7 @@
       "bytes": 68339
     },
     "items.bin.json": {
-      "etag": "W/\"6a7c1bc1-f22e5f\"",
+      "etag": "\"6a7c1bc1-f22e5f\"",
       "bytes": 15871583
     },
     "items.json": {
