@@ -1,9 +1,12 @@
 package canonical
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
+	"github.com/luansilvadb/lolbuilder/internal/canon"
 	"github.com/luansilvadb/lolbuilder/internal/gamedata"
 )
 
@@ -56,7 +59,7 @@ func depoisDeSubir(base AmostraIngame, ate int, itens ...string) AmostraIngame {
 func TestCrescimentoBateComOPrevisto(t *testing.T) {
 	inicio := amostra(3, 690+200+500, 38+8+60, 32+4, 69+10)
 	rel, err := CompararIngame(datasetIngame(),
-		[]AmostraIngame{inicio, depoisDeSubir(inicio, 6)}, 0.02)
+		[]AmostraIngame{inicio, depoisDeSubir(inicio, 6)}, 0.02, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -82,7 +85,7 @@ func TestCrescimentoAbaixoDoPrevistoDiverge(t *testing.T) {
 	fim := depoisDeSubir(inicio, 6)
 	fim.MagicResist = inicio.MagicResist // a resistencia magica nao cresceu nada
 
-	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02)
+	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -112,7 +115,7 @@ func TestVidaAcimaDoPrevistoEInconclusiva(t *testing.T) {
 	fim := depoisDeSubir(inicio, 6)
 	fim.MaxHealth += 60 // dois fragmentos, 10 por nivel cada, tres niveis
 
-	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02)
+	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -139,7 +142,7 @@ func TestVidaMuitoAcimaDaMargemDiverge(t *testing.T) {
 	fim := depoisDeSubir(inicio, 6)
 	fim.MaxHealth += 900
 
-	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02)
+	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -157,7 +160,7 @@ func TestExcessoSemItemNovoTambemDiverge(t *testing.T) {
 	fim := depoisDeSubir(inicio, 6)
 	fim.Armor += 50 // armadura nao tem runa que escale por nivel
 
-	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02)
+	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -173,7 +176,7 @@ func TestItemMudadoTornaInconclusivo(t *testing.T) {
 	fim := depoisDeSubir(inicio, 6, "Cota de Malha")
 	fim.Armor += 45
 
-	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02)
+	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -194,7 +197,7 @@ func TestItemNovoNaoMascaraCrescimentoAbaixo(t *testing.T) {
 	fim.Armor += 45
 	fim.MagicResist -= 3 // cresceu menos que o previsto
 
-	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02)
+	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -220,7 +223,7 @@ func TestSessoesDiferentesNaoComparam(t *testing.T) {
 	// porque a pagina de runas era outra. Comparar entre as duas daria -200.
 	p2 := naSessao(amostra(6, 690, 38, 32, 69), 1)
 
-	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{p1, p2}, 0.02)
+	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{p1, p2}, 0.02, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -247,7 +250,7 @@ func TestCadaSessaoCompararSeparadamente(t *testing.T) {
 	b1 := naSessao(amostra(4, 1200, 60, 40, 90), 1)
 	b2 := naSessao(depoisDeSubir(b1, 9), 1)
 
-	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{a1, b2, a2, b1}, 0.02)
+	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{a1, b2, a2, b1}, 0.02, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -277,7 +280,7 @@ func TestItemNovoNaoContaminaOProximoPar(t *testing.T) {
 	a3 := depoisDeSubir(a2, 9, "Cota de Malha") // nenhuma compra daqui pra frente
 	a3.Armor += 50                              // excesso sem explicacao
 
-	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{a1, a2, a3}, 0.02)
+	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{a1, a2, a3}, 0.02, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -292,7 +295,7 @@ func TestItemNovoNaoContaminaOProximoPar(t *testing.T) {
 }
 
 func TestPrecisaDeDuasAmostras(t *testing.T) {
-	_, err := CompararIngame(datasetIngame(), []AmostraIngame{amostra(3, 890, 46, 36, 79)}, 0.02)
+	_, err := CompararIngame(datasetIngame(), []AmostraIngame{amostra(3, 890, 46, 36, 79)}, 0.02, nil)
 	if err == nil {
 		t.Fatal("uma amostra so foi aceita")
 	}
@@ -305,7 +308,7 @@ func TestCampeoesDiferentesNaoComparam(t *testing.T) {
 	inicio := amostra(3, 890, 46, 36, 79)
 	fim := depoisDeSubir(inicio, 6)
 	fim.Campeao = "Darius"
-	if _, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02); err == nil {
+	if _, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02, nil); err == nil {
 		t.Fatal("amostras de campeoes diferentes foram comparadas")
 	}
 }
@@ -314,7 +317,7 @@ func TestCampeaoForaDoDataset(t *testing.T) {
 	inicio := amostra(3, 890, 46, 36, 79)
 	fim := depoisDeSubir(inicio, 6)
 	inicio.Campeao, fim.Campeao = "Inexistente", "Inexistente"
-	if _, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02); err == nil {
+	if _, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02, nil); err == nil {
 		t.Fatal("campeao fora do dataset foi comparado")
 	}
 }
@@ -325,7 +328,7 @@ func TestOrdemDasAmostrasNaoImporta(t *testing.T) {
 	inicio := amostra(3, 890, 46, 36, 79)
 	fora := []AmostraIngame{depoisDeSubir(inicio, 6), inicio}
 
-	rel, err := CompararIngame(datasetIngame(), fora, 0.02)
+	rel, err := CompararIngame(datasetIngame(), fora, 0.02, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -334,5 +337,124 @@ func TestOrdemDasAmostrasNaoImporta(t *testing.T) {
 	}
 	if rel.Niveis[0] != 3 || rel.Niveis[1] != 6 {
 		t.Fatalf("niveis = %v, esperado ordenados", rel.Niveis)
+	}
+}
+
+// TestConversaoDePassivaEntraNoPrevisto: a API reporta o valor TOTAL do eixo, ja
+// com o que a passiva concedeu. Sem somar a conversao ao previsto, o oraculo
+// acusa divergencia onde o dataset e o jogo estao os dois certos.
+func TestConversaoDePassivaEntraNoPrevisto(t *testing.T) {
+	conv := &canon.CuradoriaDeConversoes{Conversoes: []canon.Conversao{{
+		Campeao: "Garen", Eixo: canon.AttackDamage,
+		Origem:    map[canon.Stat]float64{canon.Armor: 0.15, canon.MagicResist: 0.15},
+		Evidencia: "teste",
+	}}}
+
+	inicio := amostra(3, 890, 46, 36, 79)
+	fim := depoisDeSubir(inicio, 6)
+	// O jogo entrega, alem do crescimento base, 15% do que armadura e
+	// resistencia magica cresceram no caminho.
+	fim.AttackDamage += 0.15 * (fim.Armor - inicio.Armor)
+	fim.AttackDamage += 0.15 * (fim.MagicResist - inicio.MagicResist)
+
+	comConv, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02, conv)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if comConv.Diverge() {
+		for _, c := range comConv.Comparacoes {
+			t.Logf("%+v", c)
+		}
+		t.Fatal("a conversao da passiva nao foi somada ao previsto")
+	}
+
+	// E sem a curadoria o mesmo dado tem de acusar: se passasse dos dois jeitos,
+	// a tabela nao estaria fazendo diferenca nenhuma.
+	semConv, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !semConv.Diverge() {
+		t.Fatal("sem a curadoria o excesso da passiva deveria acusar")
+	}
+}
+
+// TestConversaoNaoAfrouxaAVerificacao: somar a passiva ao previsto so vale se o
+// eixo continuar acusando erro. Com o coeficiente errado na curadoria, o
+// resultado tem de divergir — e assim a tabela vira teste dela mesma.
+func TestConversaoNaoAfrouxaAVerificacao(t *testing.T) {
+	errada := &canon.CuradoriaDeConversoes{Conversoes: []canon.Conversao{{
+		Campeao: "Garen", Eixo: canon.AttackDamage,
+		Origem:    map[canon.Stat]float64{canon.Armor: 0.40},
+		Evidencia: "coeficiente de proposito errado",
+	}}}
+
+	inicio := amostra(3, 890, 46, 36, 79)
+	fim := depoisDeSubir(inicio, 6)
+	fim.AttackDamage += 0.15 * (fim.Armor - inicio.Armor)
+
+	rel, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02, errada)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !rel.Diverge() {
+		t.Fatal("coeficiente errado na curadoria passou despercebido")
+	}
+}
+
+// TestCuradoriaDeConversoesExigeEvidencia: sem medicao que a sustente, a entrada
+// e palpite — e palpite aqui faz o oraculo confirmar dataset errado.
+func TestCuradoriaDeConversoesExigeEvidencia(t *testing.T) {
+	dir := t.TempDir()
+	p := filepath.Join(dir, "conversoes.json")
+	os.WriteFile(p, []byte(`{"conversoes":[{"campeao":"Garen","eixo":"attack_damage",
+		"origem":{"armor":0.15}}]}`), 0o644)
+
+	if _, err := canon.LoadConversoes(p); err == nil {
+		t.Fatal("conversao sem evidencia foi aceita")
+	} else if !strings.Contains(err.Error(), "evidencia") {
+		t.Fatalf("o erro nao aponta a evidencia: %v", err)
+	}
+}
+
+// TestCuradoriaAusenteNaoEErro: a tabela e opcional, e exigi-la quebraria quem
+// so quer rodar o build.
+func TestCuradoriaAusenteNaoEErro(t *testing.T) {
+	c, err := canon.LoadConversoes(filepath.Join(t.TempDir(), "nao-existe.json"))
+	if err != nil {
+		t.Fatalf("arquivo ausente virou erro: %v", err)
+	}
+	if len(c.Conversoes) != 0 {
+		t.Fatal("curadoria ausente veio com entradas")
+	}
+}
+
+// TestCuradoriaRealDoRammusFechaNaMedicao trava a evidencia que a curadoria
+// declara contra o arquivo em disco.
+//
+// Sem isto, alguem poderia editar o coeficiente e nenhum teste notaria — e o
+// oraculo passaria a confirmar o dataset com uma conta inventada. Os numeros
+// abaixo sao os medidos na Ferramenta de Treino, sem item algum.
+func TestCuradoriaRealDoRammusFechaNaMedicao(t *testing.T) {
+	c, err := canon.LoadConversoes(filepath.Join("..", "..", "curation", "conversoes.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	cvs := c.Do([]string{"Rammus"}, canon.AttackDamage)
+	if len(cvs) != 1 {
+		t.Fatalf("conversoes do Rammus para dano de ataque = %d, esperado 1", len(cvs))
+	}
+
+	// Crescimento medido em partida, do nivel 1 ao 6 e do 6 ao 7.
+	casos := []struct{ armadura, mr, excesso float64 }{
+		{17.7750, 8.0975, 3.8809},
+		{4.0275, 1.8348, 0.8793},
+	}
+	for _, k := range casos {
+		previsto := cvs[0].Origem[canon.Armor]*k.armadura + cvs[0].Origem[canon.MagicResist]*k.mr
+		if d := previsto - k.excesso; d > 0.0001 || d < -0.0001 {
+			t.Errorf("armadura %.4f e mr %.4f: a curadoria preve %.6f, medido %.4f (resto %.6f)",
+				k.armadura, k.mr, previsto, k.excesso, d)
+		}
 	}
 }

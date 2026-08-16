@@ -1,0 +1,16 @@
+{
+ "patch_da_curadoria": "16.16",
+ "conversoes": [
+  {
+   "campeao": "Rammus",
+   "eixo": "attack_damage",
+   "origem": {
+    "armor": 0.15,
+    "magic_resist": 0.15
+   },
+   "habilidade": "P",
+   "evidencia": "Medido em partida (Ferramenta de Treino, 16.16). Sem item algum, o crescimento de dano de ataque do nivel 1 ao 6 veio 3.8809 acima do previsto por base+crescimento; 0.15*17.7750 de armadura + 0.15*8.0975 de resistencia magica = 3.880875, resto 0.000025. Confirmado num segundo intervalo e noutra partida: nivel 6 ao 7, excesso 0.8793 contra 0.879345 previstos, resto -0.000045. Nas duas leituras os outros tres eixos fecharam em 0.0000.",
+   "motivo": "Casco Espetado concede dano de ataque a partir das resistencias. A API reporta o dano de ataque TOTAL, ja com essa parcela; o dataset publica base e crescimento por nivel, que nao a incluem."
+  }
+ ]
+}

@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/luansilvadb/lolbuilder/internal/canon"
 	"github.com/luansilvadb/lolbuilder/internal/canonical"
 	"github.com/luansilvadb/lolbuilder/internal/config"
 	"github.com/luansilvadb/lolbuilder/internal/lcu"
@@ -87,7 +88,12 @@ func runIngame(configPath, patch, arquivo string) error {
 		return err
 	}
 
-	rel, err := canonical.CompararIngame(ds, amostras, cfg.IngameTolerance)
+	conv, err := canon.LoadConversoes(filepath.Join("curation", "conversoes.json"))
+	if err != nil {
+		return err
+	}
+
+	rel, err := canonical.CompararIngame(ds, amostras, cfg.IngameTolerance, conv)
 	if err != nil {
 		return err
 	}

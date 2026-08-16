@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/luansilvadb/lolbuilder/internal/canon"
 	"github.com/luansilvadb/lolbuilder/internal/gamedata"
 )
 
@@ -126,7 +127,11 @@ const (
 //
 // Precisa de pelo menos duas amostras em niveis diferentes: com uma so da para
 // conferir valor absoluto, que nao conclui nada, e nao a formula.
-func CompararIngame(ds *Dataset, amostras []AmostraIngame, tolerancia float64) (*RelatorioIngame, error) {
+func CompararIngame(ds *Dataset, amostras []AmostraIngame, tolerancia float64,
+	conv *canon.CuradoriaDeConversoes) (*RelatorioIngame, error) {
+	if conv == nil {
+		conv = &canon.CuradoriaDeConversoes{}
+	}
 	if len(amostras) < 2 {
 		return nil, fmt.Errorf(
 			"sao necessarias ao menos 2 amostras em niveis diferentes: o valor absoluto "+
@@ -193,25 +198,52 @@ func CompararIngame(ds *Dataset, amostras []AmostraIngame, tolerancia float64) (
 
 		eixos := []struct {
 			nome     string
+			stat     canon.Stat
 			jogo     float64
 			previsto float64
 			margem   float64
 			nota     string
 		}{
-			{"vida", agora.MaxHealth - antes.MaxHealth,
+			{"vida", canon.Health, agora.MaxHealth - antes.MaxHealth,
 				c.Stats.HP.CrescimentoEntre(antes.Nivel, agora.Nivel),
 				escalamentoDeVidaPorNivel * maximoDeFragmentosDeVida,
 				"o fragmento Escalamento de Vida cresce com o nivel, e cabem dois"},
-			{"armadura", agora.Armor - antes.Armor,
+			{"armadura", canon.Armor, agora.Armor - antes.Armor,
 				c.Stats.Armor.CrescimentoEntre(antes.Nivel, agora.Nivel), 0, ""},
-			{"resistencia magica", agora.MagicResist - antes.MagicResist,
+			{"resistencia magica", canon.MagicResist, agora.MagicResist - antes.MagicResist,
 				c.Stats.MagicResist.CrescimentoEntre(antes.Nivel, agora.Nivel), 0, ""},
-			{"dano de ataque", agora.AttackDamage - antes.AttackDamage,
+			{"dano de ataque", canon.AttackDamage, agora.AttackDamage - antes.AttackDamage,
 				c.Stats.AttackDamage.CrescimentoEntre(antes.Nivel, agora.Nivel), 0, ""},
 		}
 
 		for _, e := range eixos {
 			previsto := e.previsto
+
+			// Passiva que converte uma estatistica em outra entra no previsto.
+			//
+			// A API reporta o valor TOTAL do eixo, ja com o que a passiva concedeu;
+			// base e crescimento por nivel nao incluem essa parcela. Somar aqui nao
+			// afrouxa a verificacao: ela passa a testar TAMBEM o coeficiente da
+			// conversao, porque o resultado tem de fechar na mesma tolerancia.
+			for _, cv := range conv.Do([]string{c.Nome, c.NomeCanonico, c.Alias}, e.stat) {
+				convertido, faltou := crescimentoConvertido(c.Stats, cv, antes.Nivel, agora.Nivel)
+				if faltou != "" {
+					cmpFalta := ComparacaoIngame{
+						Eixo: e.nome, Sessao: antes.Sessao,
+						DeNivel: antes.Nivel, AteNivel: agora.Nivel,
+						Veredito: VereditoContaminado,
+						Nota: fmt.Sprintf("a conversao de %s le %s, que o dataset nao publica",
+							cv.Habilidade, faltou),
+					}
+					rel.Comparacoes = append(rel.Comparacoes, cmpFalta)
+					previsto = math.NaN()
+					break
+				}
+				previsto += convertido
+			}
+			if math.IsNaN(previsto) {
+				continue
+			}
 			diff := e.jogo - previsto
 			cmp := ComparacaoIngame{
 				Eixo: e.nome, Sessao: antes.Sessao,
@@ -266,6 +298,43 @@ func acharCampeao(ds *Dataset, nome string) *Champion {
 		}
 	}
 	return nil
+}
+
+// crescimentoConvertido calcula quanto a conversao acrescenta ao eixo entre dois
+// niveis.
+//
+// Devolve o nome da estatistica de origem quando o dataset nao a publica, em vez
+// de trata-la como zero: zero afirmaria que a origem nao cresce, e a comparacao
+// acusaria o campeao por uma lacuna nossa.
+func crescimentoConvertido(s *gamedata.Stats, cv canon.Conversao, de, ate int) (float64, string) {
+	var total float64
+	for _, origem := range canon.Vector(cv.Origem).Stats() {
+		coef := cv.Origem[origem]
+		sc, ok := escalaDoStat(s, origem)
+		if !ok {
+			return 0, string(origem)
+		}
+		total += coef * sc.CrescimentoEntre(de, ate)
+	}
+	return total, ""
+}
+
+// escalaDoStat traduz um stat canonico para a escala correspondente do campeao.
+//
+// So os eixos que crescem por nivel estao aqui: uma conversao que lesse
+// velocidade de movimento nao teria crescimento nenhum para converter.
+func escalaDoStat(s *gamedata.Stats, st canon.Stat) (gamedata.Scaling, bool) {
+	switch st {
+	case canon.Health:
+		return s.HP, true
+	case canon.Armor:
+		return s.Armor, true
+	case canon.MagicResist:
+		return s.MagicResist, true
+	case canon.AttackDamage:
+		return s.AttackDamage, true
+	}
+	return gamedata.Scaling{}, false
 }
 
 // contarSessoes conta quantas partidas distintas as amostras cobrem.

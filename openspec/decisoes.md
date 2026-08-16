@@ -457,6 +457,45 @@ inteiro e o veredito lia ele. Uma compra no par 1→6 desculpava um excesso no p
 6→7, que não tinha relação nenhuma com ela — metade dos pares de uma partida com
 compras ficava cega. Agora é por par.
 
+## A leitura limpa, e a passiva que o oráculo não conhecia
+
+Com a separação por partida no lugar, a segunda partida rendeu a leitura mais
+limpa que o projeto já teve: Rammus, nível 1 ao 6, **sem item algum**. Vida,
+armadura e resistência mágica fecharam em 0,0000 — a fórmula não-linear
+confirmada sem nenhuma contaminação a descontar.
+
+O dano de ataque veio 3,8809 acima. E o excesso é exatamente a passiva:
+
+| leitura | excesso | 0,15 × armadura + 0,15 × RM | resto |
+|---|---:|---:|---:|
+| 1→6, sem itens | 3,8809 | 3,880875 | **0,000025** |
+| 6→7, outra partida | 0,8793 | 0,879345 | **−0,000045** |
+
+O dataset já publicava a fórmula certa — `P · Casco Espetado: 0 + 0.15 armor +
+0.15 magic_resist`. Quem não sabia da conversão era o oráculo: a API reporta o
+dano de ataque **total**, já com a parcela concedida pela passiva, enquanto o
+dataset publica base e crescimento por nível, que é outra grandeza.
+
+**Decisão 19: a conversão entra por curadoria, em `curation/conversoes.json`.**
+
+Derivar automaticamente da fórmula publicada foi recusado porque a fonte não
+distingue "passiva que concede atributo" de "passiva que causa dano escalando
+naquele atributo" — as duas saem com a mesma forma. Derivar inventaria bônus
+inexistente para toda passiva do segundo tipo, e inventar bônus é pior que não
+conhecer nenhum: o oráculo passaria a confirmar o que deveria contestar.
+
+Declarar o eixo como contaminado também foi recusado: perderia justamente a
+leitura que fechou na quarta casa decimal.
+
+Somar a conversão ao previsto **não afrouxa** a verificação — ela passa a testar
+também o coeficiente, porque o resultado tem de fechar na mesma tolerância de
+0,02. Um teste trava a evidência declarada contra as duas medições, e outro
+confirma que um coeficiente errado na tabela continua acusando.
+
+A entrada exige `evidencia`, pelo mesmo motivo que `out_of_scope` exige `reason`
+na curadoria de runas: sem medição que a sustente, ela é palpite — e palpite
+aqui faz o oráculo confirmar dataset errado.
+
 ## Aberto
 
 - **Cair para a série herdada quando a redefinida não existe no patch inteiro?**
