@@ -1,6 +1,6 @@
 # League of Legends — Summoner's Rift
 
-**Patch 16.16** · capturado em 2026-08-16T04:13:21Z · mapa Summoner's Rift (11), modo CLASSIC
+**Patch 16.16** · capturado em 2026-08-16T04:16:06Z · mapa Summoner's Rift (11), modo CLASSIC
 
 Este conjunto descreve **apenas o Summoner's Rift**. ARAM, Arena e os modos
 rotativos têm catálogo de itens e ajustes próprios que não estão aqui.
