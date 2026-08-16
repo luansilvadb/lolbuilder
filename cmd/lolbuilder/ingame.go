@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/luansilvadb/lolbuilder/internal/canon"
 	"github.com/luansilvadb/lolbuilder/internal/canonical"
@@ -168,7 +169,7 @@ func gravarAmostras(caminho string, amostras []canonical.AmostraIngame) error {
 }
 
 func imprimirRelatorioIngame(rel *canonical.RelatorioIngame, tol float64) {
-	fmt.Printf("\n%s — niveis %v", rel.Campeao, rel.Niveis)
+	fmt.Printf("\n%s — niveis %v", strings.Join(rel.Campeoes, ", "), rel.Niveis)
 	if rel.Sessoes > 1 {
 		fmt.Printf(" em %d partidas", rel.Sessoes)
 	}
@@ -194,8 +195,17 @@ func imprimirRelatorioIngame(rel *canonical.RelatorioIngame, tol float64) {
 		fmt.Println("contaminado por item e runa — suba de nivel e leia de novo na mesma partida.")
 	}
 
-	fmt.Printf("\n%-22s %9s %10s %10s %10s   %s\n",
-		"estatistica", "niveis", "jogo", "previsto", "diferenca", "veredito")
+	// A largura sai do conteudo. Com o nome do campeao junto do eixo, a coluna
+	// fixa estourava e desalinhava todo o resto da linha.
+	larg := len("estatistica")
+	for _, c := range rel.Comparacoes {
+		if n := len([]rune(rotuloDoEixo(rel, c))); n > larg {
+			larg = n
+		}
+	}
+
+	fmt.Printf("\n%-*s %9s %10s %10s %10s   %s\n",
+		larg+1, "estatistica", "niveis", "jogo", "previsto", "diferenca", "veredito")
 	for _, c := range rel.Comparacoes {
 		marca := " "
 		if c.Veredito == canonical.VereditoDiverge {
@@ -205,12 +215,21 @@ func imprimirRelatorioIngame(rel *canonical.RelatorioIngame, tol float64) {
 		if rel.Sessoes > 1 {
 			niveis = fmt.Sprintf("p%d %s", c.Sessao+1, niveis)
 		}
-		fmt.Printf("%s %-20s %9s %10.4f %10.4f %10.4f   %s\n",
-			marca, c.Eixo, niveis, c.Jogo, c.Previsto, c.Diff, c.Veredito)
+		fmt.Printf("%s %-*s %9s %10.4f %10.4f %10.4f   %s\n",
+			marca, larg, rotuloDoEixo(rel, c), niveis, c.Jogo, c.Previsto, c.Diff, c.Veredito)
 		if c.Nota != "" {
-			fmt.Printf("  %-20s %s\n", "", c.Nota)
+			fmt.Printf("  %-*s %s\n", larg, "", c.Nota)
 		}
 	}
 	fmt.Printf("\ntolerancia de %.2f: o jogo reporta em float32 e o dataset calcula em\n", tol)
 	fmt.Println("float64, entao diferenca na terceira casa e representacao, nao defeito.")
+}
+
+// rotuloDoEixo nomeia a linha. O campeao entra so quando o arquivo tem mais de
+// um: com um so, repeti-lo em toda linha e ruido.
+func rotuloDoEixo(rel *canonical.RelatorioIngame, c canonical.ComparacaoIngame) string {
+	if len(rel.Campeoes) > 1 {
+		return c.Campeao + " " + c.Eixo
+	}
+	return c.Eixo
 }

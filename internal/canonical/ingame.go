@@ -73,6 +73,7 @@ const (
 // ComparacaoIngame e uma linha do relatorio.
 type ComparacaoIngame struct {
 	Eixo     string   `json:"eixo"`
+	Campeao  string   `json:"campeao"`
 	Sessao   int      `json:"sessao"`
 	DeNivel  int      `json:"de_nivel"`
 	AteNivel int      `json:"ate_nivel"`
@@ -85,7 +86,9 @@ type ComparacaoIngame struct {
 
 // RelatorioIngame resume o confronto.
 type RelatorioIngame struct {
-	Campeao     string             `json:"campeao"`
+	// Campeoes sao todos os que aparecem no arquivo. Mais de um e normal: cada
+	// partida compara contra o campeao dela.
+	Campeoes    []string           `json:"campeoes"`
 	Niveis      []int              `json:"niveis"`
 	Comparacoes []ComparacaoIngame `json:"comparacoes"`
 	// ItensMudaram avisa que a lista de itens nao e a mesma nas duas amostras,
@@ -139,21 +142,6 @@ func CompararIngame(ds *Dataset, amostras []AmostraIngame, tolerancia float64,
 				"(ha %d)", len(amostras))
 	}
 
-	campeao := amostras[0].Campeao
-	for _, a := range amostras {
-		if a.Campeao != campeao {
-			return nil, fmt.Errorf(
-				"as amostras sao de campeoes diferentes (%s e %s) — o crescimento so "+
-					"cancela o bonus fixo dentro da mesma partida. Use -samples com outro "+
-					"arquivo para o segundo campeao", campeao, a.Campeao)
-		}
-	}
-
-	c := acharCampeao(ds, campeao)
-	if c == nil || c.Stats == nil {
-		return nil, fmt.Errorf("campeao %q nao esta no dataset, ou saiu sem estatisticas", campeao)
-	}
-
 	ord := append([]AmostraIngame(nil), amostras...)
 	// Sessao primeiro, nivel depois: cada partida vira um bloco contiguo, e
 	// dentro dele os niveis sobem.
@@ -164,12 +152,13 @@ func CompararIngame(ds *Dataset, amostras []AmostraIngame, tolerancia float64,
 		return ord[i].Nivel < ord[j].Nivel
 	})
 
-	rel := &RelatorioIngame{Campeao: campeao}
+	rel := &RelatorioIngame{}
 	for _, a := range ord {
 		rel.Niveis = append(rel.Niveis, a.Nivel)
 	}
 	rel.Sessoes = contarSessoes(ord)
 	rel.SessoesSemPar = sessoesComUmaAmostraSo(ord)
+	rel.Campeoes = campeoesDistintos(ord)
 
 	// Compara cada par consecutivo. Pares e nao extremos: um erro que so aparece
 	// numa faixa de nivel some quando se olha so o comeco e o fim.
@@ -183,6 +172,21 @@ func CompararIngame(ds *Dataset, amostras []AmostraIngame, tolerancia float64,
 		if agora.Nivel == antes.Nivel {
 			continue
 		}
+		// Campeao diferente dentro da MESMA partida so acontece com o arquivo
+		// editado a mao. Entre partidas e normal, e cada uma compara contra o
+		// campeao dela: foi o que revelou este caso, quando a partida seguinte
+		// entrou de Aurora e a verificacao inteira abortava por isso.
+		if antes.Campeao != agora.Campeao {
+			return nil, fmt.Errorf(
+				"a partida %d tem amostras de %s e de %s — o crescimento so cancela o "+
+					"bonus fixo dentro do mesmo campeao", antes.Sessao, antes.Campeao, agora.Campeao)
+		}
+		c := acharCampeao(ds, antes.Campeao)
+		if c == nil || c.Stats == nil {
+			return nil, fmt.Errorf("campeao %q nao esta no dataset, ou saiu sem estatisticas",
+				antes.Campeao)
+		}
+
 		// Por par, e nao acumulado. O sinalizador do relatorio serve ao aviso
 		// geral; usa-lo no veredito faria uma compra no par 1→6 desculpar um
 		// excesso no par 6→7, que nao tem nada a ver com ela.
@@ -229,7 +233,7 @@ func CompararIngame(ds *Dataset, amostras []AmostraIngame, tolerancia float64,
 				convertido, faltou := crescimentoConvertido(c.Stats, cv, antes.Nivel, agora.Nivel)
 				if faltou != "" {
 					cmpFalta := ComparacaoIngame{
-						Eixo: e.nome, Sessao: antes.Sessao,
+						Eixo: e.nome, Campeao: antes.Campeao, Sessao: antes.Sessao,
 						DeNivel: antes.Nivel, AteNivel: agora.Nivel,
 						Veredito: VereditoContaminado,
 						Nota: fmt.Sprintf("a conversao de %s le %s, que o dataset nao publica",
@@ -246,7 +250,7 @@ func CompararIngame(ds *Dataset, amostras []AmostraIngame, tolerancia float64,
 			}
 			diff := e.jogo - previsto
 			cmp := ComparacaoIngame{
-				Eixo: e.nome, Sessao: antes.Sessao,
+				Eixo: e.nome, Campeao: antes.Campeao, Sessao: antes.Sessao,
 				DeNivel: antes.Nivel, AteNivel: agora.Nivel,
 				Jogo: e.jogo, Previsto: previsto, Diff: diff,
 			}
@@ -335,6 +339,20 @@ func escalaDoStat(s *gamedata.Stats, st canon.Stat) (gamedata.Scaling, bool) {
 		return s.AttackDamage, true
 	}
 	return gamedata.Scaling{}, false
+}
+
+// campeoesDistintos lista os campeoes que aparecem no arquivo, na ordem em que
+// as partidas ocorreram.
+func campeoesDistintos(ord []AmostraIngame) []string {
+	visto := map[string]bool{}
+	var out []string
+	for _, a := range ord {
+		if a.Campeao != "" && !visto[a.Campeao] {
+			visto[a.Campeao] = true
+			out = append(out, a.Campeao)
+		}
+	}
+	return out
 }
 
 // contarSessoes conta quantas partidas distintas as amostras cobrem.

@@ -304,15 +304,6 @@ func TestPrecisaDeDuasAmostras(t *testing.T) {
 	}
 }
 
-func TestCampeoesDiferentesNaoComparam(t *testing.T) {
-	inicio := amostra(3, 890, 46, 36, 79)
-	fim := depoisDeSubir(inicio, 6)
-	fim.Campeao = "Darius"
-	if _, err := CompararIngame(datasetIngame(), []AmostraIngame{inicio, fim}, 0.02, nil); err == nil {
-		t.Fatal("amostras de campeoes diferentes foram comparadas")
-	}
-}
-
 func TestCampeaoForaDoDataset(t *testing.T) {
 	inicio := amostra(3, 890, 46, 36, 79)
 	fim := depoisDeSubir(inicio, 6)
@@ -456,5 +447,82 @@ func TestCuradoriaRealDoRammusFechaNaMedicao(t *testing.T) {
 			t.Errorf("armadura %.4f e mr %.4f: a curadoria preve %.6f, medido %.4f (resto %.6f)",
 				k.armadura, k.mr, previsto, k.excesso, d)
 		}
+	}
+}
+
+// datasetDoisCampeoes: o segundo tem crescimento diferente de proposito, para
+// que comparar um contra a formula do outro acuse.
+func datasetDoisCampeoes() *Dataset {
+	a := statsDeTeste
+	b := gamedata.Stats{
+		HP:           gamedata.Scaling{Base: 600, PerLevel: 110},
+		Armor:        gamedata.Scaling{Base: 28, PerLevel: 5},
+		MagicResist:  gamedata.Scaling{Base: 30, PerLevel: 1.3},
+		AttackDamage: gamedata.Scaling{Base: 60, PerLevel: 3},
+	}
+	return &Dataset{Patch: "16.99", Champions: []Champion{
+		{ID: 86, Nome: "Garen", NomeCanonico: "Garen", Alias: "Garen", Stats: &a},
+		{ID: 893, Nome: "Aurora", NomeCanonico: "Aurora", Alias: "Aurora", Stats: &b},
+	}}
+}
+
+// TestCampeoesDiferentesEmPartidasDiferentes: trocar de campeao entre partidas e
+// normal, e cada uma tem de comparar contra o campeao dela.
+//
+// Antes das sessoes existirem, uma amostra de outro campeao abortava a
+// verificacao INTEIRA — inclusive as leituras limpas ja gravadas. Foi o que
+// aconteceu de verdade quando a partida seguinte entrou de Aurora.
+func TestCampeoesDiferentesEmPartidasDiferentes(t *testing.T) {
+	g1 := amostra(3, 890, 46, 36, 79)
+	g2 := depoisDeSubir(g1, 6)
+
+	b := datasetDoisCampeoes().Champions[1].Stats
+	a1 := AmostraIngame{Nivel: 4, Campeao: "Aurora", Sessao: 1,
+		MaxHealth: 1000, Armor: 50, MagicResist: 40, AttackDamage: 70}
+	a2 := AmostraIngame{Nivel: 9, Campeao: "Aurora", Sessao: 1,
+		MaxHealth: a1.MaxHealth + b.HP.CrescimentoEntre(4, 9),
+		Armor:     a1.Armor + b.Armor.CrescimentoEntre(4, 9),
+		// A resistencia magica e o dano de ataque tambem crescem: sem eles, o
+		// eixo acusaria por falta de crescimento e nao pelo que o teste mede.
+		MagicResist:  a1.MagicResist + b.MagicResist.CrescimentoEntre(4, 9),
+		AttackDamage: a1.AttackDamage + b.AttackDamage.CrescimentoEntre(4, 9)}
+
+	rel, err := CompararIngame(datasetDoisCampeoes(),
+		[]AmostraIngame{g1, g2, a1, a2}, 0.02, nil)
+	if err != nil {
+		t.Fatalf("campeao diferente entre partidas abortou a verificacao: %v", err)
+	}
+	if rel.Diverge() {
+		for _, c := range rel.Comparacoes {
+			t.Logf("%+v", c)
+		}
+		t.Fatal("cada partida deveria ter sido comparada contra o campeao dela")
+	}
+	if len(rel.Comparacoes) != 8 {
+		t.Fatalf("comparacoes = %d, esperado 4 eixos por partida", len(rel.Comparacoes))
+	}
+	if len(rel.Campeoes) != 2 {
+		t.Fatalf("campeoes = %v, esperado os dois", rel.Campeoes)
+	}
+	for _, c := range rel.Comparacoes {
+		if c.Sessao == 1 && c.Campeao != "Aurora" {
+			t.Errorf("a comparacao da partida 2 saiu atribuida a %q", c.Campeao)
+		}
+	}
+}
+
+// TestCampeaoTrocadoDentroDaMesmaPartidaEErro: dentro de uma partida so acontece
+// com o arquivo editado a mao, e ai a comparacao nao significa nada.
+func TestCampeaoTrocadoDentroDaMesmaPartidaEErro(t *testing.T) {
+	g1 := amostra(3, 890, 46, 36, 79)
+	g2 := depoisDeSubir(g1, 6)
+	g2.Campeao = "Aurora" // mesma sessao, outro campeao
+
+	_, err := CompararIngame(datasetDoisCampeoes(), []AmostraIngame{g1, g2}, 0.02, nil)
+	if err == nil {
+		t.Fatal("troca de campeao dentro da mesma partida foi aceita")
+	}
+	if !strings.Contains(err.Error(), "mesmo campeao") {
+		t.Fatalf("o erro nao explica o motivo: %v", err)
 	}
 }

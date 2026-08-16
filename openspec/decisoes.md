@@ -496,6 +496,19 @@ A entrada exige `evidencia`, pelo mesmo motivo que `out_of_scope` exige `reason`
 na curadoria de runas: sem medição que a sustente, ela é palpite — e palpite
 aqui faz o oráculo confirmar dataset errado.
 
+**E a partida seguinte, de Aurora, expôs mais um.** O oráculo exigia que TODAS
+as amostras fossem do mesmo campeão, e abortava a verificação inteira quando não
+eram — inclusive as leituras limpas já gravadas, que nada tinham de errado.
+
+A regra estava certa antes de as sessões existirem, e virou obsoleta com elas: o
+crescimento só precisa cancelar bônus fixo **dentro de uma partida**. Trocar de
+campeão entre partidas é normal, e cada uma passa a comparar contra o campeão
+dela. Dentro da mesma partida a troca continua sendo erro, porque só acontece com
+o arquivo editado à mão.
+
+Padrão que se repete: cada verificação nova que encosta em dado real encontra
+uma premissa que era verdadeira quando foi escrita e deixou de ser.
+
 ## Aberto
 
 - **Cair para a série herdada quando a redefinida não existe no patch inteiro?**
