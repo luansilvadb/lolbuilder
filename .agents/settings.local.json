@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv snapshots/16.16 snapshots/.16.16.bak)",
+      "Bash(go run *)",
+      "Bash(cp internal/canonical/computed.go /tmp/c.bak)",
+      "Bash(python -c ' *)",
+      "Bash(go test *)",
+      "Bash(cp /tmp/c.bak internal/canonical/computed.go)",
+      "Bash(gofmt -l internal/export/)",
+      "Bash(go build *)",
+      "Bash(python -)"
+    ]
+  }
+}
