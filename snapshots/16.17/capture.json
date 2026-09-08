@@ -1,0 +1,2142 @@
+{
+  "patch": "16.17",
+  "patch_full": "16.17.8104348+branch.releases-16-17.content.release",
+  "captured_at": "2026-09-02T18:33:50Z",
+  "source": "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/",
+  "patchline": "latest",
+  "counts": {
+    "champions": 173,
+    "item_catalog": 705,
+    "item_groups": 20,
+    "item_shop": 266,
+    "perk_styles": 5,
+    "runes": 103,
+    "summoner_spells": 9
+  },
+  "files": {
+    "champion-summary.json": {
+      "etag": "\"6a922d44-d365\"",
+      "bytes": 54117
+    },
+    "champions/1.json": {
+      "etag": "W/\"6a824dd0-c018\"",
+      "bytes": 49176
+    },
+    "champions/10.json": {
+      "etag": "W/\"6a922d53-f144\"",
+      "bytes": 61764
+    },
+    "champions/101.json": {
+      "etag": "W/\"6a922d4d-793f\"",
+      "bytes": 31039
+    },
+    "champions/102.json": {
+      "etag": "W/\"6a824dd0-738f\"",
+      "bytes": 29583
+    },
+    "champions/103.json": {
+      "etag": "\"6a31fc6c-1233f\"",
+      "bytes": 74559
+    },
+    "champions/104.json": {
+      "etag": "W/\"6a824dd0-acf1\"",
+      "bytes": 44273
+    },
+    "champions/105.json": {
+      "etag": "\"6a31fc6a-9302\"",
+      "bytes": 37634
+    },
+    "champions/106.json": {
+      "etag": "\"6a7172ca-888c\"",
+      "bytes": 34956
+    },
+    "champions/107.json": {
+      "etag": "\"6a7172b8-b56f\"",
+      "bytes": 46447
+    },
+    "champions/11.json": {
+      "etag": "\"6a6149ba-15902\"",
+      "bytes": 88322
+    },
+    "champions/110.json": {
+      "etag": "\"6a31fc6a-d4bc\"",
+      "bytes": 54460
+    },
+    "champions/111.json": {
+      "etag": "\"6a31fc6a-9474\"",
+      "bytes": 38004
+    },
+    "champions/112.json": {
+      "etag": "\"6a31fc6a-7e41\"",
+      "bytes": 32321
+    },
+    "champions/113.json": {
+      "etag": "W/\"6a922d45-b79e\"",
+      "bytes": 47006
+    },
+    "champions/114.json": {
+      "etag": "\"6a7172bf-16205\"",
+      "bytes": 90629
+    },
+    "champions/115.json": {
+      "etag": "\"6a7172bb-9ea6\"",
+      "bytes": 40614
+    },
+    "champions/117.json": {
+      "etag": "W/\"6a824dd0-bdd8\"",
+      "bytes": 48600
+    },
+    "champions/119.json": {
+      "etag": "\"6a7172c8-13197\"",
+      "bytes": 78231
+    },
+    "champions/12.json": {
+      "etag": "\"6a7172d0-9f25\"",
+      "bytes": 40741
+    },
+    "champions/120.json": {
+      "etag": "\"6a31fc6c-a2ea\"",
+      "bytes": 41706
+    },
+    "champions/121.json": {
+      "etag": "\"6a31fc6b-bcdc\"",
+      "bytes": 48348
+    },
+    "champions/122.json": {
+      "etag": "\"6a7172b9-df30\"",
+      "bytes": 57136
+    },
+    "champions/126.json": {
+      "etag": "\"6a7172c4-9e39\"",
+      "bytes": 40505
+    },
+    "champions/127.json": {
+      "etag": "W/\"6a824dd0-9e6a\"",
+      "bytes": 40554
+    },
+    "champions/13.json": {
+      "etag": "\"6a31fc6a-8ee9\"",
+      "bytes": 36585
+    },
+    "champions/131.json": {
+      "etag": "\"6a31fc6b-f4ed\"",
+      "bytes": 62701
+    },
+    "champions/133.json": {
+      "etag": "\"6a31fc6c-7401\"",
+      "bytes": 29697
+    },
+    "champions/134.json": {
+      "etag": "\"6a31fc6b-d134\"",
+      "bytes": 53556
+    },
+    "champions/136.json": {
+      "etag": "W/\"6a922d48-8db0\"",
+      "bytes": 36272
+    },
+    "champions/14.json": {
+      "etag": "\"6a7172b6-af02\"",
+      "bytes": 44802
+    },
+    "champions/141.json": {
+      "etag": "\"6a31fc6c-775c\"",
+      "bytes": 30556
+    },
+    "champions/142.json": {
+      "etag": "\"6a31fc6c-9048\"",
+      "bytes": 36936
+    },
+    "champions/143.json": {
+      "etag": "\"6a7172cb-cd8b\"",
+      "bytes": 52619
+    },
+    "champions/145.json": {
+      "etag": "\"6a3eff2e-f02f\"",
+      "bytes": 61487
+    },
+    "champions/147.json": {
+      "etag": "W/\"6a922d55-eead\"",
+      "bytes": 61101
+    },
+    "champions/15.json": {
+      "etag": "\"6a6149c1-e5f6\"",
+      "bytes": 58870
+    },
+    "champions/150.json": {
+      "etag": "\"6a31fc6b-90b8\"",
+      "bytes": 37048
+    },
+    "champions/154.json": {
+      "etag": "\"6a7172b9-814d\"",
+      "bytes": 33101
+    },
+    "champions/157.json": {
+      "etag": "W/\"6a824dd1-110ea\"",
+      "bytes": 69866
+    },
+    "champions/16.json": {
+      "etag": "W/\"6a922d46-da66\"",
+      "bytes": 55910
+    },
+    "champions/161.json": {
+      "etag": "\"6a31fc6a-781d\"",
+      "bytes": 30749
+    },
+    "champions/163.json": {
+      "etag": "\"6a31fc6a-64de\"",
+      "bytes": 25822
+    },
+    "champions/164.json": {
+      "etag": "W/\"6a824dd1-a197\"",
+      "bytes": 41367
+    },
+    "champions/166.json": {
+      "etag": "\"6a3eff2d-67b5\"",
+      "bytes": 26549
+    },
+    "champions/17.json": {
+      "etag": "\"6a31fc6b-bdc0\"",
+      "bytes": 48576
+    },
+    "champions/18.json": {
+      "etag": "\"6a31fc6c-de11\"",
+      "bytes": 56849
+    },
+    "champions/19.json": {
+      "etag": "W/\"6a824dd1-c0b8\"",
+      "bytes": 49336
+    },
+    "champions/2.json": {
+      "etag": "\"6a31fc6b-9c6c\"",
+      "bytes": 40044
+    },
+    "champions/20.json": {
+      "etag": "\"6a31fc6a-a712\"",
+      "bytes": 42770
+    },
+    "champions/200.json": {
+      "etag": "W/\"6a824dd0-795c\"",
+      "bytes": 31068
+    },
+    "champions/201.json": {
+      "etag": "\"6a7172b9-b7a8\"",
+      "bytes": 47016
+    },
+    "champions/202.json": {
+      "etag": "\"6a3eff2d-bec4\"",
+      "bytes": 48836
+    },
+    "champions/203.json": {
+      "etag": "\"6a7172b5-9160\"",
+      "bytes": 37216
+    },
+    "champions/21.json": {
+      "etag": "\"6a6149c0-f988\"",
+      "bytes": 63880
+    },
+    "champions/22.json": {
+      "etag": "\"6a7172ba-10195\"",
+      "bytes": 65941
+    },
+    "champions/221.json": {
+      "etag": "\"6a31fc6c-8d92\"",
+      "bytes": 36242
+    },
+    "champions/222.json": {
+      "etag": "W/\"6a922d45-e1bd\"",
+      "bytes": 57789
+    },
+    "champions/223.json": {
+      "etag": "W/\"6a922d51-93c3\"",
+      "bytes": 37827
+    },
+    "champions/23.json": {
+      "etag": "\"6a6149c0-a9b3\"",
+      "bytes": 43443
+    },
+    "champions/233.json": {
+      "etag": "\"6a31fc6b-6a17\"",
+      "bytes": 27159
+    },
+    "champions/234.json": {
+      "etag": "\"6a6149ae-949f\"",
+      "bytes": 38047
+    },
+    "champions/235.json": {
+      "etag": "W/\"6a824dd0-d6bd\"",
+      "bytes": 54973
+    },
+    "champions/236.json": {
+      "etag": "\"6a6149c2-da05\"",
+      "bytes": 55813
+    },
+    "champions/238.json": {
+      "etag": "W/\"6a824dd1-d5be\"",
+      "bytes": 54718
+    },
+    "champions/24.json": {
+      "etag": "\"6a7172c4-a1dd\"",
+      "bytes": 41437
+    },
+    "champions/240.json": {
+      "etag": "\"6a31fc6b-6377\"",
+      "bytes": 25463
+    },
+    "champions/245.json": {
+      "etag": "\"6a7172b8-b727\"",
+      "bytes": 46887
+    },
+    "champions/246.json": {
+      "etag": "\"6a31fc6c-9fcf\"",
+      "bytes": 40911
+    },
+    "champions/25.json": {
+      "etag": "\"6a6149be-f37b\"",
+      "bytes": 62331
+    },
+    "champions/254.json": {
+      "etag": "\"6a31fc6b-a207\"",
+      "bytes": 41479
+    },
+    "champions/26.json": {
+      "etag": "\"6a31fc6b-7479\"",
+      "bytes": 29817
+    },
+    "champions/266.json": {
+      "etag": "\"6a6149ba-93be\"",
+      "bytes": 37822
+    },
+    "champions/267.json": {
+      "etag": "\"6a7172bb-c6b2\"",
+      "bytes": 50866
+    },
+    "champions/268.json": {
+      "etag": "W/\"6a824dd1-6a4f\"",
+      "bytes": 27215
+    },
+    "champions/27.json": {
+      "etag": "\"6a31fc6c-74a4\"",
+      "bytes": 29860
+    },
+    "champions/28.json": {
+      "etag": "\"6a31fc6a-c8c2\"",
+      "bytes": 51394
+    },
+    "champions/29.json": {
+      "etag": "\"6a31fc6b-b41c\"",
+      "bytes": 46108
+    },
+    "champions/3.json": {
+      "etag": "\"6a6149b7-a49f\"",
+      "bytes": 42143
+    },
+    "champions/30.json": {
+      "etag": "\"6a7172c4-88ce\"",
+      "bytes": 35022
+    },
+    "champions/31.json": {
+      "etag": "\"6a31fc6b-8b3a\"",
+      "bytes": 35642
+    },
+    "champions/32.json": {
+      "etag": "\"6a31fc6b-b2fc\"",
+      "bytes": 45820
+    },
+    "champions/33.json": {
+      "etag": "\"6a7172c5-7ff8\"",
+      "bytes": 32760
+    },
+    "champions/34.json": {
+      "etag": "\"6a6149af-b05e\"",
+      "bytes": 45150
+    },
+    "champions/35.json": {
+      "etag": "\"6a7172b8-d633\"",
+      "bytes": 54835
+    },
+    "champions/350.json": {
+      "etag": "\"6a7172c2-d49f\"",
+      "bytes": 54431
+    },
+    "champions/36.json": {
+      "etag": "\"6a31fc6c-7d61\"",
+      "bytes": 32097
+    },
+    "champions/360.json": {
+      "etag": "\"6a31fc6b-8694\"",
+      "bytes": 34452
+    },
+    "champions/37.json": {
+      "etag": "W/\"6a824dd1-13b95\"",
+      "bytes": 80789
+    },
+    "champions/38.json": {
+      "etag": "\"6a31fc6b-77b7\"",
+      "bytes": 30647
+    },
+    "champions/39.json": {
+      "etag": "W/\"6a824dd0-d884\"",
+      "bytes": 55428
+    },
+    "champions/4.json": {
+      "etag": "\"6a7172c6-109a4\"",
+      "bytes": 68004
+    },
+    "champions/40.json": {
+      "etag": "W/\"6a824dd1-ca8a\"",
+      "bytes": 51850
+    },
+    "champions/41.json": {
+      "etag": "\"6a31fc6b-8fd2\"",
+      "bytes": 36818
+    },
+    "champions/412.json": {
+      "etag": "\"6a7172b7-cfb1\"",
+      "bytes": 53169
+    },
+    "champions/42.json": {
+      "etag": "\"6a31fc6b-8f45\"",
+      "bytes": 36677
+    },
+    "champions/420.json": {
+      "etag": "\"6a31fc6b-8901\"",
+      "bytes": 35073
+    },
+    "champions/421.json": {
+      "etag": "\"6a3eff2e-72c0\"",
+      "bytes": 29376
+    },
+    "champions/427.json": {
+      "etag": "\"6a31fc6b-7e6d\"",
+      "bytes": 32365
+    },
+    "champions/429.json": {
+      "etag": "\"6a31fc6c-7330\"",
+      "bytes": 29488
+    },
+    "champions/43.json": {
+      "etag": "\"6a31fc6c-daaf\"",
+      "bytes": 55983
+    },
+    "champions/432.json": {
+      "etag": "\"6a7172c8-8f7d\"",
+      "bytes": 36733
+    },
+    "champions/44.json": {
+      "etag": "W/\"6a824dd0-7474\"",
+      "bytes": 29812
+    },
+    "champions/45.json": {
+      "etag": "W/\"6a824dd0-c98d\"",
+      "bytes": 51597
+    },
+    "champions/48.json": {
+      "etag": "W/\"6a922d53-6d41\"",
+      "bytes": 27969
+    },
+    "champions/497.json": {
+      "etag": "\"6a31fc6b-ad53\"",
+      "bytes": 44371
+    },
+    "champions/498.json": {
+      "etag": "\"6a31fc6c-bdee\"",
+      "bytes": 48622
+    },
+    "champions/5.json": {
+      "etag": "\"6a6149b9-b3b8\"",
+      "bytes": 46008
+    },
+    "champions/50.json": {
+      "etag": "W/\"6a922d53-9eba\"",
+      "bytes": 40634
+    },
+    "champions/51.json": {
+      "etag": "\"6a7172be-d09d\"",
+      "bytes": 53405
+    },
+    "champions/516.json": {
+      "etag": "\"6a31fc6c-7a0c\"",
+      "bytes": 31244
+    },
+    "champions/517.json": {
+      "etag": "\"6a31fc6a-a4fa\"",
+      "bytes": 42234
+    },
+    "champions/518.json": {
+      "etag": "\"6a31fc6c-9814\"",
+      "bytes": 38932
+    },
+    "champions/523.json": {
+      "etag": "\"6a31fc6c-818d\"",
+      "bytes": 33165
+    },
+    "champions/526.json": {
+      "etag": "\"6a31fc6a-6ce0\"",
+      "bytes": 27872
+    },
+    "champions/53.json": {
+      "etag": "W/\"6a922d54-e0f7\"",
+      "bytes": 57591
+    },
+    "champions/54.json": {
+      "etag": "\"6a7172c8-b1c8\"",
+      "bytes": 45512
+    },
+    "champions/55.json": {
+      "etag": "W/\"6a824dd0-e81d\"",
+      "bytes": 59421
+    },
+    "champions/555.json": {
+      "etag": "\"6a31fc6b-e293\"",
+      "bytes": 58003
+    },
+    "champions/56.json": {
+      "etag": "\"6a31fc6c-821e\"",
+      "bytes": 33310
+    },
+    "champions/57.json": {
+      "etag": "W/\"6a824dd0-807a\"",
+      "bytes": 32890
+    },
+    "champions/58.json": {
+      "etag": "\"6a31fc6c-b6dd\"",
+      "bytes": 46813
+    },
+    "champions/59.json": {
+      "etag": "\"6a6149b7-b49d\"",
+      "bytes": 46237
+    },
+    "champions/6.json": {
+      "etag": "\"6a31fc6b-7efa\"",
+      "bytes": 32506
+    },
+    "champions/60.json": {
+      "etag": "\"6a6149bc-7d82\"",
+      "bytes": 32130
+    },
+    "champions/61.json": {
+      "etag": "\"6a6149b7-8b12\"",
+      "bytes": 35602
+    },
+    "champions/62.json": {
+      "etag": "\"6a31fc6b-814a\"",
+      "bytes": 33098
+    },
+    "champions/63.json": {
+      "etag": "\"6a3eff2e-ab6f\"",
+      "bytes": 43887
+    },
+    "champions/64.json": {
+      "etag": "\"6a31fc6b-ed5e\"",
+      "bytes": 60766
+    },
+    "champions/67.json": {
+      "etag": "W/\"6a922d4d-ef13\"",
+      "bytes": 61203
+    },
+    "champions/68.json": {
+      "etag": "\"6a31fc6b-7225\"",
+      "bytes": 29221
+    },
+    "champions/69.json": {
+      "etag": "\"6a31fc6c-85c3\"",
+      "bytes": 34243
+    },
+    "champions/7.json": {
+      "etag": "\"6a6149b7-cdad\"",
+      "bytes": 52653
+    },
+    "champions/711.json": {
+      "etag": "W/\"6a922d4f-72e6\"",
+      "bytes": 29414
+    },
+    "champions/72.json": {
+      "etag": "\"6a31fc6c-553b\"",
+      "bytes": 21819
+    },
+    "champions/74.json": {
+      "etag": "\"6a31fc6c-7350\"",
+      "bytes": 29520
+    },
+    "champions/75.json": {
+      "etag": "\"6a31fc6b-b686\"",
+      "bytes": 46726
+    },
+    "champions/76.json": {
+      "etag": "W/\"6a824dd1-ca07\"",
+      "bytes": 51719
+    },
+    "champions/77.json": {
+      "etag": "\"6a31fc6b-53ee\"",
+      "bytes": 21486
+    },
+    "champions/777.json": {
+      "etag": "\"6a31fc6c-d4c7\"",
+      "bytes": 54471
+    },
+    "champions/78.json": {
+      "etag": "W/\"6a824dd0-a140\"",
+      "bytes": 41280
+    },
+    "champions/79.json": {
+      "etag": "\"6a31fc6a-9c35\"",
+      "bytes": 39989
+    },
+    "champions/799.json": {
+      "etag": "\"6a6149bc-4b86\"",
+      "bytes": 19334
+    },
+    "champions/8.json": {
+      "etag": "W/\"6a824dd1-b5b3\"",
+      "bytes": 46515
+    },
+    "champions/80.json": {
+      "etag": "\"6a31fc6b-a259\"",
+      "bytes": 41561
+    },
+    "champions/800.json": {
+      "etag": "\"6a31fc6c-46ee\"",
+      "bytes": 18158
+    },
+    "champions/804.json": {
+      "etag": "\"6a6149be-4bc8\"",
+      "bytes": 19400
+    },
+    "champions/805.json": {
+      "etag": "W/\"6a824dd0-3ef9\"",
+      "bytes": 16121
+    },
+    "champions/81.json": {
+      "etag": "W/\"6a824dd0-f271\"",
+      "bytes": 62065
+    },
+    "champions/82.json": {
+      "etag": "W/\"6a922d48-be45\"",
+      "bytes": 48709
+    },
+    "champions/83.json": {
+      "etag": "\"6a31fc6b-a839\"",
+      "bytes": 43065
+    },
+    "champions/84.json": {
+      "etag": "\"6a31fc6c-1127f\"",
+      "bytes": 70271
+    },
+    "champions/85.json": {
+      "etag": "\"6a31fc6c-784b\"",
+      "bytes": 30795
+    },
+    "champions/86.json": {
+      "etag": "\"6a7172b9-b79a\"",
+      "bytes": 47002
+    },
+    "champions/875.json": {
+      "etag": "\"6a31fc6b-d909\"",
+      "bytes": 55561
+    },
+    "champions/876.json": {
+      "etag": "\"6a7172b5-952a\"",
+      "bytes": 38186
+    },
+    "champions/887.json": {
+      "etag": "W/\"6a824dd1-9f41\"",
+      "bytes": 40769
+    },
+    "champions/888.json": {
+      "etag": "\"6a31fc6c-704d\"",
+      "bytes": 28749
+    },
+    "champions/89.json": {
+      "etag": "\"6a7172cf-d9a5\"",
+      "bytes": 55717
+    },
+    "champions/893.json": {
+      "etag": "\"6a3eff2d-64fd\"",
+      "bytes": 25853
+    },
+    "champions/895.json": {
+      "etag": "\"6a31fc6b-6601\"",
+      "bytes": 26113
+    },
+    "champions/897.json": {
+      "etag": "\"6a31fc6c-566f\"",
+      "bytes": 22127
+    },
+    "champions/9.json": {
+      "etag": "\"6a31fc6a-a915\"",
+      "bytes": 43285
+    },
+    "champions/90.json": {
+      "etag": "\"6a31fc6c-ae20\"",
+      "bytes": 44576
+    },
+    "champions/901.json": {
+      "etag": "\"6a31fc6a-539c\"",
+      "bytes": 21404
+    },
+    "champions/902.json": {
+      "etag": "\"6a31fc6c-61fd\"",
+      "bytes": 25085
+    },
+    "champions/904.json": {
+      "etag": "W/\"6a922d44-3aa3\"",
+      "bytes": 15011
+    },
+    "champions/91.json": {
+      "etag": "\"6a31fc6c-b00e\"",
+      "bytes": 45070
+    },
+    "champions/910.json": {
+      "etag": "\"6a31fc6c-b7af\"",
+      "bytes": 47023
+    },
+    "champions/92.json": {
+      "etag": "\"6a31fc6b-d728\"",
+      "bytes": 55080
+    },
+    "champions/950.json": {
+      "etag": "W/\"6a824dd1-76a7\"",
+      "bytes": 30375
+    },
+    "champions/96.json": {
+      "etag": "\"6a6149b8-115dc\"",
+      "bytes": 71132
+    },
+    "champions/98.json": {
+      "etag": "\"6a3eff2d-b346\"",
+      "bytes": 45894
+    },
+    "champions/99.json": {
+      "etag": "W/\"6a824dd1-f583\"",
+      "bytes": 62851
+    },
+    "characters/aatrox/aatrox.bin.json": {
+      "etag": "W/\"6a922a0b-e041\"",
+      "bytes": 57409
+    },
+    "characters/ahri/ahri.bin.json": {
+      "etag": "W/\"6a922a0f-f81d\"",
+      "bytes": 63517
+    },
+    "characters/akali/akali.bin.json": {
+      "etag": "W/\"6a922a12-192a9\"",
+      "bytes": 103081
+    },
+    "characters/akshan/akshan.bin.json": {
+      "etag": "W/\"6a922a1e-10493\"",
+      "bytes": 66707
+    },
+    "characters/alistar/alistar.bin.json": {
+      "etag": "W/\"6a922a1e-b202\"",
+      "bytes": 45570
+    },
+    "characters/ambessa/ambessa.bin.json": {
+      "etag": "W/\"6a922a20-11229\"",
+      "bytes": 70185
+    },
+    "characters/amumu/amumu.bin.json": {
+      "etag": "W/\"6a922a21-a477\"",
+      "bytes": 42103
+    },
+    "characters/anivia/anivia.bin.json": {
+      "etag": "W/\"6a922a23-af39\"",
+      "bytes": 44857
+    },
+    "characters/annie/annie.bin.json": {
+      "etag": "W/\"6a922a26-df05\"",
+      "bytes": 57093
+    },
+    "characters/aphelios/aphelios.bin.json": {
+      "etag": "W/\"6a922a26-1c553\"",
+      "bytes": 116051
+    },
+    "characters/ashe/ashe.bin.json": {
+      "etag": "W/\"6a922a2f-187c2\"",
+      "bytes": 100290
+    },
+    "characters/aurelionsol/aurelionsol.bin.json": {
+      "etag": "W/\"6a922a32-18f81\"",
+      "bytes": 102273
+    },
+    "characters/aurora/aurora.bin.json": {
+      "etag": "W/\"6a922a33-c7f9\"",
+      "bytes": 51193
+    },
+    "characters/azir/azir.bin.json": {
+      "etag": "W/\"6a922a35-10a5e\"",
+      "bytes": 68190
+    },
+    "characters/bard/bard.bin.json": {
+      "etag": "W/\"6a922a36-14547\"",
+      "bytes": 83271
+    },
+    "characters/belveth/belveth.bin.json": {
+      "etag": "W/\"6a922a38-12299\"",
+      "bytes": 74393
+    },
+    "characters/blitzcrank/blitzcrank.bin.json": {
+      "etag": "W/\"6a922a38-b9d0\"",
+      "bytes": 47568
+    },
+    "characters/brand/brand.bin.json": {
+      "etag": "W/\"6a922a3b-1045a\"",
+      "bytes": 66650
+    },
+    "characters/braum/braum.bin.json": {
+      "etag": "W/\"6a922a3e-1407f\"",
+      "bytes": 82047
+    },
+    "characters/briar/briar.bin.json": {
+      "etag": "W/\"6a922a40-12836\"",
+      "bytes": 75830
+    },
+    "characters/caitlyn/caitlyn.bin.json": {
+      "etag": "W/\"6a922a42-c4b5\"",
+      "bytes": 50357
+    },
+    "characters/camille/camille.bin.json": {
+      "etag": "W/\"6a922a46-10a65\"",
+      "bytes": 68197
+    },
+    "characters/cassiopeia/cassiopeia.bin.json": {
+      "etag": "W/\"6a922a46-cfd0\"",
+      "bytes": 53200
+    },
+    "characters/chogath/chogath.bin.json": {
+      "etag": "W/\"6a922a48-e478\"",
+      "bytes": 58488
+    },
+    "characters/corki/corki.bin.json": {
+      "etag": "W/\"6a922a4c-eed5\"",
+      "bytes": 61141
+    },
+    "characters/darius/darius.bin.json": {
+      "etag": "W/\"6a922a4c-be6f\"",
+      "bytes": 48751
+    },
+    "characters/diana/diana.bin.json": {
+      "etag": "W/\"6a922a4d-bdca\"",
+      "bytes": 48586
+    },
+    "characters/draven/draven.bin.json": {
+      "etag": "W/\"6a922a5a-11302\"",
+      "bytes": 70402
+    },
+    "characters/drmundo/drmundo.bin.json": {
+      "etag": "W/\"6a922a52-e474\"",
+      "bytes": 58484
+    },
+    "characters/ekko/ekko.bin.json": {
+      "etag": "W/\"6a922a5b-fc6f\"",
+      "bytes": 64623
+    },
+    "characters/elise/elise.bin.json": {
+      "etag": "W/\"6a922a5e-13840\"",
+      "bytes": 79936
+    },
+    "characters/evelynn/evelynn.bin.json": {
+      "etag": "W/\"6a922a61-112a8\"",
+      "bytes": 70312
+    },
+    "characters/ezreal/ezreal.bin.json": {
+      "etag": "W/\"6a922a66-b5bc\"",
+      "bytes": 46524
+    },
+    "characters/fiddlesticks/fiddlesticks.bin.json": {
+      "etag": "W/\"6a922a68-f3bc\"",
+      "bytes": 62396
+    },
+    "characters/fiora/fiora.bin.json": {
+      "etag": "W/\"6a922a6e-b49b\"",
+      "bytes": 46235
+    },
+    "characters/fizz/fizz.bin.json": {
+      "etag": "W/\"6a922a72-e30b\"",
+      "bytes": 58123
+    },
+    "characters/galio/galio.bin.json": {
+      "etag": "W/\"6a922a74-d732\"",
+      "bytes": 55090
+    },
+    "characters/gangplank/gangplank.bin.json": {
+      "etag": "W/\"6a922a75-e196\"",
+      "bytes": 57750
+    },
+    "characters/garen/garen.bin.json": {
+      "etag": "W/\"6a922a78-b8eb\"",
+      "bytes": 47339
+    },
+    "characters/gnar/gnar.bin.json": {
+      "etag": "W/\"6a922a79-11d1e\"",
+      "bytes": 72990
+    },
+    "characters/gragas/gragas.bin.json": {
+      "etag": "W/\"6a922a7a-d9c2\"",
+      "bytes": 55746
+    },
+    "characters/graves/graves.bin.json": {
+      "etag": "W/\"6a922a7c-12096\"",
+      "bytes": 73878
+    },
+    "characters/gwen/gwen.bin.json": {
+      "etag": "W/\"6a922a7f-f81c\"",
+      "bytes": 63516
+    },
+    "characters/hecarim/hecarim.bin.json": {
+      "etag": "W/\"6a922a80-13906\"",
+      "bytes": 80134
+    },
+    "characters/heimerdinger/heimerdinger.bin.json": {
+      "etag": "W/\"6a922a83-18a86\"",
+      "bytes": 100998
+    },
+    "characters/hwei/hwei.bin.json": {
+      "etag": "W/\"6a922a84-16fd5\"",
+      "bytes": 94165
+    },
+    "characters/illaoi/illaoi.bin.json": {
+      "etag": "W/\"6a922a86-b267\"",
+      "bytes": 45671
+    },
+    "characters/irelia/irelia.bin.json": {
+      "etag": "W/\"6a922a8d-bebe\"",
+      "bytes": 48830
+    },
+    "characters/ivern/ivern.bin.json": {
+      "etag": "W/\"6a922a8e-e66d\"",
+      "bytes": 58989
+    },
+    "characters/janna/janna.bin.json": {
+      "etag": "W/\"6a922a91-cffa\"",
+      "bytes": 53242
+    },
+    "characters/jarvaniv/jarvaniv.bin.json": {
+      "etag": "W/\"6a922a96-a1d6\"",
+      "bytes": 41430
+    },
+    "characters/jax/jax.bin.json": {
+      "etag": "W/\"6a922a99-c765\"",
+      "bytes": 51045
+    },
+    "characters/jayce/jayce.bin.json": {
+      "etag": "W/\"6a922a9b-118b4\"",
+      "bytes": 71860
+    },
+    "characters/jhin/jhin.bin.json": {
+      "etag": "W/\"6a922a9f-ea35\"",
+      "bytes": 59957
+    },
+    "characters/jinx/jinx.bin.json": {
+      "etag": "W/\"6a922aa9-125fd\"",
+      "bytes": 75261
+    },
+    "characters/kaisa/kaisa.bin.json": {
+      "etag": "W/\"6a922ab5-252eb\"",
+      "bytes": 152299
+    },
+    "characters/kalista/kalista.bin.json": {
+      "etag": "W/\"6a922ab7-1d358\"",
+      "bytes": 119640
+    },
+    "characters/karma/karma.bin.json": {
+      "etag": "W/\"6a922abb-ea97\"",
+      "bytes": 60055
+    },
+    "characters/karthus/karthus.bin.json": {
+      "etag": "W/\"6a922abd-11c69\"",
+      "bytes": 72809
+    },
+    "characters/kassadin/kassadin.bin.json": {
+      "etag": "W/\"6a922abe-a2a1\"",
+      "bytes": 41633
+    },
+    "characters/katarina/katarina.bin.json": {
+      "etag": "W/\"6a922ac0-10716\"",
+      "bytes": 67350
+    },
+    "characters/kayle/kayle.bin.json": {
+      "etag": "W/\"6a922ac8-10ba6\"",
+      "bytes": 68518
+    },
+    "characters/kayn/kayn.bin.json": {
+      "etag": "W/\"6a922acb-11d85\"",
+      "bytes": 73093
+    },
+    "characters/kennen/kennen.bin.json": {
+      "etag": "W/\"6a922ad0-ca0e\"",
+      "bytes": 51726
+    },
+    "characters/khazix/khazix.bin.json": {
+      "etag": "W/\"6a922ad0-10593\"",
+      "bytes": 66963
+    },
+    "characters/kindred/kindred.bin.json": {
+      "etag": "W/\"6a922ad4-1b309\"",
+      "bytes": 111369
+    },
+    "characters/kled/kled.bin.json": {
+      "etag": "W/\"6a922ad4-11546\"",
+      "bytes": 70982
+    },
+    "characters/kogmaw/kogmaw.bin.json": {
+      "etag": "W/\"6a922ad7-e6ff\"",
+      "bytes": 59135
+    },
+    "characters/ksante/ksante.bin.json": {
+      "etag": "W/\"6a922ab3-1cdf5\"",
+      "bytes": 118261
+    },
+    "characters/leblanc/leblanc.bin.json": {
+      "etag": "W/\"6a922adb-13379\"",
+      "bytes": 78713
+    },
+    "characters/leesin/leesin.bin.json": {
+      "etag": "W/\"6a922ae2-d472\"",
+      "bytes": 54386
+    },
+    "characters/leona/leona.bin.json": {
+      "etag": "W/\"6a922ae6-c344\"",
+      "bytes": 49988
+    },
+    "characters/lillia/lillia.bin.json": {
+      "etag": "W/\"6a922ae7-fc89\"",
+      "bytes": 64649
+    },
+    "characters/lissandra/lissandra.bin.json": {
+      "etag": "W/\"6a922aed-106e7\"",
+      "bytes": 67303
+    },
+    "characters/locke/locke.bin.json": {
+      "etag": "W/\"6a922aef-f83a\"",
+      "bytes": 63546
+    },
+    "characters/lucian/lucian.bin.json": {
+      "etag": "W/\"6a922af0-f74d\"",
+      "bytes": 63309
+    },
+    "characters/lulu/lulu.bin.json": {
+      "etag": "W/\"6a922af3-e367\"",
+      "bytes": 58215
+    },
+    "characters/lux/lux.bin.json": {
+      "etag": "W/\"6a922af5-fa18\"",
+      "bytes": 64024
+    },
+    "characters/malphite/malphite.bin.json": {
+      "etag": "W/\"6a922afe-c1bb\"",
+      "bytes": 49595
+    },
+    "characters/malzahar/malzahar.bin.json": {
+      "etag": "W/\"6a922aff-e14a\"",
+      "bytes": 57674
+    },
+    "characters/maokai/maokai.bin.json": {
+      "etag": "W/\"6a922b03-1435a\"",
+      "bytes": 82778
+    },
+    "characters/masteryi/masteryi.bin.json": {
+      "etag": "W/\"6a922b07-dd78\"",
+      "bytes": 56696
+    },
+    "characters/mel/mel.bin.json": {
+      "etag": "W/\"6a922b08-12273\"",
+      "bytes": 74355
+    },
+    "characters/milio/milio.bin.json": {
+      "etag": "W/\"6a922b09-e123\"",
+      "bytes": 57635
+    },
+    "characters/missfortune/missfortune.bin.json": {
+      "etag": "W/\"6a922b09-f4ef\"",
+      "bytes": 62703
+    },
+    "characters/monkeyking/monkeyking.bin.json": {
+      "etag": "W/\"6a922b0d-c069\"",
+      "bytes": 49257
+    },
+    "characters/mordekaiser/mordekaiser.bin.json": {
+      "etag": "W/\"6a922b10-c8f4\"",
+      "bytes": 51444
+    },
+    "characters/morgana/morgana.bin.json": {
+      "etag": "W/\"6a922b1a-b8b0\"",
+      "bytes": 47280
+    },
+    "characters/naafiri/naafiri.bin.json": {
+      "etag": "W/\"6a922b1c-102fb\"",
+      "bytes": 66299
+    },
+    "characters/nami/nami.bin.json": {
+      "etag": "W/\"6a922b21-e997\"",
+      "bytes": 59799
+    },
+    "characters/nasus/nasus.bin.json": {
+      "etag": "W/\"6a922b25-b701\"",
+      "bytes": 46849
+    },
+    "characters/nautilus/nautilus.bin.json": {
+      "etag": "W/\"6a922b27-e099\"",
+      "bytes": 57497
+    },
+    "characters/neeko/neeko.bin.json": {
+      "etag": "W/\"6a922b28-b475\"",
+      "bytes": 46197
+    },
+    "characters/nidalee/nidalee.bin.json": {
+      "etag": "W/\"6a922b31-106e1\"",
+      "bytes": 67297
+    },
+    "characters/nilah/nilah.bin.json": {
+      "etag": "W/\"6a922b33-d1d9\"",
+      "bytes": 53721
+    },
+    "characters/nocturne/nocturne.bin.json": {
+      "etag": "W/\"6a922b35-c998\"",
+      "bytes": 51608
+    },
+    "characters/nunu/nunu.bin.json": {
+      "etag": "W/\"6a922b3b-11a98\"",
+      "bytes": 72344
+    },
+    "characters/olaf/olaf.bin.json": {
+      "etag": "W/\"6a922b3d-c2c3\"",
+      "bytes": 49859
+    },
+    "characters/orianna/orianna.bin.json": {
+      "etag": "W/\"6a922b3e-d88d\"",
+      "bytes": 55437
+    },
+    "characters/ornn/ornn.bin.json": {
+      "etag": "W/\"6a922b3f-115c0\"",
+      "bytes": 71104
+    },
+    "characters/pantheon/pantheon.bin.json": {
+      "etag": "W/\"6a922b47-12384\"",
+      "bytes": 74628
+    },
+    "characters/poppy/poppy.bin.json": {
+      "etag": "W/\"6a922b4b-c539\"",
+      "bytes": 50489
+    },
+    "characters/pyke/pyke.bin.json": {
+      "etag": "W/\"6a922b50-da0d\"",
+      "bytes": 55821
+    },
+    "characters/qiyana/qiyana.bin.json": {
+      "etag": "W/\"6a922b51-1ad87\"",
+      "bytes": 109959
+    },
+    "characters/quinn/quinn.bin.json": {
+      "etag": "W/\"6a922b54-c428\"",
+      "bytes": 50216
+    },
+    "characters/rakan/rakan.bin.json": {
+      "etag": "W/\"6a922b55-dfb7\"",
+      "bytes": 57271
+    },
+    "characters/rammus/rammus.bin.json": {
+      "etag": "W/\"6a922b56-bfe7\"",
+      "bytes": 49127
+    },
+    "characters/reksai/reksai.bin.json": {
+      "etag": "W/\"6a922b58-166f1\"",
+      "bytes": 91889
+    },
+    "characters/rell/rell.bin.json": {
+      "etag": "W/\"6a922b5a-dc4d\"",
+      "bytes": 56397
+    },
+    "characters/renata/renata.bin.json": {
+      "etag": "W/\"6a922b5d-c5d7\"",
+      "bytes": 50647
+    },
+    "characters/renekton/renekton.bin.json": {
+      "etag": "W/\"6a922b5d-c975\"",
+      "bytes": 51573
+    },
+    "characters/rengar/rengar.bin.json": {
+      "etag": "W/\"6a922b5d-138c5\"",
+      "bytes": 80069
+    },
+    "characters/riven/riven.bin.json": {
+      "etag": "W/\"6a922b60-c98e\"",
+      "bytes": 51598
+    },
+    "characters/rumble/rumble.bin.json": {
+      "etag": "W/\"6a922b61-1061c\"",
+      "bytes": 67100
+    },
+    "characters/ryze/ryze.bin.json": {
+      "etag": "W/\"6a922b63-db7d\"",
+      "bytes": 56189
+    },
+    "characters/samira/samira.bin.json": {
+      "etag": "W/\"6a922b63-11e8a\"",
+      "bytes": 73354
+    },
+    "characters/sejuani/sejuani.bin.json": {
+      "etag": "W/\"6a922b66-cdaf\"",
+      "bytes": 52655
+    },
+    "characters/senna/senna.bin.json": {
+      "etag": "W/\"6a922b67-11c54\"",
+      "bytes": 72788
+    },
+    "characters/seraphine/seraphine.bin.json": {
+      "etag": "W/\"6a922b76-11d03\"",
+      "bytes": 72963
+    },
+    "characters/sett/sett.bin.json": {
+      "etag": "W/\"6a922b7e-d719\"",
+      "bytes": 55065
+    },
+    "characters/shaco/shaco.bin.json": {
+      "etag": "W/\"6a922b82-e2b4\"",
+      "bytes": 58036
+    },
+    "characters/shen/shen.bin.json": {
+      "etag": "W/\"6a922b86-bd6d\"",
+      "bytes": 48493
+    },
+    "characters/shyvana/shyvana.bin.json": {
+      "etag": "W/\"6a922b88-fa2b\"",
+      "bytes": 64043
+    },
+    "characters/singed/singed.bin.json": {
+      "etag": "W/\"6a922b89-9db5\"",
+      "bytes": 40373
+    },
+    "characters/sion/sion.bin.json": {
+      "etag": "W/\"6a922b8b-16fc4\"",
+      "bytes": 94148
+    },
+    "characters/sivir/sivir.bin.json": {
+      "etag": "W/\"6a922b8e-17a92\"",
+      "bytes": 96914
+    },
+    "characters/skarner/skarner.bin.json": {
+      "etag": "W/\"6a922b93-d34c\"",
+      "bytes": 54092
+    },
+    "characters/smolder/smolder.bin.json": {
+      "etag": "W/\"6a922b96-115b1\"",
+      "bytes": 71089
+    },
+    "characters/sona/sona.bin.json": {
+      "etag": "W/\"6a922b98-e456\"",
+      "bytes": 58454
+    },
+    "characters/soraka/soraka.bin.json": {
+      "etag": "W/\"6a922ba1-c353\"",
+      "bytes": 50003
+    },
+    "characters/swain/swain.bin.json": {
+      "etag": "W/\"6a922bb2-112f2\"",
+      "bytes": 70386
+    },
+    "characters/sylas/sylas.bin.json": {
+      "etag": "W/\"6a922bb8-cca6\"",
+      "bytes": 52390
+    },
+    "characters/syndra/syndra.bin.json": {
+      "etag": "W/\"6a922bba-183eb\"",
+      "bytes": 99307
+    },
+    "characters/tahmkench/tahmkench.bin.json": {
+      "etag": "W/\"6a922bc3-b18a\"",
+      "bytes": 45450
+    },
+    "characters/taliyah/taliyah.bin.json": {
+      "etag": "W/\"6a922bc7-11953\"",
+      "bytes": 72019
+    },
+    "characters/talon/talon.bin.json": {
+      "etag": "W/\"6a922bca-111be\"",
+      "bytes": 70078
+    },
+    "characters/taric/taric.bin.json": {
+      "etag": "W/\"6a922bce-c1fb\"",
+      "bytes": 49659
+    },
+    "characters/teemo/teemo.bin.json": {
+      "etag": "W/\"6a922bd0-e130\"",
+      "bytes": 57648
+    },
+    "characters/thresh/thresh.bin.json": {
+      "etag": "W/\"6a922bd4-12aff\"",
+      "bytes": 76543
+    },
+    "characters/tristana/tristana.bin.json": {
+      "etag": "W/\"6a922bd7-9c8e\"",
+      "bytes": 40078
+    },
+    "characters/trundle/trundle.bin.json": {
+      "etag": "W/\"6a922bd8-c0cd\"",
+      "bytes": 49357
+    },
+    "characters/tryndamere/tryndamere.bin.json": {
+      "etag": "W/\"6a922bd9-9b36\"",
+      "bytes": 39734
+    },
+    "characters/twistedfate/twistedfate.bin.json": {
+      "etag": "W/\"6a922bdc-13ba1\"",
+      "bytes": 80801
+    },
+    "characters/twitch/twitch.bin.json": {
+      "etag": "W/\"6a922bde-c611\"",
+      "bytes": 50705
+    },
+    "characters/udyr/udyr.bin.json": {
+      "etag": "W/\"6a922bde-142b7\"",
+      "bytes": 82615
+    },
+    "characters/urgot/urgot.bin.json": {
+      "etag": "W/\"6a922be1-12f70\"",
+      "bytes": 77680
+    },
+    "characters/varus/varus.bin.json": {
+      "etag": "W/\"6a922be2-19abc\"",
+      "bytes": 105148
+    },
+    "characters/vayne/vayne.bin.json": {
+      "etag": "W/\"6a922be5-c9cf\"",
+      "bytes": 51663
+    },
+    "characters/veigar/veigar.bin.json": {
+      "etag": "W/\"6a922be9-b916\"",
+      "bytes": 47382
+    },
+    "characters/velkoz/velkoz.bin.json": {
+      "etag": "W/\"6a922bec-c21a\"",
+      "bytes": 49690
+    },
+    "characters/vex/vex.bin.json": {
+      "etag": "W/\"6a922bec-c742\"",
+      "bytes": 51010
+    },
+    "characters/vi/vi.bin.json": {
+      "etag": "W/\"6a922bee-e797\"",
+      "bytes": 59287
+    },
+    "characters/viego/viego.bin.json": {
+      "etag": "W/\"6a922bf3-121ff\"",
+      "bytes": 74239
+    },
+    "characters/viktor/viktor.bin.json": {
+      "etag": "W/\"6a922bf5-10b26\"",
+      "bytes": 68390
+    },
+    "characters/vladimir/vladimir.bin.json": {
+      "etag": "W/\"6a922bf7-1174e\"",
+      "bytes": 71502
+    },
+    "characters/volibear/volibear.bin.json": {
+      "etag": "W/\"6a922bf9-edd7\"",
+      "bytes": 60887
+    },
+    "characters/warwick/warwick.bin.json": {
+      "etag": "W/\"6a922bfe-10eac\"",
+      "bytes": 69292
+    },
+    "characters/xayah/xayah.bin.json": {
+      "etag": "W/\"6a922c03-f55a\"",
+      "bytes": 62810
+    },
+    "characters/xerath/xerath.bin.json": {
+      "etag": "W/\"6a922c05-e080\"",
+      "bytes": 57472
+    },
+    "characters/xinzhao/xinzhao.bin.json": {
+      "etag": "W/\"6a922c05-f112\"",
+      "bytes": 61714
+    },
+    "characters/yasuo/yasuo.bin.json": {
+      "etag": "W/\"6a922c08-1cde2\"",
+      "bytes": 118242
+    },
+    "characters/yone/yone.bin.json": {
+      "etag": "W/\"6a922c0b-1278e\"",
+      "bytes": 75662
+    },
+    "characters/yorick/yorick.bin.json": {
+      "etag": "W/\"6a922c0d-c092\"",
+      "bytes": 49298
+    },
+    "characters/yunara/yunara.bin.json": {
+      "etag": "W/\"6a922c0f-120f2\"",
+      "bytes": 73970
+    },
+    "characters/yuumi/yuumi.bin.json": {
+      "etag": "W/\"6a922c11-1ac67\"",
+      "bytes": 109671
+    },
+    "characters/zaahen/zaahen.bin.json": {
+      "etag": "W/\"6a922c14-e55e\"",
+      "bytes": 58718
+    },
+    "characters/zac/zac.bin.json": {
+      "etag": "W/\"6a922c16-d8e4\"",
+      "bytes": 55524
+    },
+    "characters/zed/zed.bin.json": {
+      "etag": "W/\"6a922c18-ef94\"",
+      "bytes": 61332
+    },
+    "characters/zeri/zeri.bin.json": {
+      "etag": "W/\"6a922c1f-12321\"",
+      "bytes": 74529
+    },
+    "characters/ziggs/ziggs.bin.json": {
+      "etag": "W/\"6a922c21-13d4a\"",
+      "bytes": 81226
+    },
+    "characters/zilean/zilean.bin.json": {
+      "etag": "W/\"6a922c24-11543\"",
+      "bytes": 70979
+    },
+    "characters/zoe/zoe.bin.json": {
+      "etag": "W/\"6a922c27-24ea3\"",
+      "bytes": 151203
+    },
+    "characters/zyra/zyra.bin.json": {
+      "etag": "W/\"6a922c28-10c1b\"",
+      "bytes": 68635
+    },
+    "items.bin.json": {
+      "etag": "W/\"6a922c6a-f2f7f4\"",
+      "bytes": 15923188
+    },
+    "items.json": {
+      "etag": "\"6a922d4f-a6d19\"",
+      "bytes": 683289
+    },
+    "map11.bin.json": {
+      "etag": "W/\"6a922cb2-9bcaa6\"",
+      "bytes": 10209958
+    },
+    "perks.json": {
+      "etag": "\"6a922d4a-1861e\"",
+      "bytes": 99870
+    },
+    "perkstyles.json": {
+      "etag": "\"69feaa47-4516\"",
+      "bytes": 17686
+    },
+    "pt_br/champion-summary.json": {
+      "etag": "W/\"6a922d5f-d3c7\"",
+      "bytes": 54215
+    },
+    "pt_br/champions/1.json": {
+      "etag": "W/\"6a824dd9-c475\"",
+      "bytes": 50293
+    },
+    "pt_br/champions/10.json": {
+      "etag": "W/\"6a922d5f-f5eb\"",
+      "bytes": 62955
+    },
+    "pt_br/champions/101.json": {
+      "etag": "W/\"6a922d5f-7bc7\"",
+      "bytes": 31687
+    },
+    "pt_br/champions/102.json": {
+      "etag": "W/\"6a824dd8-766d\"",
+      "bytes": 30317
+    },
+    "pt_br/champions/103.json": {
+      "etag": "\"6a31fc72-12a67\"",
+      "bytes": 76391
+    },
+    "pt_br/champions/104.json": {
+      "etag": "W/\"6a824dd8-b11e\"",
+      "bytes": 45342
+    },
+    "pt_br/champions/105.json": {
+      "etag": "\"6a31fc72-9568\"",
+      "bytes": 38248
+    },
+    "pt_br/champions/106.json": {
+      "etag": "\"6a7172d7-8c28\"",
+      "bytes": 35880
+    },
+    "pt_br/champions/107.json": {
+      "etag": "\"6a6149c9-b9ff\"",
+      "bytes": 47615
+    },
+    "pt_br/champions/11.json": {
+      "etag": "\"6a6149c9-15dca\"",
+      "bytes": 89546
+    },
+    "pt_br/champions/110.json": {
+      "etag": "\"6a31fc72-d9bd\"",
+      "bytes": 55741
+    },
+    "pt_br/champions/111.json": {
+      "etag": "\"6a31fc72-96c6\"",
+      "bytes": 38598
+    },
+    "pt_br/champions/112.json": {
+      "etag": "\"6a31fc72-81a1\"",
+      "bytes": 33185
+    },
+    "pt_br/champions/113.json": {
+      "etag": "W/\"6a922d5f-bcd8\"",
+      "bytes": 48344
+    },
+    "pt_br/champions/114.json": {
+      "etag": "\"6a6149c9-16851\"",
+      "bytes": 92241
+    },
+    "pt_br/champions/115.json": {
+      "etag": "\"6a7172d7-a277\"",
+      "bytes": 41591
+    },
+    "pt_br/champions/117.json": {
+      "etag": "W/\"6a824dd9-c1ac\"",
+      "bytes": 49580
+    },
+    "pt_br/champions/119.json": {
+      "etag": "\"6a7172d7-136e1\"",
+      "bytes": 79585
+    },
+    "pt_br/champions/12.json": {
+      "etag": "\"6a7172d7-a1ae\"",
+      "bytes": 41390
+    },
+    "pt_br/champions/120.json": {
+      "etag": "\"6a31fc71-a736\"",
+      "bytes": 42806
+    },
+    "pt_br/champions/121.json": {
+      "etag": "\"6a6149c8-c25a\"",
+      "bytes": 49754
+    },
+    "pt_br/champions/122.json": {
+      "etag": "\"6a7172d7-e454\"",
+      "bytes": 58452
+    },
+    "pt_br/champions/126.json": {
+      "etag": "\"6a7172d7-a1cd\"",
+      "bytes": 41421
+    },
+    "pt_br/champions/127.json": {
+      "etag": "W/\"6a824dd9-a300\"",
+      "bytes": 41728
+    },
+    "pt_br/champions/13.json": {
+      "etag": "\"6a31fc72-9200\"",
+      "bytes": 37376
+    },
+    "pt_br/champions/131.json": {
+      "etag": "\"6a31fc72-fa30\"",
+      "bytes": 64048
+    },
+    "pt_br/champions/133.json": {
+      "etag": "\"6a31fc72-7622\"",
+      "bytes": 30242
+    },
+    "pt_br/champions/134.json": {
+      "etag": "\"6a6149c9-d636\"",
+      "bytes": 54838
+    },
+    "pt_br/champions/136.json": {
+      "etag": "W/\"6a922d5f-9113\"",
+      "bytes": 37139
+    },
+    "pt_br/champions/14.json": {
+      "etag": "\"6a7172d7-b209\"",
+      "bytes": 45577
+    },
+    "pt_br/champions/141.json": {
+      "etag": "\"6a31fc72-7aca\"",
+      "bytes": 31434
+    },
+    "pt_br/champions/142.json": {
+      "etag": "\"6a31fc72-94eb\"",
+      "bytes": 38123
+    },
+    "pt_br/champions/143.json": {
+      "etag": "\"6a7172d7-d3d6\"",
+      "bytes": 54230
+    },
+    "pt_br/champions/145.json": {
+      "etag": "\"6a3eff32-f626\"",
+      "bytes": 63014
+    },
+    "pt_br/champions/147.json": {
+      "etag": "W/\"6a922d5f-f3e2\"",
+      "bytes": 62434
+    },
+    "pt_br/champions/15.json": {
+      "etag": "\"6a6149c9-ea93\"",
+      "bytes": 60051
+    },
+    "pt_br/champions/150.json": {
+      "etag": "\"6a31fc72-946f\"",
+      "bytes": 37999
+    },
+    "pt_br/champions/154.json": {
+      "etag": "\"6a7172d7-83cd\"",
+      "bytes": 33741
+    },
+    "pt_br/champions/157.json": {
+      "etag": "W/\"6a824dd9-117bc\"",
+      "bytes": 71612
+    },
+    "pt_br/champions/16.json": {
+      "etag": "W/\"6a922d5f-dfa0\"",
+      "bytes": 57248
+    },
+    "pt_br/champions/161.json": {
+      "etag": "\"6a31fc72-7a92\"",
+      "bytes": 31378
+    },
+    "pt_br/champions/163.json": {
+      "etag": "\"6a31fc72-6727\"",
+      "bytes": 26407
+    },
+    "pt_br/champions/164.json": {
+      "etag": "W/\"6a824dd9-a590\"",
+      "bytes": 42384
+    },
+    "pt_br/champions/166.json": {
+      "etag": "\"6a3eff31-6a58\"",
+      "bytes": 27224
+    },
+    "pt_br/champions/17.json": {
+      "etag": "\"6a31fc72-c177\"",
+      "bytes": 49527
+    },
+    "pt_br/champions/18.json": {
+      "etag": "\"6a31fc72-e31e\"",
+      "bytes": 58142
+    },
+    "pt_br/champions/19.json": {
+      "etag": "W/\"6a824dd8-c654\"",
+      "bytes": 50772
+    },
+    "pt_br/champions/2.json": {
+      "etag": "\"6a31fc71-9f74\"",
+      "bytes": 40820
+    },
+    "pt_br/champions/20.json": {
+      "etag": "\"6a31fc72-aaf0\"",
+      "bytes": 43760
+    },
+    "pt_br/champions/200.json": {
+      "etag": "W/\"6a824dd9-7be5\"",
+      "bytes": 31717
+    },
+    "pt_br/champions/201.json": {
+      "etag": "\"6a31fc72-bde8\"",
+      "bytes": 48616
+    },
+    "pt_br/champions/202.json": {
+      "etag": "\"6a3eff31-c371\"",
+      "bytes": 50033
+    },
+    "pt_br/champions/203.json": {
+      "etag": "\"6a7172d7-9500\"",
+      "bytes": 38144
+    },
+    "pt_br/champions/21.json": {
+      "etag": "\"6a6149c9-ffae\"",
+      "bytes": 65454
+    },
+    "pt_br/champions/22.json": {
+      "etag": "\"6a7172d7-107ee\"",
+      "bytes": 67566
+    },
+    "pt_br/champions/221.json": {
+      "etag": "\"6a31fc72-912d\"",
+      "bytes": 37165
+    },
+    "pt_br/champions/222.json": {
+      "etag": "W/\"6a922d5f-e771\"",
+      "bytes": 59249
+    },
+    "pt_br/champions/223.json": {
+      "etag": "W/\"6a922d5f-95fa\"",
+      "bytes": 38394
+    },
+    "pt_br/champions/23.json": {
+      "etag": "\"6a6149c8-ada5\"",
+      "bytes": 44453
+    },
+    "pt_br/champions/233.json": {
+      "etag": "\"6a31fc72-6c3f\"",
+      "bytes": 27711
+    },
+    "pt_br/champions/234.json": {
+      "etag": "\"6a6149c9-973e\"",
+      "bytes": 38718
+    },
+    "pt_br/champions/235.json": {
+      "etag": "W/\"6a824dd8-dc35\"",
+      "bytes": 56373
+    },
+    "pt_br/champions/236.json": {
+      "etag": "\"6a6149c9-de72\"",
+      "bytes": 56946
+    },
+    "pt_br/champions/238.json": {
+      "etag": "W/\"6a824dd8-dad6\"",
+      "bytes": 56022
+    },
+    "pt_br/champions/24.json": {
+      "etag": "\"6a7172d7-a538\"",
+      "bytes": 42296
+    },
+    "pt_br/champions/240.json": {
+      "etag": "\"6a31fc72-65bd\"",
+      "bytes": 26045
+    },
+    "pt_br/champions/245.json": {
+      "etag": "\"6a7172d7-bb39\"",
+      "bytes": 47929
+    },
+    "pt_br/champions/246.json": {
+      "etag": "\"6a31fc71-a40e\"",
+      "bytes": 41998
+    },
+    "pt_br/champions/25.json": {
+      "etag": "\"6a6149c9-f885\"",
+      "bytes": 63621
+    },
+    "pt_br/champions/254.json": {
+      "etag": "\"6a31fc72-a613\"",
+      "bytes": 42515
+    },
+    "pt_br/champions/26.json": {
+      "etag": "\"6a31fc71-77ff\"",
+      "bytes": 30719
+    },
+    "pt_br/champions/266.json": {
+      "etag": "\"6a6149c9-9751\"",
+      "bytes": 38737
+    },
+    "pt_br/champions/267.json": {
+      "etag": "\"6a7172d7-cb6b\"",
+      "bytes": 52075
+    },
+    "pt_br/champions/268.json": {
+      "etag": "W/\"6a824dd8-6c82\"",
+      "bytes": 27778
+    },
+    "pt_br/champions/27.json": {
+      "etag": "W/\"6a922d5f-76db\"",
+      "bytes": 30427
+    },
+    "pt_br/champions/28.json": {
+      "etag": "\"6a31fc71-ce92\"",
+      "bytes": 52882
+    },
+    "pt_br/champions/29.json": {
+      "etag": "\"6a31fc72-b7d2\"",
+      "bytes": 47058
+    },
+    "pt_br/champions/3.json": {
+      "etag": "\"6a6149c9-a7f4\"",
+      "bytes": 42996
+    },
+    "pt_br/champions/30.json": {
+      "etag": "\"6a7172d7-8aef\"",
+      "bytes": 35567
+    },
+    "pt_br/champions/31.json": {
+      "etag": "\"6a31fc72-8e4a\"",
+      "bytes": 36426
+    },
+    "pt_br/champions/32.json": {
+      "etag": "\"6a31fc71-b689\"",
+      "bytes": 46729
+    },
+    "pt_br/champions/33.json": {
+      "etag": "\"6a7172d7-8216\"",
+      "bytes": 33302
+    },
+    "pt_br/champions/34.json": {
+      "etag": "\"6a6149c9-b30f\"",
+      "bytes": 45839
+    },
+    "pt_br/champions/35.json": {
+      "etag": "\"6a7172d7-db36\"",
+      "bytes": 56118
+    },
+    "pt_br/champions/350.json": {
+      "etag": "\"6a7172d7-da5f\"",
+      "bytes": 55903
+    },
+    "pt_br/champions/36.json": {
+      "etag": "\"6a6149c9-7fba\"",
+      "bytes": 32698
+    },
+    "pt_br/champions/360.json": {
+      "etag": "\"6a31fc72-89a2\"",
+      "bytes": 35234
+    },
+    "pt_br/champions/37.json": {
+      "etag": "W/\"6a824dd9-1407d\"",
+      "bytes": 82045
+    },
+    "pt_br/champions/38.json": {
+      "etag": "\"6a31fc72-7a5b\"",
+      "bytes": 31323
+    },
+    "pt_br/champions/39.json": {
+      "etag": "W/\"6a824dd9-dd02\"",
+      "bytes": 56578
+    },
+    "pt_br/champions/4.json": {
+      "etag": "\"6a7172d7-10e59\"",
+      "bytes": 69209
+    },
+    "pt_br/champions/40.json": {
+      "etag": "W/\"6a824dd8-cf3a\"",
+      "bytes": 53050
+    },
+    "pt_br/champions/41.json": {
+      "etag": "\"6a31fc72-935a\"",
+      "bytes": 37722
+    },
+    "pt_br/champions/412.json": {
+      "etag": "\"6a7172d7-d563\"",
+      "bytes": 54627
+    },
+    "pt_br/champions/42.json": {
+      "etag": "\"6a31fc71-92a1\"",
+      "bytes": 37537
+    },
+    "pt_br/champions/420.json": {
+      "etag": "\"6a31fc71-8bbe\"",
+      "bytes": 35774
+    },
+    "pt_br/champions/421.json": {
+      "etag": "\"6a3eff31-75cd\"",
+      "bytes": 30157
+    },
+    "pt_br/champions/427.json": {
+      "etag": "\"6a31fc71-817a\"",
+      "bytes": 33146
+    },
+    "pt_br/champions/429.json": {
+      "etag": "\"6a31fc72-75d4\"",
+      "bytes": 30164
+    },
+    "pt_br/champions/43.json": {
+      "etag": "\"6a31fc71-e040\"",
+      "bytes": 57408
+    },
+    "pt_br/champions/432.json": {
+      "etag": "\"6a7172d7-9426\"",
+      "bytes": 37926
+    },
+    "pt_br/champions/44.json": {
+      "etag": "W/\"6a824dd9-7721\"",
+      "bytes": 30497
+    },
+    "pt_br/champions/45.json": {
+      "etag": "W/\"6a824dd9-cd64\"",
+      "bytes": 52580
+    },
+    "pt_br/champions/48.json": {
+      "etag": "W/\"6a922d5f-6f66\"",
+      "bytes": 28518
+    },
+    "pt_br/champions/497.json": {
+      "etag": "\"6a31fc72-afdf\"",
+      "bytes": 45023
+    },
+    "pt_br/champions/498.json": {
+      "etag": "\"6a31fc71-c16f\"",
+      "bytes": 49519
+    },
+    "pt_br/champions/5.json": {
+      "etag": "\"6a6149c8-b6e8\"",
+      "bytes": 46824
+    },
+    "pt_br/champions/50.json": {
+      "etag": "W/\"6a922d5f-a2ba\"",
+      "bytes": 41658
+    },
+    "pt_br/champions/51.json": {
+      "etag": "\"6a7172d7-d56d\"",
+      "bytes": 54637
+    },
+    "pt_br/champions/516.json": {
+      "etag": "\"6a31fc72-7c3d\"",
+      "bytes": 31805
+    },
+    "pt_br/champions/517.json": {
+      "etag": "\"6a31fc72-a8b2\"",
+      "bytes": 43186
+    },
+    "pt_br/champions/518.json": {
+      "etag": "\"6a31fc72-9afa\"",
+      "bytes": 39674
+    },
+    "pt_br/champions/523.json": {
+      "etag": "\"6a31fc71-8437\"",
+      "bytes": 33847
+    },
+    "pt_br/champions/526.json": {
+      "etag": "\"6a31fc72-6fbd\"",
+      "bytes": 28605
+    },
+    "pt_br/champions/53.json": {
+      "etag": "W/\"6a922d5f-e560\"",
+      "bytes": 58720
+    },
+    "pt_br/champions/54.json": {
+      "etag": "\"6a7172d7-b53d\"",
+      "bytes": 46397
+    },
+    "pt_br/champions/55.json": {
+      "etag": "W/\"6a824dd9-ec62\"",
+      "bytes": 60514
+    },
+    "pt_br/champions/555.json": {
+      "etag": "\"6a31fc71-e7d5\"",
+      "bytes": 59349
+    },
+    "pt_br/champions/56.json": {
+      "etag": "\"6a31fc72-8476\"",
+      "bytes": 33910
+    },
+    "pt_br/champions/57.json": {
+      "etag": "W/\"6a824dd9-8291\"",
+      "bytes": 33425
+    },
+    "pt_br/champions/58.json": {
+      "etag": "\"6a31fc72-ba28\"",
+      "bytes": 47656
+    },
+    "pt_br/champions/59.json": {
+      "etag": "\"6a6149c9-b859\"",
+      "bytes": 47193
+    },
+    "pt_br/champions/6.json": {
+      "etag": "\"6a6149c9-8181\"",
+      "bytes": 33153
+    },
+    "pt_br/champions/60.json": {
+      "etag": "\"6a6149c9-8120\"",
+      "bytes": 33056
+    },
+    "pt_br/champions/61.json": {
+      "etag": "\"6a6149c9-8ddd\"",
+      "bytes": 36317
+    },
+    "pt_br/champions/62.json": {
+      "etag": "\"6a31fc71-845a\"",
+      "bytes": 33882
+    },
+    "pt_br/champions/63.json": {
+      "etag": "\"6a3eff31-afaa\"",
+      "bytes": 44970
+    },
+    "pt_br/champions/64.json": {
+      "etag": "\"6a31fc72-f2d8\"",
+      "bytes": 62168
+    },
+    "pt_br/champions/67.json": {
+      "etag": "W/\"6a922d5f-f58d\"",
+      "bytes": 62861
+    },
+    "pt_br/champions/68.json": {
+      "etag": "\"6a6149c9-74a2\"",
+      "bytes": 29858
+    },
+    "pt_br/champions/69.json": {
+      "etag": "\"6a31fc72-8995\"",
+      "bytes": 35221
+    },
+    "pt_br/champions/7.json": {
+      "etag": "\"6a6149c9-d289\"",
+      "bytes": 53897
+    },
+    "pt_br/champions/711.json": {
+      "etag": "W/\"6a922d5f-75c4\"",
+      "bytes": 30148
+    },
+    "pt_br/champions/72.json": {
+      "etag": "\"6a31fc72-56b5\"",
+      "bytes": 22197
+    },
+    "pt_br/champions/74.json": {
+      "etag": "\"6a31fc71-7698\"",
+      "bytes": 30360
+    },
+    "pt_br/champions/75.json": {
+      "etag": "\"6a31fc72-bb19\"",
+      "bytes": 47897
+    },
+    "pt_br/champions/76.json": {
+      "etag": "W/\"6a824dd8-ce7b\"",
+      "bytes": 52859
+    },
+    "pt_br/champions/77.json": {
+      "etag": "\"6a31fc72-5722\"",
+      "bytes": 22306
+    },
+    "pt_br/champions/777.json": {
+      "etag": "\"6a31fc71-db79\"",
+      "bytes": 56185
+    },
+    "pt_br/champions/78.json": {
+      "etag": "W/\"6a824dd9-a45b\"",
+      "bytes": 42075
+    },
+    "pt_br/champions/79.json": {
+      "etag": "\"6a31fc72-9f03\"",
+      "bytes": 40707
+    },
+    "pt_br/champions/799.json": {
+      "etag": "\"6a6149c9-4cac\"",
+      "bytes": 19628
+    },
+    "pt_br/champions/8.json": {
+      "etag": "W/\"6a824dd8-b929\"",
+      "bytes": 47401
+    },
+    "pt_br/champions/80.json": {
+      "etag": "\"6a31fc72-a68a\"",
+      "bytes": 42634
+    },
+    "pt_br/champions/800.json": {
+      "etag": "\"6a6149c9-4879\"",
+      "bytes": 18553
+    },
+    "pt_br/champions/804.json": {
+      "etag": "\"6a6149c9-4de7\"",
+      "bytes": 19943
+    },
+    "pt_br/champions/805.json": {
+      "etag": "W/\"6a824dd9-411f\"",
+      "bytes": 16671
+    },
+    "pt_br/champions/81.json": {
+      "etag": "W/\"6a824dd9-f6fd\"",
+      "bytes": 63229
+    },
+    "pt_br/champions/82.json": {
+      "etag": "W/\"6a922d5f-c2a7\"",
+      "bytes": 49831
+    },
+    "pt_br/champions/83.json": {
+      "etag": "\"6a31fc72-abd6\"",
+      "bytes": 43990
+    },
+    "pt_br/champions/84.json": {
+      "etag": "\"6a31fc71-11988\"",
+      "bytes": 72072
+    },
+    "pt_br/champions/85.json": {
+      "etag": "\"6a31fc72-7b27\"",
+      "bytes": 31527
+    },
+    "pt_br/champions/86.json": {
+      "etag": "\"6a7172d7-bae7\"",
+      "bytes": 47847
+    },
+    "pt_br/champions/875.json": {
+      "etag": "\"6a31fc71-dec5\"",
+      "bytes": 57029
+    },
+    "pt_br/champions/876.json": {
+      "etag": "\"6a7172d7-99b1\"",
+      "bytes": 39345
+    },
+    "pt_br/champions/887.json": {
+      "etag": "W/\"6a824dd8-a2d8\"",
+      "bytes": 41688
+    },
+    "pt_br/champions/888.json": {
+      "etag": "\"6a31fc72-733e\"",
+      "bytes": 29502
+    },
+    "pt_br/champions/89.json": {
+      "etag": "\"6a7172d7-ddec\"",
+      "bytes": 56812
+    },
+    "pt_br/champions/893.json": {
+      "etag": "\"6a3eff31-6726\"",
+      "bytes": 26406
+    },
+    "pt_br/champions/895.json": {
+      "etag": "\"6a31fc72-68c6\"",
+      "bytes": 26822
+    },
+    "pt_br/champions/897.json": {
+      "etag": "\"6a31fc72-5925\"",
+      "bytes": 22821
+    },
+    "pt_br/champions/9.json": {
+      "etag": "\"6a31fc71-ad19\"",
+      "bytes": 44313
+    },
+    "pt_br/champions/90.json": {
+      "etag": "\"6a31fc72-b0fb\"",
+      "bytes": 45307
+    },
+    "pt_br/champions/901.json": {
+      "etag": "\"6a31fc71-5556\"",
+      "bytes": 21846
+    },
+    "pt_br/champions/902.json": {
+      "etag": "\"6a31fc72-6439\"",
+      "bytes": 25657
+    },
+    "pt_br/champions/904.json": {
+      "etag": "W/\"6a922d5f-3bba\"",
+      "bytes": 15290
+    },
+    "pt_br/champions/91.json": {
+      "etag": "\"6a31fc72-b3c1\"",
+      "bytes": 46017
+    },
+    "pt_br/champions/910.json": {
+      "etag": "\"6a31fc72-bb46\"",
+      "bytes": 47942
+    },
+    "pt_br/champions/92.json": {
+      "etag": "\"6a31fc71-dbdc\"",
+      "bytes": 56284
+    },
+    "pt_br/champions/950.json": {
+      "etag": "W/\"6a824dd9-7858\"",
+      "bytes": 30808
+    },
+    "pt_br/champions/96.json": {
+      "etag": "\"6a6149c9-119c8\"",
+      "bytes": 72136
+    },
+    "pt_br/champions/98.json": {
+      "etag": "\"6a3eff31-b6a7\"",
+      "bytes": 46759
+    },
+    "pt_br/champions/99.json": {
+      "etag": "W/\"6a824dd8-fad7\"",
+      "bytes": 64215
+    },
+    "pt_br/items.json": {
+      "etag": "W/\"6a922d5f-af9a4\"",
+      "bytes": 719268
+    },
+    "pt_br/perks.json": {
+      "etag": "W/\"6a922d5f-1ad75\"",
+      "bytes": 109941
+    },
+    "pt_br/perkstyles.json": {
+      "etag": "\"69feaa50-4546\"",
+      "bytes": 17734
+    },
+    "pt_br/summoner-spells.json": {
+      "etag": "W/\"6a824dd9-36de\"",
+      "bytes": 14046
+    },
+    "summoner-spells.json": {
+      "etag": "\"6a824dd0-3392\"",
+      "bytes": 13202
+    }
+  }
+}
